@@ -63,7 +63,7 @@
     @keyframes drift { to { transform: translate(25px,-18px) scale(1.06); } }
 
     /* ── Title ──────────────────────────────────── */
-    .title { position: relative; text-align: center; padding: 52px 40px 12px; z-index: 2; }
+    .title { position: relative; text-align: center; padding: 72px 40px 12px; z-index: 2; }
     .title h1 {
       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
       color: #1e293b;
@@ -124,6 +124,11 @@
     .card-head .icons { display: flex; gap: 10px; margin-bottom: 14px; justify-content: center; }
     .card-head .icons.single-logo .ico {
       width: 102px; height: 102px; border-radius: 16px;
+    }
+    .card-head .ico.ico-overlap {
+      margin-left: -18px; z-index: 1;
+      border: 2px solid #fff;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
     }
     .card-head .ico {
       width: 46px; height: 46px; border-radius: 13px;
@@ -331,7 +336,7 @@
         <div class="kalyro-wrapper">
           <div class="kalyro-wrapper-header">
             <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT">
-            <div class="wrapper-subtitle">Entwicklung, Qualit&auml;tssicherung & Hosting &ndash; alles aus einer Hand</div>
+            <div class="wrapper-subtitle">Beratung, Entwicklung & Betrieb &ndash; Ihre IT-Dienstleistung aus einer Hand</div>
           </div>
           <div class="inner-cards">
 
