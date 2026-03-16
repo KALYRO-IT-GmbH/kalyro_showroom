@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI/CD Infinity Loop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 32px;
+    }
+    .container {
+      width: 100%;
+      max-width: 960px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      padding: 48px 40px 56px;
+    }
+    .title {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .title h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: #1e293b;
+      letter-spacing: -0.5px;
+    }
+    .title .sub {
+      font-size: 14px;
+      color: #64748b;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .infinity-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .infinity-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <h1>CI/CD Infinity Loop</h1>
+      <div class="sub">Continuous Integration &amp; Continuous Deployment</div>
+    </div>
+    <div class="infinity-wrap">
+      <svg viewBox="-10 0 1020 540" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.10)"/>
+          </filter>
+          <!-- CI: Coral/Salmon -->
+          <linearGradient id="ci-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f0837a"/>
+            <stop offset="50%" stop-color="#e8645a"/>
+            <stop offset="100%" stop-color="#f0837a"/>
+          </linearGradient>
+          <!-- CD: Teal/Mint -->
+          <linearGradient id="cd-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#5eecd4"/>
+            <stop offset="50%" stop-color="#3cc8b4"/>
+            <stop offset="100%" stop-color="#5eecd4"/>
+          </linearGradient>
+          <linearGradient id="ci-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#d4564c"/>
+            <stop offset="50%" stop-color="#c0443a"/>
+            <stop offset="100%" stop-color="#d4564c"/>
+          </linearGradient>
+          <linearGradient id="cd-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#2aaa96"/>
+            <stop offset="50%" stop-color="#1e9484"/>
+            <stop offset="100%" stop-color="#2aaa96"/>
+          </linearGradient>
+
+          <!-- 4 segments of the infinity (Arc + Bezier hybrid) -->
+          <path id="seg-left-lobe" d="M 310,440 A 170,170 0 1 1 310,100" fill="none"/>
+          <path id="seg-cross-upper" d="M 310,100 C 420,100 580,440 690,440" fill="none"/>
+          <path id="seg-right-lobe" d="M 690,440 A 170,170 0 1 0 690,100" fill="none"/>
+          <path id="seg-cross-lower" d="M 690,100 C 580,100 420,440 310,440" fill="none"/>
+          <path id="inf-path" d="M 310,100 A 170,170 0 1 0 310,440 C 420,440 580,100 690,100 A 170,170 0 1 1 690,440 C 580,440 420,100 310,100 Z" fill="none"/>
+        </defs>
+
+        <!-- Shadow -->
+        <g filter="url(#loop-shadow)" opacity="0.2">
+          <use href="#seg-left-lobe" stroke="#555" stroke-width="76" stroke-linecap="round"/>
+          <use href="#seg-cross-upper" stroke="#555" stroke-width="76" stroke-linecap="round"/>
+          <use href="#seg-right-lobe" stroke="#555" stroke-width="76" stroke-linecap="round"/>
+          <use href="#seg-cross-lower" stroke="#555" stroke-width="76" stroke-linecap="round"/>
+        </g>
+
+        <!-- Weave: 1.Left(coral) 2.LowerCross(teal,behind) 3.Right(teal) 4.UpperCross(coral,top) -->
+        <use href="#seg-left-lobe" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
+        <use href="#seg-left-lobe" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
+
+        <use href="#seg-cross-lower" stroke="url(#cd-border)" stroke-width="74" stroke-linecap="round"/>
+        <use href="#seg-cross-lower" stroke="url(#cd-grad)" stroke-width="66" stroke-linecap="round"/>
+
+        <use href="#seg-right-lobe" stroke="url(#cd-border)" stroke-width="74" stroke-linecap="round"/>
+        <use href="#seg-right-lobe" stroke="url(#cd-grad)" stroke-width="66" stroke-linecap="round"/>
+
+        <use href="#seg-cross-upper" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
+        <use href="#seg-cross-upper" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
+
+        <!-- Inner circles -->
+        <circle cx="225" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
+        <circle cx="775" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
+
+        <!-- CI / CD text -->
+        <text x="225" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CI</text>
+        <text x="775" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CD</text>
+
+        <!-- Phase labels (italic text + arrow like reference) -->
+        <!-- CI phases (coral) -->
+        <g transform="translate(285,82)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">code</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(60,0)"/>
+        </g>
+        <g transform="translate(52,278)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">build</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-8,-30) rotate(-90)"/>
+        </g>
+        <g transform="translate(270,476)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">test</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
+        </g>
+
+        <!-- Crossing labels (on diagonal bands) -->
+        <g transform="translate(415,195) rotate(40)">
+          <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#c0443a">plan</text>
+          <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(52,0)"/>
+        </g>
+        <g transform="translate(475,385) rotate(40)">
+          <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#1e9484">release</text>
+          <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(75,0)"/>
+        </g>
+
+        <!-- CD phases (teal) -->
+        <g transform="translate(660,82)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">deploy</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(78,0)"/>
+        </g>
+        <g transform="translate(880,278)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">Operate</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(98,-30) rotate(90)"/>
+        </g>
+        <g transform="translate(635,476)">
+          <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">monitor</text>
+          <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
+        </g>
+
+        <!-- Animated particles -->
+        <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-6s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-0.1s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-2.1s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-4.1s"><mpath href="#inf-path"/></animateMotion></circle>
+        <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-6.1s"><mpath href="#inf-path"/></animateMotion></circle>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

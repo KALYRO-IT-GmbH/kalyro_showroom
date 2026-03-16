@@ -76,6 +76,57 @@
       position: relative; z-index: 2;
       padding: 36px 48px 0;
     }
+
+    /* ── Interface Connector Bar ─────────────────── */
+    .interface-section {
+      position: relative; z-index: 2;
+      padding: 20px 48px 0;
+    }
+    .interface-bar {
+      display: flex; align-items: center; gap: 20px;
+      width: 100%;
+      background: #fff;
+      border: 2px solid #7c3aed;
+      border-radius: 16px;
+      padding: 14px 28px;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.08), 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .interface-bar .if-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #f3f0ff; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(124,58,237,0.12);
+    }
+    .interface-bar .if-icon img {
+      width: 26px; height: 26px; object-fit: contain;
+    }
+    .interface-bar .if-title {
+      font-size: 15px; font-weight: 700; color: var(--text-primary);
+      white-space: nowrap;
+    }
+    .interface-bar .if-tag {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      background: #f3f0ff; color: #7c3aed;
+      white-space: nowrap;
+    }
+    .interface-bar .if-sep {
+      width: 1px; height: 28px; background: #e2e8f0; flex-shrink: 0;
+    }
+    .interface-bar .if-items {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      list-style: none;
+    }
+    .interface-bar .if-items li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .interface-bar .if-items .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #7c3aed; flex-shrink: 0;
+    }
     .cards-row {
       display: flex; gap: 60px; justify-content: center; align-items: stretch;
     }
@@ -483,6 +534,21 @@
 
       </div>
 
+      <!-- Schnittstellen Connector Bar -->
+      <div class="interface-section">
+        <div class="interface-bar" id="interface-card">
+          <div class="if-icon"><img src="assets/logos/API_Icon.png" alt="REST API"></div>
+          <span class="if-title">Schnittstellen</span>
+          <span class="if-tag">Integration</span>
+          <div class="if-sep"></div>
+          <ul class="if-items">
+            <li><span class="dot"></span>REST API</li>
+            <li><span class="dot"></span>Datenbank-Anbindung</li>
+            <li><span class="dot"></span>Import / Export</li>
+          </ul>
+        </div>
+      </div>
+
       <!-- SVG overlay for arrows - positioned in same parent as cards -->
       <svg class="arrows-svg" id="arrows-svg"></svg>
     </div>
@@ -498,38 +564,38 @@
     </div>
     <div class="cicd-content">
       <div class="infinity-container" id="infinity-container">
-        <svg id="infinity-svg" viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg">
+        <svg id="infinity-svg" viewBox="-10 0 1020 540" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%">
-              <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,0.15)"/>
+              <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.10)"/>
             </filter>
-            <!-- Gradients with userSpaceOnUse so they work globally -->
+            <!-- CI: Coral/Salmon -->
             <linearGradient id="ci-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#2980b9"/>
-              <stop offset="50%" stop-color="#1a5276"/>
-              <stop offset="100%" stop-color="#2980b9"/>
+              <stop offset="0%" stop-color="#f0837a"/>
+              <stop offset="50%" stop-color="#e8645a"/>
+              <stop offset="100%" stop-color="#f0837a"/>
             </linearGradient>
+            <!-- CD: Teal/Mint -->
             <linearGradient id="cd-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#f0b830"/>
-              <stop offset="50%" stop-color="#d4941a"/>
-              <stop offset="100%" stop-color="#f0b830"/>
+              <stop offset="0%" stop-color="#5eecd4"/>
+              <stop offset="50%" stop-color="#3cc8b4"/>
+              <stop offset="100%" stop-color="#5eecd4"/>
             </linearGradient>
-            <!-- Border colors -->
             <linearGradient id="ci-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#1a5276"/>
-              <stop offset="50%" stop-color="#154360"/>
-              <stop offset="100%" stop-color="#1a5276"/>
+              <stop offset="0%" stop-color="#d4564c"/>
+              <stop offset="50%" stop-color="#c0443a"/>
+              <stop offset="100%" stop-color="#d4564c"/>
             </linearGradient>
             <linearGradient id="cd-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#b8860b"/>
-              <stop offset="50%" stop-color="#8B6914"/>
-              <stop offset="100%" stop-color="#b8860b"/>
+              <stop offset="0%" stop-color="#2aaa96"/>
+              <stop offset="50%" stop-color="#1e9484"/>
+              <stop offset="100%" stop-color="#2aaa96"/>
             </linearGradient>
 
             <!-- 4 segments of the infinity (Arc + Bezier hybrid) -->
 
             <!-- Left lobe: arc from (310,440) counterclockwise to (310,100) -->
-            <path id="seg-left-lobe" d="M 310,440 A 170,170 0 1 0 310,100" fill="none"/>
+            <path id="seg-left-lobe" d="M 310,440 A 170,170 0 1 1 310,100" fill="none"/>
 
             <!-- Upper crossing: Bezier from left-top (310,100) diagonal down to right-bottom (690,440) -->
             <path id="seg-cross-upper" d="M 310,100 C 420,100  580,440  690,440" fill="none"/>
@@ -594,46 +660,49 @@
           <use href="#seg-cross-upper" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
           <use href="#seg-cross-upper" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
 
-          <!-- ════════ DIRECTION ARROWS ════════ -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(218,130) rotate(188)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(160,380) rotate(165)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(400,452) rotate(10)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(782,130) rotate(-8)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(842,380) rotate(-15)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(600,452) rotate(170)"/>
+          <!-- ════════ INNER CIRCLES + CI/CD TEXT ════════ -->
+          <circle cx="225" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
+          <circle cx="775" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
+          <text x="225" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CI</text>
+          <text x="775" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CD</text>
 
-          <!-- ════════ PHASE LABELS ════════ -->
-          <g class="phase-label" transform="translate(310,85)">
-            <rect class="phase-bg" x="-38" y="-15" width="76" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">CODE</text>
+          <!-- ════════ PHASE LABELS (italic text + arrow like reference) ════════ -->
+          <!-- CI phases (coral) -->
+          <g transform="translate(285,82)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">code</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(60,0)"/>
           </g>
-          <g class="phase-label" transform="translate(125,270)">
-            <rect class="phase-bg" x="-36" y="-15" width="72" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">BUILD</text>
+          <g transform="translate(52,278)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">build</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-8,-30) rotate(-90)"/>
           </g>
-          <g class="phase-label" transform="translate(310,458)">
-            <rect class="phase-bg" x="-32" y="-15" width="64" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">TEST</text>
+          <g transform="translate(270,476)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">test</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
           </g>
-          <g class="phase-label" transform="translate(500,120)">
-            <rect class="phase-bg" x="-34" y="-15" width="68" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">PLAN</text>
+
+          <!-- Crossing labels (on diagonal bands) -->
+          <g transform="translate(415,195) rotate(40)">
+            <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#c0443a">plan</text>
+            <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(52,0)"/>
           </g>
-          <g class="phase-label" transform="translate(500,420)">
-            <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">RELEASE</text>
+          <g transform="translate(475,385) rotate(40)">
+            <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#1e9484">release</text>
+            <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(75,0)"/>
           </g>
-          <g class="phase-label" transform="translate(690,85)">
-            <rect class="phase-bg" x="-42" y="-15" width="84" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">DEPLOY</text>
+
+          <!-- CD phases (teal) -->
+          <g transform="translate(660,82)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">deploy</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(78,0)"/>
           </g>
-          <g class="phase-label" transform="translate(875,270)">
-            <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">OPERATE</text>
+          <g transform="translate(880,278)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">Operate</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(98,-30) rotate(90)"/>
           </g>
-          <g class="phase-label" transform="translate(690,458)">
-            <rect class="phase-bg" x="-52" y="-15" width="104" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">MONITOR</text>
+          <g transform="translate(635,476)">
+            <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">monitor</text>
+            <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
           </g>
 
           <!-- ════════ ANIMATED PARTICLES ════════ -->
@@ -673,7 +742,7 @@
       });
 
       const svgW = areaRect.width;
-      const svgH = areaRect.height + 60; // extra space for feedback loop
+      const svgH = areaRect.height;
       svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
       svg.style.width = svgW + 'px';
       svg.style.height = svgH + 'px';
@@ -822,78 +891,44 @@
         glow: '#fdba74',
       });
 
-      // ── Schnittstelle: bidirectional line between Kalyro wrapper and right wrapper ──
-      // Bottom of both wrappers
+      // ── Connector lines from wrappers down to interface card ──
       const kalyroWrapper = document.querySelector('.kalyro-wrapper');
       const rightWrapper = document.querySelector('.right-wrapper');
-      if (kalyroWrapper && rightWrapper) {
+      const interfaceCard = document.getElementById('interface-card');
+      if (kalyroWrapper && rightWrapper && interfaceCard) {
         const kwRect = kalyroWrapper.getBoundingClientRect();
         const rwRect = rightWrapper.getBoundingClientRect();
+        const icRect = interfaceCard.getBoundingClientRect();
         const kwBottom = kwRect.bottom - areaRect.top;
         const rwBottom = rwRect.bottom - areaRect.top;
-        const lineY = Math.max(kwBottom, rwBottom) + 28;
+        const icTop = icRect.top - areaRect.top;
         const kwCx = kwRect.left - areaRect.left + kwRect.width / 2;
         const rwCx = rwRect.left - areaRect.left + rwRect.width / 2;
+        const icLeftEdge = icRect.left - areaRect.left + 20;
+        const icRightEdge = icRect.right - areaRect.left - 20;
+        // Clamp anchor points so lines stay within the bar
+        const icAnchorL = Math.max(icLeftEdge, Math.min(kwCx, icRightEdge));
+        const icAnchorR = Math.max(icLeftEdge, Math.min(rwCx, icRightEdge));
 
-        // Vertical line from horizontal up to Kalyro wrapper (arrow at top)
-        const vl1 = document.createElementNS(ns, 'line');
-        vl1.setAttribute('x1', kwCx); vl1.setAttribute('y1', lineY);
-        vl1.setAttribute('x2', kwCx); vl1.setAttribute('y2', kwBottom + 4);
-        vl1.setAttribute('stroke', '#7c3aed');
-        vl1.setAttribute('stroke-width', '2');
-        vl1.setAttribute('marker-end', 'url(#ah-purple)');
-        svg.appendChild(vl1);
+        // L-path from Kalyro wrapper down then to interface bar
+        const midY1 = (kwBottom + icTop) / 2;
+        const p1 = document.createElementNS(ns, 'path');
+        p1.setAttribute('d', `M ${kwCx} ${kwBottom + 4} L ${kwCx} ${midY1} L ${icAnchorL} ${midY1} L ${icAnchorL} ${icTop - 4}`);
+        p1.setAttribute('fill', 'none');
+        p1.setAttribute('stroke', '#7c3aed');
+        p1.setAttribute('stroke-width', '2');
+        p1.setAttribute('marker-end', 'url(#ah-purple)');
+        svg.appendChild(p1);
 
-        // Horizontal line (no arrows)
-        const hl = document.createElementNS(ns, 'line');
-        hl.setAttribute('x1', kwCx); hl.setAttribute('y1', lineY);
-        hl.setAttribute('x2', rwCx); hl.setAttribute('y2', lineY);
-        hl.setAttribute('stroke', '#7c3aed');
-        hl.setAttribute('stroke-width', '2');
-        svg.appendChild(hl);
-
-        // Vertical line from horizontal up to right wrapper (arrow at top)
-        const vl2 = document.createElementNS(ns, 'line');
-        vl2.setAttribute('x1', rwCx); vl2.setAttribute('y1', lineY);
-        vl2.setAttribute('x2', rwCx); vl2.setAttribute('y2', rwBottom + 4);
-        vl2.setAttribute('stroke', '#7c3aed');
-        vl2.setAttribute('stroke-width', '2');
-        vl2.setAttribute('marker-end', 'url(#ah-purple)');
-        svg.appendChild(vl2);
-
-        // Badge "Schnittstelle"
-        const sMx = (kwCx + rwCx) / 2;
-        const sText = 'Schnittstelle';
-        const sLen = sText.length * 7 + 24;
-        const sH = 26;
-        const sSh = document.createElementNS(ns, 'rect');
-        sSh.setAttribute('x', sMx - sLen / 2 + 1);
-        sSh.setAttribute('y', lineY - sH / 2 + 2);
-        sSh.setAttribute('width', sLen);
-        sSh.setAttribute('height', sH);
-        sSh.setAttribute('rx', sH / 2);
-        sSh.setAttribute('fill', 'rgba(0,0,0,0.06)');
-        svg.appendChild(sSh);
-        const sBg = document.createElementNS(ns, 'rect');
-        sBg.setAttribute('x', sMx - sLen / 2);
-        sBg.setAttribute('y', lineY - sH / 2);
-        sBg.setAttribute('width', sLen);
-        sBg.setAttribute('height', sH);
-        sBg.setAttribute('rx', sH / 2);
-        sBg.setAttribute('fill', '#fff');
-        sBg.setAttribute('stroke', '#7c3aed');
-        sBg.setAttribute('stroke-width', '1.5');
-        svg.appendChild(sBg);
-        const sLbl = document.createElementNS(ns, 'text');
-        sLbl.setAttribute('x', sMx);
-        sLbl.setAttribute('y', lineY + 5);
-        sLbl.setAttribute('text-anchor', 'middle');
-        sLbl.setAttribute('fill', '#7c3aed');
-        sLbl.setAttribute('font-size', '12');
-        sLbl.setAttribute('font-family', 'Inter, sans-serif');
-        sLbl.setAttribute('font-weight', '700');
-        sLbl.textContent = sText;
-        svg.appendChild(sLbl);
+        // L-path from right wrapper down then to interface bar
+        const midY2 = (rwBottom + icTop) / 2;
+        const p2 = document.createElementNS(ns, 'path');
+        p2.setAttribute('d', `M ${rwCx} ${rwBottom + 4} L ${rwCx} ${midY2} L ${icAnchorR} ${midY2} L ${icAnchorR} ${icTop - 4}`);
+        p2.setAttribute('fill', 'none');
+        p2.setAttribute('stroke', '#7c3aed');
+        p2.setAttribute('stroke-width', '2');
+        p2.setAttribute('marker-end', 'url(#ah-purple)');
+        svg.appendChild(p2);
       }
 
     }
