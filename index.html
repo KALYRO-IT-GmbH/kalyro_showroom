@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KALYRO - Moderne Software-Entwicklung & Bereitstellung</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-blue: #1e5faa;
+      --accent-green: #16a34a;
+      --accent-orange: #e87400;
+      --accent-red: #dc2626;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Toolbar ───────────────────────────────── */
+    .toolbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; gap: 10px; padding: 12px 24px;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e2e8f0;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .toolbar button, .toolbar select {
+      padding: 8px 18px; border: 1px solid #d1d5db;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.2s;
+      color: #374151; background: #fff;
+    }
+    .toolbar button:hover { background: #f3f4f6; }
+    .toolbar .btn-blue { background: #eff6ff; border-color: #93c5fd; color: #1e5faa; }
+    .toolbar .btn-green { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
+
+    /* ── Canvas ─────────────────────────────────── */
+    .infographic {
+      position: relative;
+      width: 1500px; min-height: 900px;
+      margin: 72px auto 40px;
+    }
+
+    /* ── Background ─────────────────────────────── */
+    .bg { position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+      background: linear-gradient(140deg, #0f172a 0%, #1e1b4b 35%, #172554 65%, #0f172a 100%); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3;
+      animation: drift 14s ease-in-out infinite alternate; }
+    .blob.a { width: 520px; height: 520px; top: -120px; left: -60px; background: radial-gradient(circle, #3b82f6, transparent 70%); }
+    .blob.b { width: 420px; height: 420px; top: 80px; right: 60px; background: radial-gradient(circle, #f97316, transparent 70%); animation-delay: -5s; }
+    .blob.c { width: 460px; height: 460px; bottom: -60px; left: 280px; background: radial-gradient(circle, #22c55e, transparent 70%); animation-delay: -9s; }
+    .blob.d { width: 360px; height: 360px; bottom: 40px; right: -40px; background: radial-gradient(circle, #ef4444, transparent 70%); animation-delay: -3s; }
+    @keyframes drift { to { transform: translate(25px,-18px) scale(1.06); } }
+
+    /* ── Title ──────────────────────────────────── */
+    .title { position: relative; text-align: center; padding: 52px 40px 12px; z-index: 2; }
+    .title h1 {
+      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .title .sub { font-size: 14px; color: var(--text-muted); margin-top: 8px;
+      font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
+
+    /* ── Cards Container (holds cards + SVG arrows) */
+    .cards-area {
+      position: relative; z-index: 2;
+      padding: 36px 48px 0;
+    }
+    .cards-row {
+      display: flex; gap: 80px; justify-content: center;
+    }
+
+    /* ── Glass Card ─────────────────────────────── */
+    .card {
+      flex: 1; max-width: 260px; border-radius: 20px; overflow: hidden;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 56px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .card-head {
+      position: relative; padding: 22px 24px 18px; overflow: hidden;
+    }
+    .card-head::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.18;
+    }
+    .card-head .icons { display: flex; gap: 10px; margin-bottom: 14px; }
+    .card-head .ico {
+      width: 46px; height: 46px; border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px; border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .card-head .logo-icon {
+      width: 100%; height: 100%; border-radius: 13px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; padding: 0; overflow: hidden;
+    }
+    .card-head .logo-icon img {
+      width: 80%; height: 80%; object-fit: contain;
+    }
+    .card-head .logo-icon svg {
+      width: 60%; height: 60%;
+    }
+    .card-head h2 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+    .card-head .tag {
+      display: inline-block; margin-top: 5px; padding: 3px 10px;
+      border-radius: 20px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .card-body { padding: 16px 24px 22px; }
+    .card-body ul { list-style: none; }
+    .card-body li {
+      display: flex; align-items: center; gap: 12px;
+      padding: 9px 0; font-size: 14px; font-weight: 500;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .card-body li:last-child { border-bottom: none; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* accent: blue */
+    .c-blue .card-head::before { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .c-blue .ico { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .c-blue .tag { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .c-blue .dot { color: #3b82f6; background: #3b82f6; }
+    /* accent: green */
+    .c-green .card-head::before { background: linear-gradient(135deg, #22c55e, #10b981); }
+    .c-green .ico { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .c-green .tag { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .c-green .dot { color: #22c55e; background: #22c55e; }
+    /* accent: orange */
+    .c-orange .card-head::before { background: linear-gradient(135deg, #f97316, #eab308); }
+    .c-orange .ico { background: rgba(249,115,22,0.2); color: #fb923c; }
+    .c-orange .tag { background: rgba(249,115,22,0.15); color: #fb923c; }
+    .c-orange .dot { color: #f97316; background: #f97316; }
+    /* accent: red */
+    .c-red .card-head::before { background: linear-gradient(135deg, #ef4444, #f43f5e); }
+    .c-red .ico { background: rgba(239,68,68,0.2); color: #f87171; }
+    .c-red .tag { background: rgba(239,68,68,0.15); color: #f87171; }
+    .c-red .dot { color: #ef4444; background: #ef4444; }
+
+    /* ── SVG Arrows Overlay ─────────────────────── */
+    .arrows-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 3;
+      overflow: visible;
+    }
+
+    /* ── Devices ────────────────────────────────── */
+    .devices { position: relative; z-index: 2; display: flex; flex-direction: column;
+      align-items: center; padding: 24px 40px 0; }
+    .devices-row { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 10px; }
+    .dev {
+      border-radius: 10px; background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .dev-laptop { width: 130px; border-radius: 8px 8px 0 0; }
+    .dev-laptop .scr { height: 78px; padding: 7px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 4px; }
+    .dev-laptop .base { height: 7px; background: rgba(255,255,255,0.08);
+      margin: 0 -8px; border-radius: 0 0 3px 3px; }
+    .dev-tablet { width: 64px; height: 88px; padding: 5px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3px; align-content: start; }
+    .dev-phone { width: 38px; height: 70px; padding: 4px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3px; align-content: start; }
+    .sblk { border-radius: 3px; opacity: 0.65; }
+    .dev-tablet .sblk { height: 15px; }
+    .dev-phone .sblk { height: 11px; }
+    .devices .label { font-size: 13px; color: var(--text-muted); font-weight: 500; letter-spacing: 1px; }
+
+    /* ── Footer ─────────────────────────────────── */
+    .footer {
+      position: relative; z-index: 2;
+      display: flex; justify-content: center; align-items: center;
+      gap: 36px; padding: 28px 40px 44px;
+    }
+    .footer-item { font-size: 16px; font-weight: 600; color: var(--text-secondary); }
+    .footer-sep {
+      width: 48px; height: 2px; position: relative;
+      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.28));
+    }
+    .footer-sep::after {
+      content: ''; position: absolute; right: -5px; top: -4px;
+      border-left: 7px solid rgba(255,255,255,0.28);
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+    }
+
+    /* ── Responsive ─────────────────────────────── */
+    @media (max-width: 1560px) { .infographic { width: 96vw; } }
+    @media (max-width: 900px) {
+      .cards-row { flex-direction: column; align-items: center; }
+      .card { max-width: 90%; }
+      .arrows-svg { display: none; }
+      .title h1 { font-size: 26px; }
+    }
+    /* ── CI/CD Infinity Diagram ─────────────────── */
+    .diagram-cicd {
+      display: none;
+      position: relative;
+      width: 1100px;
+      margin: 72px auto 40px;
+    }
+    .diagram-cicd .bg-cicd {
+      position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+      background: linear-gradient(140deg, #0f172a 0%, #1e1b4b 35%, #172554 65%, #0f172a 100%);
+    }
+    .diagram-cicd .cicd-content {
+      position: relative; z-index: 2;
+      display: flex; justify-content: center; align-items: center;
+      padding: 40px 40px 48px;
+    }
+    .diagram-cicd .cicd-content .infinity-container {
+      position: relative; width: 100%; max-width: 960px;
+    }
+    .diagram-cicd .cicd-content .infinity-container svg {
+      width: 100%; height: auto; display: block;
+    }
+    .diagram-cicd .title-cicd {
+      position: relative; text-align: center; padding: 52px 40px 0; z-index: 2;
+    }
+    .diagram-cicd .title-cicd h1 {
+      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .diagram-cicd .title-cicd .sub {
+      font-size: 14px; color: var(--text-muted); margin-top: 8px;
+      font-weight: 400; letter-spacing: 3px; text-transform: uppercase;
+    }
+    /* Phase label styling */
+    .phase-label { cursor: default; transition: transform 0.3s ease; }
+    .phase-label:hover .phase-bg { opacity: 0.25; }
+    .phase-label:hover .phase-text { fill: #fff; }
+    .phase-icon { font-size: 22px; }
+    /* Particle animation */
+    @keyframes flowParticle {
+      0% { offset-distance: 0%; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 0; }
+    }
+    .flow-dot {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%;
+      offset-rotate: 0deg;
+      animation: flowParticle 6s linear infinite;
+    }
+    @media (max-width: 1160px) { .diagram-cicd { width: 96vw; } }
+
+    @media print {
+      .toolbar { display: none; }
+      body { background: #fff; }
+      .bg { background: #1e293b !important; }
+      .blob { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <select id="diagram-select" onchange="loadDiagram(this.value)">
+      <option value="software-entwicklung">Software-Entwicklung & Bereitstellung</option>
+      <option value="cicd-infinity">CI/CD Infinity Loop</option>
+    </select>
+    <button class="btn-blue" onclick="exportAsImage('svg')">&#8681; SVG</button>
+    <button class="btn-green" onclick="exportAsImage('png', 2)">&#8681; PNG 2x</button>
+    <button onclick="exportAsImage('png', 4)">&#8681; PNG 4x Print</button>
+  </div>
+
+  <div class="infographic" id="infographic">
+    <div class="bg">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+      <div class="blob d"></div>
+    </div>
+
+    <div class="title">
+      <h1>Moderne Software-Entwicklung & Bereitstellung</h1>
+      <div class="sub">Von der Idee bis zum sicheren Betrieb</div>
+    </div>
+
+    <!-- Cards + Arrows (same container for coordinate alignment) -->
+    <div class="cards-area" id="cards-area">
+      <div class="cards-row" id="cards-row">
+
+        <div class="card c-blue" id="card-1">
+          <div class="card-head">
+            <div class="icons">
+              <div class="ico logo-icon"><img src="Kalyro_IT_Logo.png" alt="Kalyro IT"></div>
+            </div>
+            <h2>Entwickler-Team</h2>
+            <span class="tag">Development</span>
+          </div>
+          <div class="card-body"><ul>
+            <li><span class="dot"></span>Web- & App-Entwicklung</li>
+            <li><span class="dot"></span>KI-Assistenz Claude Code</li>
+            <li><span class="dot"></span>Lokale Tests & Datenbank</li>
+          </ul></div>
+        </div>
+
+        <div class="card c-green" id="card-2">
+          <div class="card-head">
+            <div class="icons">
+              <div class="ico logo-icon" style="background:rgba(217,169,109,0.15)">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.709 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#D9A96D"/>
+                  <path d="M9.877 8.045a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0V8.045Z" fill="#D9A96D"/>
+                  <path d="M4.709 4.709a4.709 4.709 0 0 1 9.418 0v6.672a4.709 4.709 0 1 1-9.418 0V4.709Z" fill="#D9A96D"/>
+                  <path d="M9.877 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#D9A96D"/>
+                </svg>
+              </div>
+            </div>
+            <h2>Code & Qualit&auml;t</h2>
+            <span class="tag">CI / CD</span>
+          </div>
+          <div class="card-body"><ul>
+            <li><span class="dot"></span>Code-Pr&uuml;fung</li>
+            <li><span class="dot"></span>Automatische Tests</li>
+            <li><span class="dot"></span>Sicherer Code-Stand</li>
+          </ul></div>
+        </div>
+
+        <div class="card c-orange" id="card-3">
+          <div class="card-head">
+            <div class="icons">
+              <div class="ico logo-icon"><img src="Kalyro_IT_Logo.png" alt="Kalyro IT"></div>
+            </div>
+            <h2>Cloud-Hosting</h2>
+            <span class="tag">Infrastructure</span>
+          </div>
+          <div class="card-body"><ul>
+            <li><span class="dot"></span>Eigene Web-App</li>
+            <li><span class="dot"></span>Hochverf&uuml;gbar</li>
+            <li><span class="dot"></span>Weltweit erreichbar</li>
+          </ul></div>
+        </div>
+
+        <div class="card c-red" id="card-4">
+          <div class="card-head">
+            <div class="icons">
+              <div class="ico">&#128274;</div>
+              <div class="ico">&#127971;</div>
+              <div class="ico">&#128737;&#65039;</div>
+            </div>
+            <h2>Sichere Unternehmens-IT</h2>
+            <span class="tag">Security</span>
+          </div>
+          <div class="card-body"><ul>
+            <li><span class="dot"></span>Datenschutz</li>
+            <li><span class="dot"></span>Interne Systeme</li>
+            <li><span class="dot"></span>Verl&auml;sslicher Betrieb</li>
+          </ul></div>
+        </div>
+
+      </div>
+
+      <!-- SVG overlay for arrows - positioned in same parent as cards -->
+      <svg class="arrows-svg" id="arrows-svg"></svg>
+    </div>
+
+    <!-- Devices -->
+    <div class="devices">
+      <div class="devices-row">
+        <div class="dev dev-laptop">
+          <div class="scr">
+            <div class="sblk" style="background:#3b82f6"></div>
+            <div class="sblk" style="background:#f97316"></div>
+            <div class="sblk" style="background:#22c55e"></div>
+            <div class="sblk" style="background:#8b5cf6"></div>
+          </div>
+          <div class="base"></div>
+        </div>
+        <div class="dev dev-tablet">
+          <div class="sblk" style="background:#f97316"></div>
+          <div class="sblk" style="background:#3b82f6"></div>
+          <div class="sblk" style="background:#22c55e; grid-column: span 2"></div>
+          <div class="sblk" style="background:#ef4444"></div>
+          <div class="sblk" style="background:#8b5cf6"></div>
+        </div>
+        <div class="dev dev-phone">
+          <div class="sblk" style="background:#3b82f6"></div>
+          <div class="sblk" style="background:#f97316"></div>
+          <div class="sblk" style="background:#22c55e; grid-column: span 2"></div>
+          <div class="sblk" style="background:#ef4444"></div>
+          <div class="sblk" style="background:#8b5cf6"></div>
+        </div>
+      </div>
+      <div class="label">Nutzung durch Kunden & Kollegen</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div class="footer-item">Innovative L&ouml;sungen</div>
+      <div class="footer-sep"></div>
+      <div class="footer-item">Effiziente Prozesse</div>
+      <div class="footer-sep"></div>
+      <div class="footer-item">Erfolgreiches Business</div>
+    </div>
+  </div>
+
+  <!-- CI/CD Infinity Loop Diagram -->
+  <div class="diagram-cicd" id="diagram-cicd">
+    <div class="bg-cicd">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+      <div class="blob d"></div>
+    </div>
+    <div class="title-cicd">
+      <h1>CI/CD Infinity Loop</h1>
+      <div class="sub">Continuous Integration &amp; Continuous Deployment</div>
+    </div>
+    <div class="cicd-content">
+      <div class="infinity-container" id="infinity-container">
+        <svg id="infinity-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="ci-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="cd-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="text-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+            </filter>
+            <linearGradient id="ci-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f0736a"/>
+              <stop offset="100%" stop-color="#d95548"/>
+            </linearGradient>
+            <linearGradient id="cd-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4edec8"/>
+              <stop offset="100%" stop-color="#2ab09e"/>
+            </linearGradient>
+          </defs>
+
+          <!-- ═══ INFINITY SHAPE (Arc + Diagonal Crossing) ═══ -->
+          <!--
+            CI center: (270, 260), CD center: (690, 260)
+            Arc radius: 175, Stroke: 56
+            Crossing endpoints: (360, 110) top, (360, 410) bottom (CI side)
+                                (600, 110) top, (600, 410) bottom (CD side)
+            Layer order for crossing: teal behind, coral on top
+          -->
+
+          <!-- Outer glow: CI arc -->
+          <path d="M 360,410 A 175,175 0 1 0 360,110" fill="none" stroke="#f0736a" stroke-width="64" opacity="0.1" filter="url(#ci-glow)"/>
+          <!-- Outer glow: CD arc -->
+          <path d="M 600,110 A 175,175 0 1 1 600,410" fill="none" stroke="#4edec8" stroke-width="64" opacity="0.1" filter="url(#cd-glow)"/>
+          <!-- Outer glow: diagonals -->
+          <line x1="600" y1="110" x2="360" y2="410" stroke="#4edec8" stroke-width="64" opacity="0.08" filter="url(#cd-glow)"/>
+          <line x1="360" y1="110" x2="600" y2="410" stroke="#f0736a" stroke-width="64" opacity="0.08" filter="url(#ci-glow)"/>
+
+          <!-- CD arc (teal) - right semicircle -->
+          <path d="M 600,110 A 175,175 0 1 1 600,410" fill="none" stroke="url(#cd-grad)" stroke-width="56" stroke-linecap="butt"/>
+          <!-- Teal diagonal (BEHIND - rendered first) -->
+          <line x1="600" y1="110" x2="360" y2="410" stroke="url(#cd-grad)" stroke-width="56" stroke-linecap="butt"/>
+          <!-- CI arc (coral) - left semicircle -->
+          <path d="M 360,410 A 175,175 0 1 0 360,110" fill="none" stroke="url(#ci-grad)" stroke-width="56" stroke-linecap="butt"/>
+          <!-- Coral diagonal (ON TOP - rendered last) -->
+          <line x1="360" y1="110" x2="600" y2="410" stroke="url(#ci-grad)" stroke-width="56" stroke-linecap="butt"/>
+
+          <!-- Inner dark circles -->
+          <circle cx="270" cy="260" r="120" fill="#131336" opacity="0.95"/>
+          <circle cx="690" cy="260" r="120" fill="#131336" opacity="0.95"/>
+          <circle cx="270" cy="260" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <circle cx="690" cy="260" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+          <!-- ═══ CENTER TEXT ═══ -->
+          <text x="270" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#d95548" opacity="0.3" filter="url(#text-glow)">CI</text>
+          <text x="270" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#e8665d">CI</text>
+          <text x="690" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#2ab09e" opacity="0.3" filter="url(#text-glow)">CD</text>
+          <text x="690" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#3cc8b4">CD</text>
+          <!-- Subtitles -->
+          <text x="270" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(240,115,106,0.5)" letter-spacing="2" font-weight="500">CONTINUOUS</text>
+          <text x="270" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(240,115,106,0.5)" letter-spacing="2" font-weight="500">INTEGRATION</text>
+          <text x="690" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(78,222,200,0.5)" letter-spacing="2" font-weight="500">CONTINUOUS</text>
+          <text x="690" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(78,222,200,0.5)" letter-spacing="2" font-weight="500">DEPLOYMENT</text>
+
+          <!-- ═══ DIRECTION ARROWS ═══ -->
+          <!-- CI loop (counterclockwise visually: code→build→test→release) -->
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(310,88) rotate(20)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(108,295) rotate(100)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(240,432) rotate(200)"/>
+          <!-- CI crossing diagonal (top-left→bottom-right) -->
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(460,225) rotate(128)"/>
+          <!-- CD loop (clockwise visually: deploy→operate→monitor→release) -->
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(650,88) rotate(-20)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(852,295) rotate(80)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(720,432) rotate(160)"/>
+          <!-- CD crossing diagonal (bottom-right→top-left) -->
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(500,295) rotate(-52)"/>
+
+          <!-- ═══ PHASE LABELS ═══ -->
+          <!-- Code (top-left, CI) -->
+          <g class="phase-label" transform="translate(270,42)">
+            <rect class="phase-bg" x="-38" y="-17" width="76" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">CODE</text>
+          </g>
+          <!-- Build (left, CI) -->
+          <g class="phase-label" transform="translate(52,260)">
+            <rect class="phase-bg" x="-36" y="-17" width="72" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">BUILD</text>
+          </g>
+          <!-- Test (bottom-left, CI) -->
+          <g class="phase-label" transform="translate(270,478)">
+            <rect class="phase-bg" x="-32" y="-17" width="64" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">TEST</text>
+          </g>
+          <!-- Plan (top-center crossing) -->
+          <g class="phase-label" transform="translate(480,42)">
+            <rect class="phase-bg" x="-36" y="-17" width="72" height="34" rx="17" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(241,245,249,0.85)" letter-spacing="1.5">PLAN</text>
+          </g>
+          <!-- Release (bottom-center crossing) -->
+          <g class="phase-label" transform="translate(480,478)">
+            <rect class="phase-bg" x="-50" y="-17" width="100" height="34" rx="17" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(241,245,249,0.85)" letter-spacing="1.5">RELEASE</text>
+          </g>
+          <!-- Deploy (top-right, CD) -->
+          <g class="phase-label" transform="translate(690,42)">
+            <rect class="phase-bg" x="-44" y="-17" width="88" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">DEPLOY</text>
+          </g>
+          <!-- Operate (right, CD) -->
+          <g class="phase-label" transform="translate(908,260)">
+            <rect class="phase-bg" x="-50" y="-17" width="100" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">OPERATE</text>
+          </g>
+          <!-- Monitor (bottom-right, CD) -->
+          <g class="phase-label" transform="translate(690,478)">
+            <rect class="phase-bg" x="-54" y="-17" width="108" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">MONITOR</text>
+          </g>
+
+          <!-- ═══ ANIMATED PARTICLES (figure-8 path) ═══ -->
+          <path id="infinity-path" d="M 360,110 A 175,175 0 1 0 360,410 L 600,110 A 175,175 0 1 1 600,410 Z" fill="none" stroke="none"/>
+
+          <!-- Flowing dots (white, continuous figure-8) -->
+          <circle r="5" fill="#fff" opacity="0.8">
+            <animateMotion dur="8s" repeatCount="indefinite"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="5" fill="#fff" opacity="0.8">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="5" fill="#fff" opacity="0.8">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="5" fill="#fff" opacity="0.8">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-6s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <!-- Trailing glow -->
+          <circle r="12" fill="#fff" opacity="0.1">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-0.1s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="12" fill="#fff" opacity="0.1">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-2.1s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="12" fill="#fff" opacity="0.1">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-4.1s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+          <circle r="12" fill="#fff" opacity="0.1">
+            <animateMotion dur="8s" repeatCount="indefinite" begin="-6.1s"><mpath href="#infinity-path"/></animateMotion>
+          </circle>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Dynamic Arrow Rendering ───────────────────────────────────
+    function drawArrows() {
+      const area = document.getElementById('cards-area');
+      const svg = document.getElementById('arrows-svg');
+      const areaRect = area.getBoundingClientRect();
+
+      // Get card positions relative to cards-area
+      const cards = [1,2,3,4].map(i => {
+        const el = document.getElementById('card-' + i);
+        const r = el.getBoundingClientRect();
+        return {
+          left: r.left - areaRect.left,
+          right: r.right - areaRect.left,
+          top: r.top - areaRect.top,
+          bottom: r.bottom - areaRect.top,
+          cx: (r.left + r.right) / 2 - areaRect.left,
+          cy: (r.top + r.bottom) / 2 - areaRect.top,
+          w: r.width, h: r.height,
+        };
+      });
+
+      const svgW = areaRect.width;
+      const svgH = areaRect.height + 60; // extra space for feedback loop
+      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+      svg.style.width = svgW + 'px';
+      svg.style.height = svgH + 'px';
+      svg.style.position = 'absolute';
+      svg.style.top = '0';
+      svg.style.left = '0';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      svg.innerHTML = '';
+
+      // Defs: markers, gradients, glow filter
+      const defs = document.createElementNS(ns, 'defs');
+
+      // Glow filter
+      defs.innerHTML = `
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <marker id="ah-blue" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#60a5fa"/>
+        </marker>
+        <marker id="ah-green" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#4ade80"/>
+        </marker>
+        <marker id="ah-orange" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#fb923c"/>
+        </marker>
+        <marker id="ah-muted" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="rgba(148,163,184,0.5)"/>
+        </marker>
+        <marker id="ah-back" viewBox="0 0 12 8" refX="2" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 12 0 L 0 4 L 12 8 L 9 4 Z" fill="rgba(148,163,184,0.4)"/>
+        </marker>
+        <linearGradient id="grad-1-2" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#60a5fa"/>
+          <stop offset="100%" stop-color="#4ade80"/>
+        </linearGradient>
+        <linearGradient id="grad-2-3" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#4ade80"/>
+          <stop offset="100%" stop-color="#fb923c"/>
+        </linearGradient>
+        <linearGradient id="grad-3-4" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#fb923c"/>
+          <stop offset="100%" stop-color="#f87171"/>
+        </linearGradient>
+      `;
+      svg.appendChild(defs);
+
+      const midY = cards[0].cy;     // vertical center of cards
+      const arrowPad = 10;          // padding from card edge
+
+      // ── Arrow 1→2: "Code hochladen" ──
+      drawFlowArrow(svg, ns, {
+        x1: cards[0].right + arrowPad,
+        y1: midY,
+        x2: cards[1].left - arrowPad,
+        y2: midY,
+        stroke: '#60a5fa',
+        marker: 'ah-blue',
+        label: 'Code\nhochladen',
+        labelColor: '#60a5fa',
+        glow: '#3b82f6',
+      });
+
+      // ── Arrow 2→3: "Freigabe erteilt" ──
+      drawFlowArrow(svg, ns, {
+        x1: cards[1].right + arrowPad,
+        y1: midY,
+        x2: cards[2].left - arrowPad,
+        y2: midY,
+        stroke: '#4ade80',
+        marker: 'ah-green',
+        label: 'Freigabe\nerteilt',
+        labelColor: '#4ade80',
+        glow: '#22c55e',
+      });
+
+      // ── Arrow 3→4: "Deployment" ──
+      drawFlowArrow(svg, ns, {
+        x1: cards[2].right + arrowPad,
+        y1: midY,
+        x2: cards[3].left - arrowPad,
+        y2: midY,
+        stroke: '#fb923c',
+        marker: 'ah-orange',
+        label: 'Deploy-\nment',
+        labelColor: '#fb923c',
+        dashed: true,
+        glow: '#f97316',
+      });
+
+      // ── Feedback Loop: curved arrow from card-2 bottom back to card-1 bottom ──
+      const fbY = cards[0].bottom + 16;
+      const fbStartX = cards[1].cx;
+      const fbEndX = cards[0].cx;
+      const fbCurveY = fbY + 40;
+
+      const fbPath = document.createElementNS(ns, 'path');
+      fbPath.setAttribute('d',
+        `M ${fbStartX} ${fbY}
+         C ${fbStartX} ${fbCurveY}, ${fbEndX} ${fbCurveY}, ${fbEndX} ${fbY}`
+      );
+      fbPath.setAttribute('fill', 'none');
+      fbPath.setAttribute('stroke', 'rgba(148,163,184,0.3)');
+      fbPath.setAttribute('stroke-width', '1.8');
+      fbPath.setAttribute('stroke-dasharray', '7 5');
+      fbPath.setAttribute('marker-end', 'url(#ah-back)');
+      svg.appendChild(fbPath);
+
+      // Feedback label
+      const fbLabel = document.createElementNS(ns, 'text');
+      fbLabel.setAttribute('x', (fbStartX + fbEndX) / 2);
+      fbLabel.setAttribute('y', fbCurveY + 4);
+      fbLabel.setAttribute('text-anchor', 'middle');
+      fbLabel.setAttribute('fill', 'rgba(148,163,184,0.4)');
+      fbLabel.setAttribute('font-size', '10');
+      fbLabel.setAttribute('font-family', 'Inter, sans-serif');
+      fbLabel.setAttribute('font-weight', '600');
+      fbLabel.setAttribute('letter-spacing', '1.5');
+      fbLabel.textContent = 'FEEDBACK';
+      svg.appendChild(fbLabel);
+    }
+
+    function drawFlowArrow(svg, ns, opts) {
+      const { x1, y1, x2, y2, stroke, marker, label, labelColor, dashed, glow } = opts;
+
+      // Glow line (behind)
+      if (glow) {
+        const glowLine = document.createElementNS(ns, 'line');
+        glowLine.setAttribute('x1', x1); glowLine.setAttribute('y1', y1);
+        glowLine.setAttribute('x2', x2); glowLine.setAttribute('y2', y2);
+        glowLine.setAttribute('stroke', glow);
+        glowLine.setAttribute('stroke-width', '6');
+        glowLine.setAttribute('opacity', '0.15');
+        glowLine.setAttribute('filter', 'url(#glow)');
+        if (dashed) glowLine.setAttribute('stroke-dasharray', '10 7');
+        svg.appendChild(glowLine);
+      }
+
+      // Main line
+      const line = document.createElementNS(ns, 'line');
+      line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+      line.setAttribute('stroke', stroke);
+      line.setAttribute('stroke-width', '2.5');
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('marker-end', `url(#${marker})`);
+      if (dashed) line.setAttribute('stroke-dasharray', '10 7');
+      svg.appendChild(line);
+
+      // Label (vertical, above the arrow)
+      if (label) {
+        const mx = (x1 + x2) / 2;
+        const my = y1 - 20;
+        const lines = label.toUpperCase().split('\n');
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', mx);
+        t.setAttribute('y', my);
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('fill', labelColor || 'rgba(200,200,200,0.6)');
+        t.setAttribute('font-size', '10');
+        t.setAttribute('font-family', 'Inter, sans-serif');
+        t.setAttribute('font-weight', '700');
+        t.setAttribute('letter-spacing', '1.2');
+        lines.forEach((line, i) => {
+          const tspan = document.createElementNS(ns, 'tspan');
+          tspan.setAttribute('x', mx);
+          tspan.setAttribute('dy', i === 0 ? '0' : '13');
+          tspan.textContent = line;
+          t.appendChild(tspan);
+        });
+        // Shift up so multiline labels center above arrow
+        if (lines.length > 1) t.setAttribute('y', my - (lines.length - 1) * 6);
+        svg.appendChild(t);
+      }
+    }
+
+    // Draw on load + resize
+    window.addEventListener('load', () => { requestAnimationFrame(drawArrows); });
+    window.addEventListener('resize', drawArrows);
+
+    // ── Diagram Switching ────────────────────────────────────────
+    let currentDiagram = 'software-entwicklung';
+
+    function loadDiagram(name) {
+      currentDiagram = name;
+      const infographic = document.getElementById('infographic');
+      const cicd = document.getElementById('diagram-cicd');
+      if (name === 'cicd-infinity') {
+        infographic.style.display = 'none';
+        cicd.style.display = 'block';
+      } else {
+        infographic.style.display = 'block';
+        cicd.style.display = 'none';
+        requestAnimationFrame(drawArrows);
+      }
+    }
+
+    // ── Export ─────────────────────────────────────────────────────
+    function getActiveElement() {
+      if (currentDiagram === 'cicd-infinity') return document.getElementById('diagram-cicd');
+      return document.getElementById('infographic');
+    }
+
+    async function exportAsImage(format, scale = 2) {
+      const el = getActiveElement();
+      const filename = currentDiagram;
+      if (format === 'svg') {
+        if (currentDiagram === 'cicd-infinity') {
+          // Export the inline SVG directly
+          const svgEl = el.querySelector('svg');
+          const svgStr = new XMLSerializer().serializeToString(svgEl);
+          downloadBlob('<?xml version="1.0" encoding="UTF-8"?>' + svgStr, filename + '.svg', 'image/svg+xml');
+        } else {
+          const svgStr = buildExportSVG(el, el.offsetWidth, el.offsetHeight);
+          downloadBlob(svgStr, filename + '.svg', 'image/svg+xml');
+        }
+        return;
+      }
+      if (!window.html2canvas) {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.head.appendChild(s);
+        await new Promise(r => s.onload = r);
+      }
+      const canvas = await html2canvas(el, { scale, backgroundColor: '#0f172a', useCORS: true, logging: false });
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.download = `${filename}-${scale}x.png`;
+        a.href = URL.createObjectURL(blob);
+        a.click();
+      });
+    }
+
+    function buildExportSVG(el, w, h) {
+      const clone = el.cloneNode(true);
+      const allEls = clone.querySelectorAll('*');
+      const origEls = el.querySelectorAll('*');
+      const props = ['font-family','font-size','font-weight','color','background','background-color',
+        'border','border-radius','padding','margin','display','flex-direction','align-items',
+        'justify-content','gap','width','height','max-width','min-height','position',
+        'inset','overflow','opacity','filter','backdrop-filter','-webkit-backdrop-filter',
+        'box-shadow','letter-spacing','text-transform','text-align','line-height',
+        'grid-template-columns','grid-column','flex','white-space',
+        'background-image','background-clip','-webkit-background-clip','-webkit-text-fill-color'];
+      origEls.forEach((orig, i) => {
+        const cs = getComputedStyle(orig);
+        let s = '';
+        props.forEach(p => { const v = cs.getPropertyValue(p); if (v && v!=='none'&&v!=='normal'&&v!=='0px'&&v!=='auto') s += `${p}:${v};`; });
+        if (allEls[i]) allEls[i].setAttribute('style', s);
+      });
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">${clone.outerHTML}</div>
+  </foreignObject>
+</svg>`;
+    }
+
+    function downloadBlob(content, filename, mime) {
+      const blob = new Blob([content], { type: mime });
+      const a = document.createElement('a');
+      a.download = filename; a.href = URL.createObjectURL(blob); a.click();
+    }
+  </script>
+
+</body>
+</html>

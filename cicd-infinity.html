@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI/CD Infinity Loop</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+    svg { max-width: 960px; width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+
+<svg viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg">
+
+  <!--
+    Geometry:
+    CI center (280, 260), CD center (720, 260), both r=155
+    Crossing angle ±40° from horizontal on inner side
+    Upper-inner CI: (395, 161)   Lower-inner CI: (395, 359)
+    Upper-inner CD: (605, 161)   Lower-inner CD: (605, 359)
+  -->
+
+  <!-- === LAYER 1: Outer arcs === -->
+
+  <!-- CI outer arc (coral): from lower-inner going CCW (screen) around left to upper-inner -->
+  <path d="M 395,359 A 155,155 0 1 0 395,161"
+        fill="none" stroke="#e07265" stroke-width="58" stroke-linecap="butt"/>
+
+  <!-- CD outer arc (teal): from upper-inner going CW (screen) around right to lower-inner -->
+  <path d="M 605,161 A 155,155 0 1 1 605,359"
+        fill="none" stroke="#3cc8b4" stroke-width="58" stroke-linecap="butt"/>
+
+  <!-- === LAYER 2: Crossing diagonals === -->
+
+  <!-- Teal diagonal (BEHIND): upper-inner CD to lower-inner CI -->
+  <line x1="605" y1="161" x2="395" y2="359" stroke="#3cc8b4" stroke-width="58" stroke-linecap="butt"/>
+
+  <!-- Coral diagonal (ON TOP): upper-inner CI to lower-inner CD -->
+  <line x1="395" y1="161" x2="605" y2="359" stroke="#e07265" stroke-width="58" stroke-linecap="butt"/>
+
+  <!-- === LAYER 3: White inner circles (donut holes) === -->
+  <circle cx="280" cy="260" r="124" fill="white"/>
+  <circle cx="720" cy="260" r="124" fill="white"/>
+
+  <!-- === LAYER 4: Directional arrows (white triangles on the colored band) === -->
+
+  <!-- CI loop (clockwise visual flow) -->
+  <!-- Top: arrow pointing right -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(320,103) rotate(5)"/>
+  <!-- Left: arrow pointing down -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(124,290) rotate(95)"/>
+  <!-- Bottom: arrow pointing left -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(255,417) rotate(185)"/>
+
+  <!-- Crossing: plan arrow (coral diagonal, going down-right) -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(460,225) rotate(43)"/>
+
+  <!-- CD loop (clockwise visual flow) -->
+  <!-- Top: arrow pointing right -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(755,103) rotate(-5)"/>
+  <!-- Right: arrow pointing down -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(876,290) rotate(85)"/>
+  <!-- Bottom: arrow pointing left -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(680,417) rotate(175)"/>
+
+  <!-- Crossing: release arrow (teal diagonal, going up-left ... but wait, the flow is clockwise on CD, so from CD bottom-left going back through crossing toward CI. Actually the release flow goes from CD left side upward into the crossing heading left toward CI) -->
+  <polygon points="0,-10 18,0 0,10" fill="white" transform="translate(545,300) rotate(223)"/>
+
+  <!-- === LAYER 5: Center text === -->
+  <text x="280" y="278" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="bold" fill="#d95548">CI</text>
+  <text x="720" y="278" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="bold" fill="#2ab09e">CD</text>
+
+  <!-- === LAYER 6: Phase labels === -->
+
+  <!-- CI phases -->
+  <text x="280" y="82" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic">code</text>
+  <text x="280" y="458" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic">test</text>
+  <!-- build: rotated vertically on left side -->
+  <text text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic"
+        transform="translate(105,260) rotate(-90)">build</text>
+
+  <!-- plan: on the coral diagonal -->
+  <text text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic"
+        transform="translate(440,195) rotate(-43)">plan</text>
+
+  <!-- CD phases -->
+  <text x="720" y="82" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic">deploy</text>
+  <text x="720" y="458" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic">monitor</text>
+  <!-- Operate: rotated vertically on right side -->
+  <text text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic"
+        transform="translate(895,260) rotate(90)">Operate</text>
+
+  <!-- release: on the teal diagonal -->
+  <text text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#555" font-style="italic"
+        transform="translate(555,335) rotate(-43)">release</text>
+
+</svg>
+
+</body>
+</html>
