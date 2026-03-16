@@ -53,21 +53,20 @@
 
     /* ── Background ─────────────────────────────── */
     .bg { position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
-      background: linear-gradient(140deg, #0f172a 0%, #1e1b4b 35%, #172554 65%, #0f172a 100%); }
-    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3;
+      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.12;
       animation: drift 14s ease-in-out infinite alternate; }
-    .blob.a { width: 520px; height: 520px; top: -120px; left: -60px; background: radial-gradient(circle, #3b82f6, transparent 70%); }
-    .blob.b { width: 420px; height: 420px; top: 80px; right: 60px; background: radial-gradient(circle, #f97316, transparent 70%); animation-delay: -5s; }
-    .blob.c { width: 460px; height: 460px; bottom: -60px; left: 280px; background: radial-gradient(circle, #22c55e, transparent 70%); animation-delay: -9s; }
-    .blob.d { width: 360px; height: 360px; bottom: 40px; right: -40px; background: radial-gradient(circle, #ef4444, transparent 70%); animation-delay: -3s; }
+    .blob.a { width: 520px; height: 520px; top: -120px; left: -60px; background: radial-gradient(circle, #93c5fd, transparent 70%); }
+    .blob.b { width: 420px; height: 420px; top: 80px; right: 60px; background: radial-gradient(circle, #fdba74, transparent 70%); animation-delay: -5s; }
+    .blob.c { width: 460px; height: 460px; bottom: -60px; left: 280px; background: radial-gradient(circle, #86efac, transparent 70%); animation-delay: -9s; }
+    .blob.d { width: 360px; height: 360px; bottom: 40px; right: -40px; background: radial-gradient(circle, #fca5a5, transparent 70%); animation-delay: -3s; }
     @keyframes drift { to { transform: translate(25px,-18px) scale(1.06); } }
 
     /* ── Title ──────────────────────────────────── */
     .title { position: relative; text-align: center; padding: 52px 40px 12px; z-index: 2; }
     .title h1 {
       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      color: #1e293b;
     }
     .title .sub { font-size: 14px; color: var(--text-muted); margin-top: 8px;
       font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
@@ -81,32 +80,31 @@
       display: flex; gap: 80px; justify-content: center;
     }
 
-    /* ── Glass Card ─────────────────────────────── */
+    /* ── Card ──────────────────────────────────── */
     .card {
       flex: 1; max-width: 260px; border-radius: 20px; overflow: hidden;
-      background: var(--glass-bg);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
       transition: transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s ease;
     }
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 56px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06);
     }
 
     .card-head {
       position: relative; padding: 22px 24px 18px; overflow: hidden;
     }
     .card-head::before {
-      content: ''; position: absolute; inset: 0; opacity: 0.18;
+      content: ''; position: absolute; inset: 0; opacity: 0.06;
     }
     .card-head .icons { display: flex; gap: 10px; margin-bottom: 14px; }
     .card-head .ico {
       width: 46px; height: 46px; border-radius: 13px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 21px; border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      font-size: 21px; border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
     .card-head .logo-icon {
       width: 100%; height: 100%; border-radius: 13px;
@@ -131,34 +129,33 @@
       display: flex; align-items: center; gap: 12px;
       padding: 9px 0; font-size: 14px; font-weight: 500;
       color: var(--text-secondary);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid #f1f5f9;
     }
     .card-body li:last-child { border-bottom: none; }
     .dot {
       width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-      box-shadow: 0 0 10px currentColor;
     }
 
     /* accent: blue */
     .c-blue .card-head::before { background: linear-gradient(135deg, #3b82f6, #6366f1); }
-    .c-blue .ico { background: rgba(59,130,246,0.2); color: #60a5fa; }
-    .c-blue .tag { background: rgba(59,130,246,0.15); color: #60a5fa; }
-    .c-blue .dot { color: #3b82f6; background: #3b82f6; }
+    .c-blue .ico { background: #eff6ff; color: #1e5faa; }
+    .c-blue .tag { background: #eff6ff; color: #1e5faa; }
+    .c-blue .dot { background: #1e5faa; }
     /* accent: green */
     .c-green .card-head::before { background: linear-gradient(135deg, #22c55e, #10b981); }
-    .c-green .ico { background: rgba(34,197,94,0.2); color: #4ade80; }
-    .c-green .tag { background: rgba(34,197,94,0.15); color: #4ade80; }
-    .c-green .dot { color: #22c55e; background: #22c55e; }
+    .c-green .ico { background: #f0fdf4; color: #16a34a; }
+    .c-green .tag { background: #f0fdf4; color: #16a34a; }
+    .c-green .dot { background: #16a34a; }
     /* accent: orange */
     .c-orange .card-head::before { background: linear-gradient(135deg, #f97316, #eab308); }
-    .c-orange .ico { background: rgba(249,115,22,0.2); color: #fb923c; }
-    .c-orange .tag { background: rgba(249,115,22,0.15); color: #fb923c; }
-    .c-orange .dot { color: #f97316; background: #f97316; }
+    .c-orange .ico { background: #fff7ed; color: #e87400; }
+    .c-orange .tag { background: #fff7ed; color: #e87400; }
+    .c-orange .dot { background: #e87400; }
     /* accent: red */
     .c-red .card-head::before { background: linear-gradient(135deg, #ef4444, #f43f5e); }
-    .c-red .ico { background: rgba(239,68,68,0.2); color: #f87171; }
-    .c-red .tag { background: rgba(239,68,68,0.15); color: #f87171; }
-    .c-red .dot { color: #ef4444; background: #ef4444; }
+    .c-red .ico { background: #fef2f2; color: #dc2626; }
+    .c-red .tag { background: #fef2f2; color: #dc2626; }
+    .c-red .dot { background: #dc2626; }
 
     /* ── SVG Arrows Overlay ─────────────────────── */
     .arrows-svg {
@@ -170,28 +167,27 @@
       overflow: visible;
     }
 
-    /* ── Devices ────────────────────────────────── */
-    .devices { position: relative; z-index: 2; display: flex; flex-direction: column;
-      align-items: center; padding: 24px 40px 0; }
-    .devices-row { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 10px; }
-    .dev {
-      border-radius: 10px; background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
-      overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    /* ── Device Icons in Card ─────────────────────── */
+    .devices-icons {
+      display: flex; align-items: flex-end; gap: 8px;
     }
-    .dev-laptop { width: 130px; border-radius: 8px 8px 0 0; }
-    .dev-laptop .scr { height: 78px; padding: 7px; display: grid;
-      grid-template-columns: 1fr 1fr; gap: 4px; }
-    .dev-laptop .base { height: 7px; background: rgba(255,255,255,0.08);
-      margin: 0 -8px; border-radius: 0 0 3px 3px; }
-    .dev-tablet { width: 64px; height: 88px; padding: 5px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3px; align-content: start; }
-    .dev-phone { width: 38px; height: 70px; padding: 4px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 3px; align-content: start; }
-    .sblk { border-radius: 3px; opacity: 0.65; }
-    .dev-tablet .sblk { height: 15px; }
-    .dev-phone .sblk { height: 11px; }
-    .devices .label { font-size: 13px; color: var(--text-muted); font-weight: 500; letter-spacing: 1px; }
+    .dev {
+      border-radius: 6px; background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+    .dev-laptop { width: 72px; border-radius: 6px 6px 0 0; }
+    .dev-laptop .scr { height: 44px; padding: 4px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 2px; }
+    .dev-laptop .base { height: 4px; background: #e2e8f0;
+      margin: 0 -4px; border-radius: 0 0 2px 2px; }
+    .dev-tablet { width: 36px; height: 50px; padding: 3px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px; align-content: start; }
+    .dev-phone { width: 24px; height: 40px; padding: 3px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px; align-content: start; }
+    .sblk { border-radius: 2px; opacity: 0.85; }
+    .dev-tablet .sblk { height: 9px; }
+    .dev-phone .sblk { height: 7px; }
 
     /* ── Footer ─────────────────────────────────── */
     .footer {
@@ -202,11 +198,11 @@
     .footer-item { font-size: 16px; font-weight: 600; color: var(--text-secondary); }
     .footer-sep {
       width: 48px; height: 2px; position: relative;
-      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.28));
+      background: linear-gradient(90deg, #cbd5e1, #94a3b8);
     }
     .footer-sep::after {
       content: ''; position: absolute; right: -5px; top: -4px;
-      border-left: 7px solid rgba(255,255,255,0.28);
+      border-left: 7px solid #94a3b8;
       border-top: 5px solid transparent; border-bottom: 5px solid transparent;
     }
 
@@ -227,7 +223,7 @@
     }
     .diagram-cicd .bg-cicd {
       position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
-      background: linear-gradient(140deg, #0f172a 0%, #1e1b4b 35%, #172554 65%, #0f172a 100%);
+      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
     }
     .diagram-cicd .cicd-content {
       position: relative; z-index: 2;
@@ -245,8 +241,7 @@
     }
     .diagram-cicd .title-cicd h1 {
       font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #e2e8f0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      color: #1e293b;
     }
     .diagram-cicd .title-cicd .sub {
       font-size: 14px; color: var(--text-muted); margin-top: 8px;
@@ -254,8 +249,8 @@
     }
     /* Phase label styling */
     .phase-label { cursor: default; transition: transform 0.3s ease; }
-    .phase-label:hover .phase-bg { opacity: 0.25; }
-    .phase-label:hover .phase-text { fill: #fff; }
+    .phase-label:hover .phase-bg { opacity: 0.9; }
+    .phase-label:hover .phase-text { font-weight: 800; }
     .phase-icon { font-size: 22px; }
     /* Particle animation */
     @keyframes flowParticle {
@@ -274,7 +269,7 @@
     @media print {
       .toolbar { display: none; }
       body { background: #fff; }
-      .bg { background: #1e293b !important; }
+      .bg { background: #f8fafc !important; }
       .blob { display: none; }
     }
   </style>
@@ -326,12 +321,12 @@
         <div class="card c-green" id="card-2">
           <div class="card-head">
             <div class="icons">
-              <div class="ico logo-icon" style="background:rgba(217,169,109,0.15)">
+              <div class="ico logo-icon" style="background:#fdf4e8">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4.709 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#D9A96D"/>
-                  <path d="M9.877 8.045a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0V8.045Z" fill="#D9A96D"/>
-                  <path d="M4.709 4.709a4.709 4.709 0 0 1 9.418 0v6.672a4.709 4.709 0 1 1-9.418 0V4.709Z" fill="#D9A96D"/>
-                  <path d="M9.877 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#D9A96D"/>
+                  <path d="M4.709 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#C4873B"/>
+                  <path d="M9.877 8.045a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0V8.045Z" fill="#C4873B"/>
+                  <path d="M4.709 4.709a4.709 4.709 0 0 1 9.418 0v6.672a4.709 4.709 0 1 1-9.418 0V4.709Z" fill="#C4873B"/>
+                  <path d="M9.877 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#C4873B"/>
                 </svg>
               </div>
             </div>
@@ -362,13 +357,33 @@
 
         <div class="card c-red" id="card-4">
           <div class="card-head">
-            <div class="icons">
-              <div class="ico">&#128274;</div>
-              <div class="ico">&#127971;</div>
-              <div class="ico">&#128737;&#65039;</div>
+            <div class="icons devices-icons">
+              <div class="dev dev-laptop">
+                <div class="scr">
+                  <div class="sblk" style="background:#1e5faa"></div>
+                  <div class="sblk" style="background:#e87400"></div>
+                  <div class="sblk" style="background:#16a34a"></div>
+                  <div class="sblk" style="background:#8b5cf6"></div>
+                </div>
+                <div class="base"></div>
+              </div>
+              <div class="dev dev-tablet">
+                <div class="sblk" style="background:#e87400"></div>
+                <div class="sblk" style="background:#1e5faa"></div>
+                <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
+                <div class="sblk" style="background:#dc2626"></div>
+                <div class="sblk" style="background:#8b5cf6"></div>
+              </div>
+              <div class="dev dev-phone">
+                <div class="sblk" style="background:#1e5faa"></div>
+                <div class="sblk" style="background:#e87400"></div>
+                <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
+                <div class="sblk" style="background:#dc2626"></div>
+                <div class="sblk" style="background:#8b5cf6"></div>
+              </div>
             </div>
-            <h2>Sichere Unternehmens-IT</h2>
-            <span class="tag">Security</span>
+            <h2>Software-Nutzung</h2>
+            <span class="tag">Deployment</span>
           </div>
           <div class="card-body"><ul>
             <li><span class="dot"></span>Datenschutz</li>
@@ -383,36 +398,6 @@
       <svg class="arrows-svg" id="arrows-svg"></svg>
     </div>
 
-    <!-- Devices -->
-    <div class="devices">
-      <div class="devices-row">
-        <div class="dev dev-laptop">
-          <div class="scr">
-            <div class="sblk" style="background:#3b82f6"></div>
-            <div class="sblk" style="background:#f97316"></div>
-            <div class="sblk" style="background:#22c55e"></div>
-            <div class="sblk" style="background:#8b5cf6"></div>
-          </div>
-          <div class="base"></div>
-        </div>
-        <div class="dev dev-tablet">
-          <div class="sblk" style="background:#f97316"></div>
-          <div class="sblk" style="background:#3b82f6"></div>
-          <div class="sblk" style="background:#22c55e; grid-column: span 2"></div>
-          <div class="sblk" style="background:#ef4444"></div>
-          <div class="sblk" style="background:#8b5cf6"></div>
-        </div>
-        <div class="dev dev-phone">
-          <div class="sblk" style="background:#3b82f6"></div>
-          <div class="sblk" style="background:#f97316"></div>
-          <div class="sblk" style="background:#22c55e; grid-column: span 2"></div>
-          <div class="sblk" style="background:#ef4444"></div>
-          <div class="sblk" style="background:#8b5cf6"></div>
-        </div>
-      </div>
-      <div class="label">Nutzung durch Kunden & Kollegen</div>
-    </div>
-
     <!-- Footer -->
     <div class="footer">
       <div class="footer-item">Innovative L&ouml;sungen</div>
@@ -425,169 +410,116 @@
 
   <!-- CI/CD Infinity Loop Diagram -->
   <div class="diagram-cicd" id="diagram-cicd">
-    <div class="bg-cicd">
-      <div class="blob a"></div>
-      <div class="blob b"></div>
-      <div class="blob c"></div>
-      <div class="blob d"></div>
-    </div>
+    <div class="bg-cicd"></div>
     <div class="title-cicd">
       <h1>CI/CD Infinity Loop</h1>
       <div class="sub">Continuous Integration &amp; Continuous Deployment</div>
     </div>
     <div class="cicd-content">
       <div class="infinity-container" id="infinity-container">
-        <svg id="infinity-svg" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg">
+        <svg id="infinity-svg" viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <filter id="ci-glow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="cd-glow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+            <filter id="shape-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             <filter id="text-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5"/>
             </filter>
             <linearGradient id="ci-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f0736a"/>
-              <stop offset="100%" stop-color="#d95548"/>
+              <stop offset="0%" stop-color="#f27e74"/>
+              <stop offset="100%" stop-color="#e05a50"/>
             </linearGradient>
             <linearGradient id="cd-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#4edec8"/>
-              <stop offset="100%" stop-color="#2ab09e"/>
+              <stop offset="0%" stop-color="#56e8d0"/>
+              <stop offset="100%" stop-color="#32bfab"/>
             </linearGradient>
           </defs>
 
-          <!-- ═══ INFINITY SHAPE (Arc + Diagonal Crossing) ═══ -->
-          <!--
-            CI center: (270, 260), CD center: (690, 260)
-            Arc radius: 175, Stroke: 56
-            Crossing endpoints: (360, 110) top, (360, 410) bottom (CI side)
-                                (600, 110) top, (600, 410) bottom (CD side)
-            Layer order for crossing: teal behind, coral on top
-          -->
-
-          <!-- Outer glow: CI arc -->
-          <path d="M 360,410 A 175,175 0 1 0 360,110" fill="none" stroke="#f0736a" stroke-width="64" opacity="0.1" filter="url(#ci-glow)"/>
-          <!-- Outer glow: CD arc -->
-          <path d="M 600,110 A 175,175 0 1 1 600,410" fill="none" stroke="#4edec8" stroke-width="64" opacity="0.1" filter="url(#cd-glow)"/>
-          <!-- Outer glow: diagonals -->
-          <line x1="600" y1="110" x2="360" y2="410" stroke="#4edec8" stroke-width="64" opacity="0.08" filter="url(#cd-glow)"/>
-          <line x1="360" y1="110" x2="600" y2="410" stroke="#f0736a" stroke-width="64" opacity="0.08" filter="url(#ci-glow)"/>
-
-          <!-- CD arc (teal) - right semicircle -->
-          <path d="M 600,110 A 175,175 0 1 1 600,410" fill="none" stroke="url(#cd-grad)" stroke-width="56" stroke-linecap="butt"/>
-          <!-- Teal diagonal (BEHIND - rendered first) -->
-          <line x1="600" y1="110" x2="360" y2="410" stroke="url(#cd-grad)" stroke-width="56" stroke-linecap="butt"/>
-          <!-- CI arc (coral) - left semicircle -->
-          <path d="M 360,410 A 175,175 0 1 0 360,110" fill="none" stroke="url(#ci-grad)" stroke-width="56" stroke-linecap="butt"/>
-          <!-- Coral diagonal (ON TOP - rendered last) -->
-          <line x1="360" y1="110" x2="600" y2="410" stroke="url(#ci-grad)" stroke-width="56" stroke-linecap="butt"/>
-
+          <!-- ═══ INFINITY SHAPE ═══ -->
+          <!-- Outer glow -->
+          <path d="M 395,359 A 155,155 0 1 0 395,161" fill="none" stroke="#e07265" stroke-width="66" opacity="0.12" filter="url(#shape-glow)"/>
+          <path d="M 605,161 A 155,155 0 1 1 605,359" fill="none" stroke="#3cc8b4" stroke-width="66" opacity="0.12" filter="url(#shape-glow)"/>
+          <line x1="605" y1="161" x2="395" y2="359" stroke="#3cc8b4" stroke-width="66" opacity="0.08" filter="url(#shape-glow)"/>
+          <line x1="395" y1="161" x2="605" y2="359" stroke="#e07265" stroke-width="66" opacity="0.08" filter="url(#shape-glow)"/>
+          <!-- CI outer arc (coral) -->
+          <path d="M 395,359 A 155,155 0 1 0 395,161" fill="none" stroke="url(#ci-grad)" stroke-width="58" stroke-linecap="butt"/>
+          <!-- CD outer arc (teal) -->
+          <path d="M 605,161 A 155,155 0 1 1 605,359" fill="none" stroke="url(#cd-grad)" stroke-width="58" stroke-linecap="butt"/>
+          <!-- Teal diagonal (behind) -->
+          <line x1="605" y1="161" x2="395" y2="359" stroke="url(#cd-grad)" stroke-width="58" stroke-linecap="butt"/>
+          <!-- Coral diagonal (on top) -->
+          <line x1="395" y1="161" x2="605" y2="359" stroke="url(#ci-grad)" stroke-width="58" stroke-linecap="butt"/>
           <!-- Inner dark circles -->
-          <circle cx="270" cy="260" r="120" fill="#131336" opacity="0.95"/>
-          <circle cx="690" cy="260" r="120" fill="#131336" opacity="0.95"/>
-          <circle cx="270" cy="260" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-          <circle cx="690" cy="260" r="120" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <circle cx="280" cy="260" r="124" fill="#131336"/>
+          <circle cx="720" cy="260" r="124" fill="#131336"/>
+          <circle cx="280" cy="260" r="124" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <circle cx="720" cy="260" r="124" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
 
           <!-- ═══ CENTER TEXT ═══ -->
-          <text x="270" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#d95548" opacity="0.3" filter="url(#text-glow)">CI</text>
-          <text x="270" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#e8665d">CI</text>
-          <text x="690" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#2ab09e" opacity="0.3" filter="url(#text-glow)">CD</text>
-          <text x="690" y="275" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800" fill="#3cc8b4">CD</text>
-          <!-- Subtitles -->
-          <text x="270" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(240,115,106,0.5)" letter-spacing="2" font-weight="500">CONTINUOUS</text>
-          <text x="270" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(240,115,106,0.5)" letter-spacing="2" font-weight="500">INTEGRATION</text>
-          <text x="690" y="304" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(78,222,200,0.5)" letter-spacing="2" font-weight="500">CONTINUOUS</text>
-          <text x="690" y="318" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(78,222,200,0.5)" letter-spacing="2" font-weight="500">DEPLOYMENT</text>
+          <text x="280" y="272" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#d95548" opacity="0.3" filter="url(#text-glow)">CI</text>
+          <text x="280" y="272" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#e8665d">CI</text>
+          <text x="720" y="272" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#2ab09e" opacity="0.3" filter="url(#text-glow)">CD</text>
+          <text x="720" y="272" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#3cc8b4">CD</text>
+          <text x="280" y="303" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(232,102,93,0.45)" letter-spacing="2.5" font-weight="600">CONTINUOUS</text>
+          <text x="280" y="317" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(232,102,93,0.45)" letter-spacing="2.5" font-weight="600">INTEGRATION</text>
+          <text x="720" y="303" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(60,200,180,0.45)" letter-spacing="2.5" font-weight="600">CONTINUOUS</text>
+          <text x="720" y="317" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="rgba(60,200,180,0.45)" letter-spacing="2.5" font-weight="600">DEPLOYMENT</text>
 
           <!-- ═══ DIRECTION ARROWS ═══ -->
-          <!-- CI loop (counterclockwise visually: code→build→test→release) -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(310,88) rotate(20)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(108,295) rotate(100)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(240,432) rotate(200)"/>
-          <!-- CI crossing diagonal (top-left→bottom-right) -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(460,225) rotate(128)"/>
-          <!-- CD loop (clockwise visually: deploy→operate→monitor→release) -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(650,88) rotate(-20)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(852,295) rotate(80)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(720,432) rotate(160)"/>
-          <!-- CD crossing diagonal (bottom-right→top-left) -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.7)" transform="translate(500,295) rotate(-52)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(320,103) rotate(5)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(124,295) rotate(95)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(255,417) rotate(185)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(462,222) rotate(133)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(755,103) rotate(-5)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(876,295) rotate(85)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(680,417) rotate(175)"/>
+          <polygon points="0,-9 16,0 0,9" fill="rgba(255,255,255,0.7)" transform="translate(540,298) rotate(-47)"/>
 
           <!-- ═══ PHASE LABELS ═══ -->
-          <!-- Code (top-left, CI) -->
-          <g class="phase-label" transform="translate(270,42)">
-            <rect class="phase-bg" x="-38" y="-17" width="76" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">CODE</text>
+          <g class="phase-label" transform="translate(280,72)">
+            <rect class="phase-bg" x="-38" y="-16" width="76" height="32" rx="16" fill="rgba(232,102,93,0.12)" stroke="rgba(232,102,93,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(232,102,93,0.9)" letter-spacing="1.5">CODE</text>
           </g>
-          <!-- Build (left, CI) -->
-          <g class="phase-label" transform="translate(52,260)">
-            <rect class="phase-bg" x="-36" y="-17" width="72" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">BUILD</text>
+          <g class="phase-label" transform="translate(100,260)">
+            <rect class="phase-bg" x="-36" y="-16" width="72" height="32" rx="16" fill="rgba(232,102,93,0.12)" stroke="rgba(232,102,93,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(232,102,93,0.9)" letter-spacing="1.5">BUILD</text>
           </g>
-          <!-- Test (bottom-left, CI) -->
-          <g class="phase-label" transform="translate(270,478)">
-            <rect class="phase-bg" x="-32" y="-17" width="64" height="34" rx="17" fill="rgba(240,115,106,0.12)" stroke="rgba(240,115,106,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(240,115,106,0.9)" letter-spacing="1.5">TEST</text>
+          <g class="phase-label" transform="translate(280,460)">
+            <rect class="phase-bg" x="-32" y="-16" width="64" height="32" rx="16" fill="rgba(232,102,93,0.12)" stroke="rgba(232,102,93,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(232,102,93,0.9)" letter-spacing="1.5">TEST</text>
           </g>
-          <!-- Plan (top-center crossing) -->
-          <g class="phase-label" transform="translate(480,42)">
-            <rect class="phase-bg" x="-36" y="-17" width="72" height="34" rx="17" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <g class="phase-label" transform="translate(500,130)">
+            <rect class="phase-bg" x="-36" y="-16" width="72" height="32" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(241,245,249,0.85)" letter-spacing="1.5">PLAN</text>
           </g>
-          <!-- Release (bottom-center crossing) -->
-          <g class="phase-label" transform="translate(480,478)">
-            <rect class="phase-bg" x="-50" y="-17" width="100" height="34" rx="17" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <g class="phase-label" transform="translate(500,390)">
+            <rect class="phase-bg" x="-50" y="-16" width="100" height="32" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(241,245,249,0.85)" letter-spacing="1.5">RELEASE</text>
           </g>
-          <!-- Deploy (top-right, CD) -->
-          <g class="phase-label" transform="translate(690,42)">
-            <rect class="phase-bg" x="-44" y="-17" width="88" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">DEPLOY</text>
+          <g class="phase-label" transform="translate(720,72)">
+            <rect class="phase-bg" x="-44" y="-16" width="88" height="32" rx="16" fill="rgba(60,200,180,0.12)" stroke="rgba(60,200,180,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(60,200,180,0.9)" letter-spacing="1.5">DEPLOY</text>
           </g>
-          <!-- Operate (right, CD) -->
-          <g class="phase-label" transform="translate(908,260)">
-            <rect class="phase-bg" x="-50" y="-17" width="100" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">OPERATE</text>
+          <g class="phase-label" transform="translate(900,260)">
+            <rect class="phase-bg" x="-50" y="-16" width="100" height="32" rx="16" fill="rgba(60,200,180,0.12)" stroke="rgba(60,200,180,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(60,200,180,0.9)" letter-spacing="1.5">OPERATE</text>
           </g>
-          <!-- Monitor (bottom-right, CD) -->
-          <g class="phase-label" transform="translate(690,478)">
-            <rect class="phase-bg" x="-54" y="-17" width="108" height="34" rx="17" fill="rgba(78,222,200,0.12)" stroke="rgba(78,222,200,0.25)" stroke-width="1"/>
-            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(78,222,200,0.9)" letter-spacing="1.5">MONITOR</text>
+          <g class="phase-label" transform="translate(720,460)">
+            <rect class="phase-bg" x="-54" y="-16" width="108" height="32" rx="16" fill="rgba(60,200,180,0.12)" stroke="rgba(60,200,180,0.3)" stroke-width="1"/>
+            <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="rgba(60,200,180,0.9)" letter-spacing="1.5">MONITOR</text>
           </g>
 
           <!-- ═══ ANIMATED PARTICLES (figure-8 path) ═══ -->
-          <path id="infinity-path" d="M 360,110 A 175,175 0 1 0 360,410 L 600,110 A 175,175 0 1 1 600,410 Z" fill="none" stroke="none"/>
-
-          <!-- Flowing dots (white, continuous figure-8) -->
-          <circle r="5" fill="#fff" opacity="0.8">
-            <animateMotion dur="8s" repeatCount="indefinite"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="5" fill="#fff" opacity="0.8">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="5" fill="#fff" opacity="0.8">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="5" fill="#fff" opacity="0.8">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-6s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <!-- Trailing glow -->
-          <circle r="12" fill="#fff" opacity="0.1">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-0.1s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="12" fill="#fff" opacity="0.1">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-2.1s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="12" fill="#fff" opacity="0.1">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-4.1s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
-          <circle r="12" fill="#fff" opacity="0.1">
-            <animateMotion dur="8s" repeatCount="indefinite" begin="-6.1s"><mpath href="#infinity-path"/></animateMotion>
-          </circle>
+          <path id="inf-path" d="M 395,161 A 155,155 0 1 0 395,359 L 605,161 A 155,155 0 1 1 605,359 Z" fill="none" stroke="none"/>
+          <circle r="5" fill="#fff" opacity="0.85"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="5" fill="#fff" opacity="0.85"><animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="5" fill="#fff" opacity="0.85"><animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="5" fill="#fff" opacity="0.85"><animateMotion dur="8s" repeatCount="indefinite" begin="-6s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-0.12s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-2.12s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-4.12s"><mpath href="#inf-path"/></animateMotion></circle>
+          <circle r="14" fill="#fff" opacity="0.08"><animateMotion dur="8s" repeatCount="indefinite" begin="-6.12s"><mpath href="#inf-path"/></animateMotion></circle>
         </svg>
       </div>
     </div>
@@ -637,19 +569,19 @@
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <marker id="ah-blue" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#60a5fa"/>
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#1e5faa"/>
         </marker>
         <marker id="ah-green" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#4ade80"/>
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/>
         </marker>
         <marker id="ah-orange" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#fb923c"/>
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#e87400"/>
         </marker>
         <marker id="ah-muted" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="rgba(148,163,184,0.5)"/>
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#94a3b8"/>
         </marker>
         <marker id="ah-back" viewBox="0 0 12 8" refX="2" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 12 0 L 0 4 L 12 8 L 9 4 Z" fill="rgba(148,163,184,0.4)"/>
+          <path d="M 12 0 L 0 4 L 12 8 L 9 4 Z" fill="#94a3b8"/>
         </marker>
         <linearGradient id="grad-1-2" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stop-color="#60a5fa"/>
@@ -675,11 +607,11 @@
         y1: midY,
         x2: cards[1].left - arrowPad,
         y2: midY,
-        stroke: '#60a5fa',
+        stroke: '#1e5faa',
         marker: 'ah-blue',
         label: 'Code\nhochladen',
-        labelColor: '#60a5fa',
-        glow: '#3b82f6',
+        labelColor: '#1e5faa',
+        glow: '#93c5fd',
       });
 
       // ── Arrow 2→3: "Freigabe erteilt" ──
@@ -688,11 +620,11 @@
         y1: midY,
         x2: cards[2].left - arrowPad,
         y2: midY,
-        stroke: '#4ade80',
+        stroke: '#16a34a',
         marker: 'ah-green',
         label: 'Freigabe\nerteilt',
-        labelColor: '#4ade80',
-        glow: '#22c55e',
+        labelColor: '#16a34a',
+        glow: '#86efac',
       });
 
       // ── Arrow 3→4: "Deployment" ──
@@ -701,12 +633,12 @@
         y1: midY,
         x2: cards[3].left - arrowPad,
         y2: midY,
-        stroke: '#fb923c',
+        stroke: '#e87400',
         marker: 'ah-orange',
         label: 'Deploy-\nment',
-        labelColor: '#fb923c',
+        labelColor: '#e87400',
         dashed: true,
-        glow: '#f97316',
+        glow: '#fdba74',
       });
 
       // ── Feedback Loop: curved arrow from card-2 bottom back to card-1 bottom ──
@@ -721,7 +653,7 @@
          C ${fbStartX} ${fbCurveY}, ${fbEndX} ${fbCurveY}, ${fbEndX} ${fbY}`
       );
       fbPath.setAttribute('fill', 'none');
-      fbPath.setAttribute('stroke', 'rgba(148,163,184,0.3)');
+      fbPath.setAttribute('stroke', '#94a3b8');
       fbPath.setAttribute('stroke-width', '1.8');
       fbPath.setAttribute('stroke-dasharray', '7 5');
       fbPath.setAttribute('marker-end', 'url(#ah-back)');
@@ -732,13 +664,14 @@
       fbLabel.setAttribute('x', (fbStartX + fbEndX) / 2);
       fbLabel.setAttribute('y', fbCurveY + 4);
       fbLabel.setAttribute('text-anchor', 'middle');
-      fbLabel.setAttribute('fill', 'rgba(148,163,184,0.4)');
+      fbLabel.setAttribute('fill', '#94a3b8');
       fbLabel.setAttribute('font-size', '10');
       fbLabel.setAttribute('font-family', 'Inter, sans-serif');
       fbLabel.setAttribute('font-weight', '600');
       fbLabel.setAttribute('letter-spacing', '1.5');
       fbLabel.textContent = 'FEEDBACK';
       svg.appendChild(fbLabel);
+
     }
 
     function drawFlowArrow(svg, ns, opts) {
