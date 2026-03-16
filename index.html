@@ -587,8 +587,8 @@
         <marker id="ah-muted" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
           <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#94a3b8"/>
         </marker>
-        <marker id="ah-back" viewBox="0 0 12 8" refX="2" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 12 0 L 0 4 L 12 8 L 9 4 Z" fill="#94a3b8"/>
+        <marker id="ah-green-back" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/>
         </marker>
         <linearGradient id="grad-1-2" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stop-color="#60a5fa"/>
@@ -608,18 +608,68 @@
       const midY = cards[0].cy;     // vertical center of cards
       const arrowPad = 10;          // padding from card edge
 
-      // ── Arrow 1→2: "Code hochladen" ──
+      // ── Arrow 1→2: "Anforderung" (upper) ──
+      const arrowY1 = midY - 18;
       drawFlowArrow(svg, ns, {
         x1: cards[0].right + arrowPad,
-        y1: midY,
+        y1: arrowY1,
         x2: cards[1].left - arrowPad,
-        y2: midY,
+        y2: arrowY1,
         stroke: '#1e5faa',
         marker: 'ah-blue',
         label: 'Anforderung',
         labelColor: '#1e5faa',
-        glow: '#93c5fd',
       });
+
+      // ── Arrow 2→1: "Feedback" (lower, green, points left) ──
+      const arrowY2 = midY + 18;
+      // Draw manually: line from card2 left to card1 right
+      const fbX1 = cards[0].right + arrowPad;
+      const fbX2 = cards[1].left - arrowPad;
+      const fbLine = document.createElementNS(ns, 'line');
+      fbLine.setAttribute('x1', fbX1); fbLine.setAttribute('y1', arrowY2);
+      fbLine.setAttribute('x2', fbX2); fbLine.setAttribute('y2', arrowY2);
+      fbLine.setAttribute('stroke', '#16a34a');
+      fbLine.setAttribute('stroke-width', '2');
+      fbLine.setAttribute('stroke-linecap', 'round');
+      fbLine.setAttribute('stroke-dasharray', '8 5');
+      fbLine.setAttribute('marker-start', 'url(#ah-green-back)');
+      svg.appendChild(fbLine);
+      // Feedback badge below
+      const fbMx = (fbX1 + fbX2) / 2;
+      const fbBadgeY = arrowY2 + 28;
+      const fbText = 'Feedback';
+      const fbTextLen = fbText.length * 7 + 24;
+      const fbBadgeH = 28;
+      const fbShadow = document.createElementNS(ns, 'rect');
+      fbShadow.setAttribute('x', fbMx - fbTextLen / 2 + 1);
+      fbShadow.setAttribute('y', fbBadgeY - fbBadgeH / 2 + 2);
+      fbShadow.setAttribute('width', fbTextLen);
+      fbShadow.setAttribute('height', fbBadgeH);
+      fbShadow.setAttribute('rx', fbBadgeH / 2);
+      fbShadow.setAttribute('fill', 'rgba(0,0,0,0.08)');
+      svg.appendChild(fbShadow);
+      const fbBadge = document.createElementNS(ns, 'rect');
+      fbBadge.setAttribute('x', fbMx - fbTextLen / 2);
+      fbBadge.setAttribute('y', fbBadgeY - fbBadgeH / 2);
+      fbBadge.setAttribute('width', fbTextLen);
+      fbBadge.setAttribute('height', fbBadgeH);
+      fbBadge.setAttribute('rx', fbBadgeH / 2);
+      fbBadge.setAttribute('fill', '#fff');
+      fbBadge.setAttribute('stroke', '#16a34a');
+      fbBadge.setAttribute('stroke-width', '1.5');
+      svg.appendChild(fbBadge);
+      const fbLabel = document.createElementNS(ns, 'text');
+      fbLabel.setAttribute('x', fbMx);
+      fbLabel.setAttribute('y', fbBadgeY + 5);
+      fbLabel.setAttribute('text-anchor', 'middle');
+      fbLabel.setAttribute('fill', '#16a34a');
+      fbLabel.setAttribute('font-size', '12');
+      fbLabel.setAttribute('font-family', 'Inter, sans-serif');
+      fbLabel.setAttribute('font-weight', '700');
+      fbLabel.setAttribute('letter-spacing', '0.5');
+      fbLabel.textContent = fbText;
+      svg.appendChild(fbLabel);
 
       // ── Arrow 2→3: "Freigabe erteilt" ──
       drawFlowArrow(svg, ns, {
@@ -648,41 +698,12 @@
         glow: '#fdba74',
       });
 
-      // ── Feedback Loop: curved arrow from card-2 bottom back to card-1 bottom ──
-      const fbY = cards[0].bottom + 16;
-      const fbStartX = cards[1].cx;
-      const fbEndX = cards[0].cx;
-      const fbCurveY = fbY + 40;
-
-      const fbPath = document.createElementNS(ns, 'path');
-      fbPath.setAttribute('d',
-        `M ${fbStartX} ${fbY}
-         C ${fbStartX} ${fbCurveY}, ${fbEndX} ${fbCurveY}, ${fbEndX} ${fbY}`
-      );
-      fbPath.setAttribute('fill', 'none');
-      fbPath.setAttribute('stroke', '#94a3b8');
-      fbPath.setAttribute('stroke-width', '1.8');
-      fbPath.setAttribute('stroke-dasharray', '7 5');
-      fbPath.setAttribute('marker-end', 'url(#ah-back)');
-      svg.appendChild(fbPath);
-
-      // Feedback label
-      const fbLabel = document.createElementNS(ns, 'text');
-      fbLabel.setAttribute('x', (fbStartX + fbEndX) / 2);
-      fbLabel.setAttribute('y', fbCurveY + 4);
-      fbLabel.setAttribute('text-anchor', 'middle');
-      fbLabel.setAttribute('fill', '#94a3b8');
-      fbLabel.setAttribute('font-size', '10');
-      fbLabel.setAttribute('font-family', 'Inter, sans-serif');
-      fbLabel.setAttribute('font-weight', '600');
-      fbLabel.setAttribute('letter-spacing', '1.5');
-      fbLabel.textContent = 'FEEDBACK';
-      svg.appendChild(fbLabel);
 
     }
 
     function drawFlowArrow(svg, ns, opts) {
-      const { x1, y1, x2, y2, stroke, marker, label, labelColor, dashed, glow } = opts;
+      const { x1, y1, x2, y2, stroke, marker, label, labelColor, dashed, glow, labelAbove } = opts;
+      const showAbove = labelAbove !== false;
 
       // (glow removed for clean light theme)
 
@@ -700,7 +721,7 @@
       // Badge label above the arrow (overlapping cards is OK)
       if (label) {
         const mx = (x1 + x2) / 2;
-        const badgeY = y1 - 28;
+        const badgeY = showAbove ? y1 - 28 : y1 + 28;
         const fullLabel = label;
         const textLen = fullLabel.length * 7 + 24;
         const badgeH = 28;
