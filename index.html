@@ -99,7 +99,7 @@
       text-align: center; max-width: 500px; line-height: 1.5;
     }
     .kalyro-wrapper .inner-cards {
-      display: flex; gap: 56px;
+      display: flex; gap: 72px;
     }
 
     /* ── Card ──────────────────────────────────── */
@@ -335,44 +335,39 @@
         <div class="card c-blue" id="card-1">
           <div class="card-head">
             <div class="icons">
-              <div class="ico logo-icon"><img src="assets/logos/Kalyro_IT_Logo.png" alt="Kalyro IT"></div>
+              <div class="ico logo-icon"><img src="assets/logos/consultant.png" alt="Fachexperte"></div>
             </div>
-            <h2>Entwickler-Team</h2>
-            <span class="tag">Development</span>
+            <h2>Ihr Fachteam</h2>
+            <span class="tag">Prozesswissen</span>
           </div>
           <div class="card-body"><ul>
-            <li><span class="dot"></span>Web- & App-Entwicklung</li>
-            <li><span class="dot"></span>KI-Assistenz Claude Code</li>
-            <li><span class="dot"></span>Lokale Tests & Datenbank</li>
+            <li><span class="dot"></span>Anforderungen & Fachwissen</li>
+            <li><span class="dot"></span>Prozesse & Abl&auml;ufe</li>
+            <li><span class="dot"></span>Feedback & Abnahme</li>
           </ul></div>
         </div>
 
         <div class="card c-green" id="card-2">
           <div class="card-head">
             <div class="icons">
-              <div class="ico logo-icon" style="background:#fdf4e8">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4.709 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#C4873B"/>
-                  <path d="M9.877 8.045a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0V8.045Z" fill="#C4873B"/>
-                  <path d="M4.709 4.709a4.709 4.709 0 0 1 9.418 0v6.672a4.709 4.709 0 1 1-9.418 0V4.709Z" fill="#C4873B"/>
-                  <path d="M9.877 15.955a4.709 4.709 0 1 1 9.418 0v3.336a4.709 4.709 0 1 1-9.418 0v-3.336Z" fill="#C4873B"/>
-                </svg>
-              </div>
+              <div class="ico logo-icon"><img src="assets/logos/Claude_Logo.png" alt="Claude"></div>
+              <div class="ico logo-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub"></div>
             </div>
             <h2>Code & Qualit&auml;t</h2>
             <span class="tag">CI / CD</span>
           </div>
           <div class="card-body"><ul>
-            <li><span class="dot"></span>Code-Pr&uuml;fung</li>
+            <li><span class="dot"></span>Prozesswissen wird zu Code</li>
             <li><span class="dot"></span>Automatische Tests</li>
-            <li><span class="dot"></span>Sicherer Code-Stand</li>
+            <li><span class="dot"></span>Qualit&auml;tsgesicherter Code</li>
           </ul></div>
         </div>
 
         <div class="card c-orange" id="card-3">
           <div class="card-head">
             <div class="icons">
-              <div class="ico logo-icon"><img src="assets/logos/Kalyro_IT_Logo.png" alt="Kalyro IT"></div>
+              <div class="ico logo-icon"><img src="assets/logos/Azure_Logo.png" alt="Azure"></div>
+              <div class="ico logo-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub"></div>
             </div>
             <h2>Cloud-Hosting</h2>
             <span class="tag">Infrastructure</span>
@@ -443,79 +438,87 @@
       <div class="infinity-container" id="infinity-container">
         <svg id="infinity-svg" viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <filter id="loop-shadow" x="-10%" y="-10%" width="120%" height="130%">
-              <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.12)"/>
+            <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%">
+              <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="rgba(0,0,0,0.15)"/>
             </filter>
-            <linearGradient id="ci-grad" x1="0" y1="0" x2="0.3" y2="1">
+            <linearGradient id="ci-grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#1a5276"/>
               <stop offset="50%" stop-color="#2471a3"/>
               <stop offset="100%" stop-color="#1a5276"/>
             </linearGradient>
-            <linearGradient id="cd-grad" x1="0.7" y1="0" x2="1" y2="1">
+            <linearGradient id="cd-grad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#e8a317"/>
               <stop offset="50%" stop-color="#f0b830"/>
               <stop offset="100%" stop-color="#d4941a"/>
             </linearGradient>
+            <!-- Bezier lemniscate half-loops (wider crossing angle) -->
+            <path id="left-loop" d="M 500,270 C 420,100 100,60 80,270 C 60,480 420,440 500,270" fill="none"/>
+            <path id="right-loop" d="M 500,270 C 580,100 900,60 920,270 C 940,480 580,440 500,270" fill="none"/>
+            <!-- Clip for weave: upper-center zone -->
+            <clipPath id="weave-upper">
+              <rect x="370" y="0" width="260" height="270"/>
+            </clipPath>
           </defs>
 
-          <!-- ═══ INFINITY SHAPE - Filled rings with weave ═══ -->
-          <!-- CD (orange) full ring - behind -->
-          <g filter="url(#loop-shadow)">
-            <path d="M 700,70 A 200,200 0 1 1 700,470 A 200,200 0 1 1 700,70 Z M 700,140 A 130,130 0 1 0 700,400 A 130,130 0 1 0 700,140 Z" fill="url(#cd-grad)" fill-rule="evenodd"/>
+          <!-- ═══ INFINITY SHAPE (Bezier lemniscate + clipPath weave) ═══ -->
+          <!-- Shadow layer -->
+          <g filter="url(#loop-shadow)" opacity="0.4">
+            <use href="#left-loop" stroke="#1a5276" stroke-width="74" stroke-linecap="round"/>
+            <use href="#right-loop" stroke="#d4941a" stroke-width="74" stroke-linecap="round"/>
           </g>
-          <!-- CI (blue) full ring - on top -->
-          <g filter="url(#loop-shadow)">
-            <path d="M 300,70 A 200,200 0 1 1 300,470 A 200,200 0 1 1 300,70 Z M 300,140 A 130,130 0 1 0 300,400 A 130,130 0 1 0 300,140 Z" fill="url(#ci-grad)" fill-rule="evenodd"/>
+          <!-- Layer 1: Left loop (blue CI) - back -->
+          <use href="#left-loop" stroke="url(#ci-grad)" stroke-width="70" stroke-linecap="round"/>
+          <!-- Layer 2: Right loop (orange CD) - on top at crossing -->
+          <use href="#right-loop" stroke="url(#cd-grad)" stroke-width="70" stroke-linecap="round"/>
+          <!-- Layer 3: Blue over orange at UPPER crossing (weave) -->
+          <g clip-path="url(#weave-upper)">
+            <use href="#left-loop" stroke="url(#ci-grad)" stroke-width="70" stroke-linecap="round"/>
           </g>
-          <!-- CD right half ON TOP (weave effect) -->
-          <path d="M 700,70 A 200,200 0 0 1 900,270 A 200,200 0 0 1 700,470 L 700,400 A 130,130 0 0 0 830,270 A 130,130 0 0 0 700,140 Z" fill="url(#cd-grad)" fill-rule="evenodd"/>
-          <!-- CD top-left crossing strip (over CI) -->
-          <path d="M 700,70 A 200,200 0 0 0 500,270 L 500,270 A 130,130 0 0 1 700,140 Z" fill="url(#cd-grad)"/>
 
           <!-- ═══ DIRECTION ARROWS ═══ -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(370,88) rotate(25)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(108,330) rotate(115)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(240,452) rotate(205)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(770,88) rotate(-25)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(892,330) rotate(65)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(630,452) rotate(155)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(310,100) rotate(-30)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(100,340) rotate(210)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(310,440) rotate(210)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(690,100) rotate(30)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(900,340) rotate(30)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(690,440) rotate(150)"/>
 
           <!-- ═══ PHASE LABELS ═══ -->
-          <g class="phase-label" transform="translate(300,58)">
+          <g class="phase-label" transform="translate(260,68)">
             <rect class="phase-bg" x="-38" y="-15" width="76" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">CODE</text>
           </g>
-          <g class="phase-label" transform="translate(88,270)">
+          <g class="phase-label" transform="translate(68,270)">
             <rect class="phase-bg" x="-36" y="-15" width="72" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">BUILD</text>
           </g>
-          <g class="phase-label" transform="translate(300,487)">
+          <g class="phase-label" transform="translate(260,478)">
             <rect class="phase-bg" x="-32" y="-15" width="64" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">TEST</text>
           </g>
-          <g class="phase-label" transform="translate(500,118)">
+          <g class="phase-label" transform="translate(500,115)">
             <rect class="phase-bg" x="-34" y="-15" width="68" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">PLAN</text>
           </g>
-          <g class="phase-label" transform="translate(500,418)">
+          <g class="phase-label" transform="translate(500,425)">
             <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">RELEASE</text>
           </g>
-          <g class="phase-label" transform="translate(700,58)">
+          <g class="phase-label" transform="translate(740,68)">
             <rect class="phase-bg" x="-42" y="-15" width="84" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">DEPLOY</text>
           </g>
-          <g class="phase-label" transform="translate(912,270)">
+          <g class="phase-label" transform="translate(932,270)">
             <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">OPERATE</text>
           </g>
-          <g class="phase-label" transform="translate(700,487)">
+          <g class="phase-label" transform="translate(740,478)">
             <rect class="phase-bg" x="-52" y="-15" width="104" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">MONITOR</text>
           </g>
 
           <!-- ═══ ANIMATED PARTICLES ═══ -->
-          <path id="inf-path" d="M 430,150 A 200,200 0 1 0 430,390 L 570,150 A 200,200 0 1 1 570,390 Z" fill="none" stroke="none"/>
+          <path id="inf-path" d="M 500,270 C 420,100 100,60 80,270 C 60,480 420,440 500,270 C 580,100 900,60 920,270 C 940,480 580,440 500,270 Z" fill="none" stroke="none"/>
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#inf-path"/></animateMotion></circle>
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#inf-path"/></animateMotion></circle>
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#inf-path"/></animateMotion></circle>
@@ -613,7 +616,7 @@
         y2: midY,
         stroke: '#1e5faa',
         marker: 'ah-blue',
-        label: 'Code\nhochladen',
+        label: 'Anforderung',
         labelColor: '#1e5faa',
         glow: '#93c5fd',
       });
@@ -626,7 +629,7 @@
         y2: midY,
         stroke: '#16a34a',
         marker: 'ah-green',
-        label: 'Freigabe\nerteilt',
+        label: 'Bereitstellung',
         labelColor: '#16a34a',
         glow: '#86efac',
       });
@@ -639,7 +642,7 @@
         y2: midY,
         stroke: '#e87400',
         marker: 'ah-orange',
-        label: 'Deploy-\nment',
+        label: 'Deployment',
         labelColor: '#e87400',
         dashed: true,
         glow: '#fdba74',
@@ -681,53 +684,60 @@
     function drawFlowArrow(svg, ns, opts) {
       const { x1, y1, x2, y2, stroke, marker, label, labelColor, dashed, glow } = opts;
 
-      // Glow line (behind)
-      if (glow) {
-        const glowLine = document.createElementNS(ns, 'line');
-        glowLine.setAttribute('x1', x1); glowLine.setAttribute('y1', y1);
-        glowLine.setAttribute('x2', x2); glowLine.setAttribute('y2', y2);
-        glowLine.setAttribute('stroke', glow);
-        glowLine.setAttribute('stroke-width', '6');
-        glowLine.setAttribute('opacity', '0.15');
-        glowLine.setAttribute('filter', 'url(#glow)');
-        if (dashed) glowLine.setAttribute('stroke-dasharray', '10 7');
-        svg.appendChild(glowLine);
-      }
+      // (glow removed for clean light theme)
 
       // Main line
       const line = document.createElementNS(ns, 'line');
       line.setAttribute('x1', x1); line.setAttribute('y1', y1);
       line.setAttribute('x2', x2); line.setAttribute('y2', y2);
       line.setAttribute('stroke', stroke);
-      line.setAttribute('stroke-width', '2.5');
+      line.setAttribute('stroke-width', '2');
       line.setAttribute('stroke-linecap', 'round');
       line.setAttribute('marker-end', `url(#${marker})`);
       if (dashed) line.setAttribute('stroke-dasharray', '10 7');
       svg.appendChild(line);
 
-      // Label (vertical, above the arrow)
+      // Badge label above the arrow (overlapping cards is OK)
       if (label) {
         const mx = (x1 + x2) / 2;
-        const my = y1 - 20;
-        const lines = label.toUpperCase().split('\n');
+        const badgeY = y1 - 28;
+        const fullLabel = label;
+        const textLen = fullLabel.length * 7 + 24;
+        const badgeH = 28;
+
+        // Shadow
+        const shadow = document.createElementNS(ns, 'rect');
+        shadow.setAttribute('x', mx - textLen / 2 + 1);
+        shadow.setAttribute('y', badgeY - badgeH / 2 + 2);
+        shadow.setAttribute('width', textLen);
+        shadow.setAttribute('height', badgeH);
+        shadow.setAttribute('rx', badgeH / 2);
+        shadow.setAttribute('fill', 'rgba(0,0,0,0.08)');
+        svg.appendChild(shadow);
+
+        // White badge
+        const badge = document.createElementNS(ns, 'rect');
+        badge.setAttribute('x', mx - textLen / 2);
+        badge.setAttribute('y', badgeY - badgeH / 2);
+        badge.setAttribute('width', textLen);
+        badge.setAttribute('height', badgeH);
+        badge.setAttribute('rx', badgeH / 2);
+        badge.setAttribute('fill', '#fff');
+        badge.setAttribute('stroke', stroke);
+        badge.setAttribute('stroke-width', '1.5');
+        svg.appendChild(badge);
+
+        // Text
         const t = document.createElementNS(ns, 'text');
         t.setAttribute('x', mx);
-        t.setAttribute('y', my);
+        t.setAttribute('y', badgeY + 5);
         t.setAttribute('text-anchor', 'middle');
-        t.setAttribute('fill', labelColor || 'rgba(200,200,200,0.6)');
-        t.setAttribute('font-size', '10');
+        t.setAttribute('fill', labelColor || '#475569');
+        t.setAttribute('font-size', '12');
         t.setAttribute('font-family', 'Inter, sans-serif');
         t.setAttribute('font-weight', '700');
-        t.setAttribute('letter-spacing', '1.2');
-        lines.forEach((line, i) => {
-          const tspan = document.createElementNS(ns, 'tspan');
-          tspan.setAttribute('x', mx);
-          tspan.setAttribute('dy', i === 0 ? '0' : '13');
-          tspan.textContent = line;
-          t.appendChild(tspan);
-        });
-        // Shift up so multiline labels center above arrow
-        if (lines.length > 1) t.setAttribute('y', my - (lines.length - 1) * 6);
+        t.setAttribute('letter-spacing', '0.5');
+        t.textContent = fullLabel;
         svg.appendChild(t);
       }
     }
