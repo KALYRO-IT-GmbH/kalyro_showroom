@@ -80,6 +80,37 @@
       display: flex; gap: 60px; justify-content: center; align-items: stretch;
     }
 
+    /* ── Right Wrapper (Unternehmens-IT) ─────── */
+    .right-wrapper {
+      display: flex; flex-direction: column; align-items: center;
+      background: #fff; border: 2px solid #dc2626; border-radius: 24px;
+      padding: 16px 20px 20px;
+      box-shadow: 0 4px 24px rgba(220,38,38,0.06);
+    }
+    .right-wrapper-header {
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: 12px;
+    }
+    .right-wrapper-header h3 {
+      font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 4px;
+    }
+    .right-wrapper-header .wrapper-subtitle {
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+      text-align: center;
+    }
+    .right-wrapper .inner-cards-right {
+      display: flex; gap: 24px; align-items: stretch;
+    }
+    .right-wrapper .card {
+      max-width: 240px; min-width: 200px;
+    }
+
+    /* accent: purple */
+    .c-purple .card-head::before { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .c-purple .ico { background: #f3f0ff; color: #7c3aed; }
+    .c-purple .tag { background: #f3f0ff; color: #7c3aed; }
+    .c-purple .dot { background: #7c3aed; }
+
     /* ── Kalyro Wrapper Card ──────────────────── */
     .kalyro-wrapper {
       display: flex; flex-direction: column; align-items: center;
@@ -390,41 +421,64 @@
           </div><!-- .inner-cards -->
         </div><!-- .kalyro-wrapper -->
 
-        <div class="card c-red" id="card-4">
-          <div class="card-head">
-            <div class="icons devices-icons">
-              <div class="dev dev-laptop">
-                <div class="scr">
-                  <div class="sblk" style="background:#1e5faa"></div>
-                  <div class="sblk" style="background:#e87400"></div>
-                  <div class="sblk" style="background:#16a34a"></div>
-                  <div class="sblk" style="background:#8b5cf6"></div>
-                </div>
-                <div class="base"></div>
-              </div>
-              <div class="dev dev-tablet">
-                <div class="sblk" style="background:#e87400"></div>
-                <div class="sblk" style="background:#1e5faa"></div>
-                <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
-                <div class="sblk" style="background:#dc2626"></div>
-                <div class="sblk" style="background:#8b5cf6"></div>
-              </div>
-              <div class="dev dev-phone">
-                <div class="sblk" style="background:#1e5faa"></div>
-                <div class="sblk" style="background:#e87400"></div>
-                <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
-                <div class="sblk" style="background:#dc2626"></div>
-                <div class="sblk" style="background:#8b5cf6"></div>
-              </div>
-            </div>
-            <h2>Software-Nutzung</h2>
-            <span class="tag">Deployment</span>
+        <div class="right-wrapper" id="card-4">
+          <div class="right-wrapper-header">
+            <h3>Unternehmens-Software</h3>
+            <div class="wrapper-subtitle">ERP, Daten & sicherer Betrieb</div>
           </div>
-          <div class="card-body"><ul>
-            <li><span class="dot"></span>Datenschutz</li>
-            <li><span class="dot"></span>Interne Systeme</li>
-            <li><span class="dot"></span>Verl&auml;sslicher Betrieb</li>
-          </ul></div>
+          <div class="inner-cards-right">
+
+            <div class="card c-red">
+              <div class="card-head">
+                <div class="icons devices-icons">
+                  <div class="dev dev-laptop">
+                    <div class="scr">
+                      <div class="sblk" style="background:#1e5faa"></div>
+                      <div class="sblk" style="background:#e87400"></div>
+                      <div class="sblk" style="background:#16a34a"></div>
+                      <div class="sblk" style="background:#8b5cf6"></div>
+                    </div>
+                    <div class="base"></div>
+                  </div>
+                  <div class="dev dev-tablet">
+                    <div class="sblk" style="background:#e87400"></div>
+                    <div class="sblk" style="background:#1e5faa"></div>
+                    <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
+                    <div class="sblk" style="background:#dc2626"></div>
+                    <div class="sblk" style="background:#8b5cf6"></div>
+                  </div>
+                  <div class="dev dev-phone">
+                    <div class="sblk" style="background:#1e5faa"></div>
+                    <div class="sblk" style="background:#e87400"></div>
+                    <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
+                    <div class="sblk" style="background:#dc2626"></div>
+                    <div class="sblk" style="background:#8b5cf6"></div>
+                  </div>
+                </div>
+                <h2>Software-Nutzung</h2>
+                <span class="tag">Deployment</span>
+              </div>
+              <div class="card-body"><ul>
+                <li><span class="dot"></span>Datenschutz</li>
+                <li><span class="dot"></span>Interne Systeme</li>
+              </ul></div>
+            </div>
+
+            <div class="card c-purple">
+              <div class="card-head">
+                <div class="icons single-logo">
+                  <div class="ico logo-icon"><img src="assets/logos/Database_Icon.png" alt="Datenbank"></div>
+                </div>
+                <h2>Daten & Wissen</h2>
+                <span class="tag">Datenbank</span>
+              </div>
+              <div class="card-body"><ul>
+                <li><span class="dot"></span>Datenbanken & Speicher</li>
+                <li><span class="dot"></span>Fach- & Prozessdaten</li>
+              </ul></div>
+            </div>
+
+          </div>
         </div>
 
       </div>
@@ -449,120 +503,140 @@
             <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%">
               <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgba(0,0,0,0.15)"/>
             </filter>
-            <linearGradient id="ci-grad" x1="0.2" y1="0" x2="0.8" y2="1">
+            <!-- Gradients with userSpaceOnUse so they work globally -->
+            <linearGradient id="ci-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#2980b9"/>
+              <stop offset="50%" stop-color="#1a5276"/>
+              <stop offset="100%" stop-color="#2980b9"/>
+            </linearGradient>
+            <linearGradient id="cd-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f0b830"/>
+              <stop offset="50%" stop-color="#d4941a"/>
+              <stop offset="100%" stop-color="#f0b830"/>
+            </linearGradient>
+            <!-- Border colors -->
+            <linearGradient id="ci-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stop-color="#1a5276"/>
-              <stop offset="50%" stop-color="#2980b9"/>
+              <stop offset="50%" stop-color="#154360"/>
               <stop offset="100%" stop-color="#1a5276"/>
             </linearGradient>
-            <linearGradient id="cd-grad" x1="0.2" y1="0" x2="0.8" y2="1">
-              <stop offset="0%" stop-color="#d4941a"/>
-              <stop offset="50%" stop-color="#f0b830"/>
-              <stop offset="100%" stop-color="#d4941a"/>
+            <linearGradient id="cd-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#b8860b"/>
+              <stop offset="50%" stop-color="#8B6914"/>
+              <stop offset="100%" stop-color="#b8860b"/>
             </linearGradient>
 
-            <!-- Left circle arc (CI/blue): center (330,270) r=210 -->
-            <circle id="left-circle" cx="330" cy="270" r="210" fill="none"/>
-            <!-- Right circle arc (CD/orange): center (670,270) r=210 -->
-            <circle id="right-circle" cx="670" cy="270" r="210" fill="none"/>
+            <!-- 4 segments of the infinity (Arc + Bezier hybrid) -->
 
-            <!-- Mask for weave: the right circle punches a hole in the left circle
-                 only in the UPPER half of the overlap zone.
-                 In the LOWER half, the left circle stays on top. -->
-            <mask id="left-weave-mask">
-              <!-- Start with everything visible -->
-              <rect width="1000" height="540" fill="white"/>
-              <!-- Punch out where right circle crosses in UPPER overlap -->
-              <clipPath id="upper-cross">
-                <rect x="400" y="0" width="200" height="270"/>
-              </clipPath>
-              <g clip-path="url(#upper-cross)">
-                <circle cx="670" cy="270" r="210" fill="none" stroke="black" stroke-width="82"/>
-              </g>
-            </mask>
-            <mask id="right-weave-mask">
-              <!-- Start with everything visible -->
-              <rect width="1000" height="540" fill="white"/>
-              <!-- Punch out where left circle crosses in LOWER overlap -->
-              <clipPath id="lower-cross">
-                <rect x="400" y="270" width="200" height="270"/>
-              </clipPath>
-              <g clip-path="url(#lower-cross)">
-                <circle cx="330" cy="270" r="210" fill="none" stroke="black" stroke-width="82"/>
-              </g>
-            </mask>
+            <!-- Left lobe: arc from (310,440) counterclockwise to (310,100) -->
+            <path id="seg-left-lobe" d="M 310,440 A 170,170 0 1 0 310,100" fill="none"/>
+
+            <!-- Upper crossing: Bezier from left-top (310,100) diagonal down to right-bottom (690,440) -->
+            <path id="seg-cross-upper" d="M 310,100 C 420,100  580,440  690,440" fill="none"/>
+
+            <!-- Right lobe: arc from (690,440) clockwise to (690,100) -->
+            <path id="seg-right-lobe" d="M 690,440 A 170,170 0 1 0 690,100" fill="none"/>
+
+            <!-- Lower crossing: Bezier from right-top (690,100) diagonal down to left-bottom (310,440) -->
+            <path id="seg-cross-lower" d="M 690,100 C 580,100  420,440  310,440" fill="none"/>
+
+            <!-- Full path for animation -->
+            <path id="inf-path" d="M 310,100 A 170,170 0 1 0 310,440 C 420,440 580,100 690,100 A 170,170 0 1 1 690,440 C 580,440 420,100 310,100 Z" fill="none"/>
           </defs>
 
-          <!-- ════ INFINITY SHAPE ════ -->
-          <!-- Shadow -->
+          <!-- ════════ INFINITY SHAPE (4-segment weave) ════════ -->
+
+          <!-- Shadow layer -->
           <g filter="url(#loop-shadow)" opacity="0.3">
-            <use href="#left-circle" stroke="#154360" stroke-width="82"/>
-            <use href="#right-circle" stroke="#b7791f" stroke-width="82"/>
+            <use href="#seg-left-lobe" stroke="#333" stroke-width="78" stroke-linecap="round"/>
+            <use href="#seg-cross-upper" stroke="#333" stroke-width="78" stroke-linecap="round"/>
+            <use href="#seg-right-lobe" stroke="#333" stroke-width="78" stroke-linecap="round"/>
+            <use href="#seg-cross-lower" stroke="#333" stroke-width="78" stroke-linecap="round"/>
           </g>
 
-          <!-- Left circle (blue CI) with mask -->
-          <g mask="url(#left-weave-mask)">
-            <use href="#left-circle" stroke="#154360" stroke-width="80"/>
-            <use href="#left-circle" stroke="url(#ci-grad)" stroke-width="74"/>
-          </g>
+          <!--
+            WEAVE DRAW ORDER (later = on top):
+            1. seg-cross-lower (orange diagonal) - BEHIND
+            2. seg-left-lobe (blue arc) - BEHIND at crossing, but OVER the lower diagonal
+            3. seg-cross-upper (blue diagonal) - ON TOP of everything at center
+            4. seg-right-lobe (orange arc) - OVER the upper diagonal at the right side
 
-          <!-- Right circle (orange CD) with mask -->
-          <g mask="url(#right-weave-mask)">
-            <use href="#right-circle" stroke="#a67c1a" stroke-width="80"/>
-            <use href="#right-circle" stroke="url(#cd-grad)" stroke-width="74"/>
-          </g>
+            Wait - let me think again about the correct order:
 
-          <!-- ════ DIRECTION ARROWS ════ -->
-          <!-- CI: clockwise -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(395,78) rotate(15)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(130,350) rotate(195)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(395,462) rotate(165)"/>
-          <!-- CD: clockwise -->
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(735,78) rotate(-15)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(870,350) rotate(-15)"/>
-          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(605,462) rotate(195)"/>
+            The crossing has two diagonals meeting in an X:
+              - "Upper crossing" goes from top-left to bottom-right
+              - "Lower crossing" goes from top-right to bottom-left
 
-          <!-- ════ PHASE LABELS ════ -->
-          <g class="phase-label" transform="translate(330,46)">
+            For the weave:
+              - Blue upper crossing should go OVER orange lower crossing
+              - Orange right lobe should connect seamlessly to orange lower crossing
+
+            Correct order:
+            1. Left lobe (blue) - back
+            2. Lower crossing (orange) - back (goes behind blue at center)
+            3. Right lobe (orange) - middle
+            4. Upper crossing (blue) - front (goes OVER orange at center)
+          -->
+
+          <!-- Layer 1: Left lobe (BLUE) - back -->
+          <use href="#seg-left-lobe" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
+          <use href="#seg-left-lobe" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
+
+          <!-- Layer 2: Lower crossing diagonal (ORANGE) - back -->
+          <use href="#seg-cross-lower" stroke="url(#cd-border)" stroke-width="74" stroke-linecap="round"/>
+          <use href="#seg-cross-lower" stroke="url(#cd-grad)" stroke-width="66" stroke-linecap="round"/>
+
+          <!-- Layer 3: Right lobe (ORANGE) - middle -->
+          <use href="#seg-right-lobe" stroke="url(#cd-border)" stroke-width="74" stroke-linecap="round"/>
+          <use href="#seg-right-lobe" stroke="url(#cd-grad)" stroke-width="66" stroke-linecap="round"/>
+
+          <!-- Layer 4: Upper crossing diagonal (BLUE) - front / ON TOP -->
+          <use href="#seg-cross-upper" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
+          <use href="#seg-cross-upper" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
+
+          <!-- ════════ DIRECTION ARROWS ════════ -->
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(218,130) rotate(188)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(160,380) rotate(165)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(400,452) rotate(10)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(782,130) rotate(-8)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(842,380) rotate(-15)"/>
+          <polygon points="0,-8 14,0 0,8" fill="rgba(255,255,255,0.85)" transform="translate(600,452) rotate(170)"/>
+
+          <!-- ════════ PHASE LABELS ════════ -->
+          <g class="phase-label" transform="translate(310,85)">
             <rect class="phase-bg" x="-38" y="-15" width="76" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">CODE</text>
           </g>
-          <g class="phase-label" transform="translate(107,270)">
+          <g class="phase-label" transform="translate(125,270)">
             <rect class="phase-bg" x="-36" y="-15" width="72" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">BUILD</text>
           </g>
-          <g class="phase-label" transform="translate(330,496)">
+          <g class="phase-label" transform="translate(310,458)">
             <rect class="phase-bg" x="-32" y="-15" width="64" height="30" rx="15" fill="white" stroke="#2471a3" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1a5276" letter-spacing="1.5">TEST</text>
           </g>
-          <g class="phase-label" transform="translate(500,108)">
+          <g class="phase-label" transform="translate(500,120)">
             <rect class="phase-bg" x="-34" y="-15" width="68" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">PLAN</text>
           </g>
-          <g class="phase-label" transform="translate(500,432)">
+          <g class="phase-label" transform="translate(500,420)">
             <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#64748b" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#475569" letter-spacing="1.5">RELEASE</text>
           </g>
-          <g class="phase-label" transform="translate(670,46)">
+          <g class="phase-label" transform="translate(690,85)">
             <rect class="phase-bg" x="-42" y="-15" width="84" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">DEPLOY</text>
           </g>
-          <g class="phase-label" transform="translate(893,270)">
+          <g class="phase-label" transform="translate(875,270)">
             <rect class="phase-bg" x="-48" y="-15" width="96" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">OPERATE</text>
           </g>
-          <g class="phase-label" transform="translate(670,496)">
+          <g class="phase-label" transform="translate(690,458)">
             <rect class="phase-bg" x="-52" y="-15" width="104" height="30" rx="15" fill="white" stroke="#d4941a" stroke-width="1.5"/>
             <text class="phase-text" x="0" y="5" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#b07812" letter-spacing="1.5">MONITOR</text>
           </g>
 
-          <!-- ════ ANIMATED PARTICLES ════ -->
-          <!-- Figure-8 path through both circles -->
-          <path id="inf-path" d="
-            M 500,165
-            A 210,210 0 1 0 500,375
-            A 210,210 0 1 1 500,165
-            Z
-          " fill="none" stroke="none"/>
+          <!-- ════════ ANIMATED PARTICLES ════════ -->
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#inf-path"/></animateMotion></circle>
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#inf-path"/></animateMotion></circle>
           <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#inf-path"/></animateMotion></circle>
@@ -630,6 +704,12 @@
         </marker>
         <marker id="ah-muted" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
           <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#94a3b8"/>
+        </marker>
+        <marker id="ah-purple" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#7c3aed"/>
+        </marker>
+        <marker id="ah-purple-back" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#7c3aed"/>
         </marker>
         <marker id="ah-green-back" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/>
@@ -742,6 +822,79 @@
         glow: '#fdba74',
       });
 
+      // ── Schnittstelle: bidirectional line between Kalyro wrapper and right wrapper ──
+      // Bottom of both wrappers
+      const kalyroWrapper = document.querySelector('.kalyro-wrapper');
+      const rightWrapper = document.querySelector('.right-wrapper');
+      if (kalyroWrapper && rightWrapper) {
+        const kwRect = kalyroWrapper.getBoundingClientRect();
+        const rwRect = rightWrapper.getBoundingClientRect();
+        const kwBottom = kwRect.bottom - areaRect.top;
+        const rwBottom = rwRect.bottom - areaRect.top;
+        const lineY = Math.max(kwBottom, rwBottom) + 28;
+        const kwCx = kwRect.left - areaRect.left + kwRect.width / 2;
+        const rwCx = rwRect.left - areaRect.left + rwRect.width / 2;
+
+        // Vertical line from horizontal up to Kalyro wrapper (arrow at top)
+        const vl1 = document.createElementNS(ns, 'line');
+        vl1.setAttribute('x1', kwCx); vl1.setAttribute('y1', lineY);
+        vl1.setAttribute('x2', kwCx); vl1.setAttribute('y2', kwBottom + 4);
+        vl1.setAttribute('stroke', '#7c3aed');
+        vl1.setAttribute('stroke-width', '2');
+        vl1.setAttribute('marker-end', 'url(#ah-purple)');
+        svg.appendChild(vl1);
+
+        // Horizontal line (no arrows)
+        const hl = document.createElementNS(ns, 'line');
+        hl.setAttribute('x1', kwCx); hl.setAttribute('y1', lineY);
+        hl.setAttribute('x2', rwCx); hl.setAttribute('y2', lineY);
+        hl.setAttribute('stroke', '#7c3aed');
+        hl.setAttribute('stroke-width', '2');
+        svg.appendChild(hl);
+
+        // Vertical line from horizontal up to right wrapper (arrow at top)
+        const vl2 = document.createElementNS(ns, 'line');
+        vl2.setAttribute('x1', rwCx); vl2.setAttribute('y1', lineY);
+        vl2.setAttribute('x2', rwCx); vl2.setAttribute('y2', rwBottom + 4);
+        vl2.setAttribute('stroke', '#7c3aed');
+        vl2.setAttribute('stroke-width', '2');
+        vl2.setAttribute('marker-end', 'url(#ah-purple)');
+        svg.appendChild(vl2);
+
+        // Badge "Schnittstelle"
+        const sMx = (kwCx + rwCx) / 2;
+        const sText = 'Schnittstelle';
+        const sLen = sText.length * 7 + 24;
+        const sH = 26;
+        const sSh = document.createElementNS(ns, 'rect');
+        sSh.setAttribute('x', sMx - sLen / 2 + 1);
+        sSh.setAttribute('y', lineY - sH / 2 + 2);
+        sSh.setAttribute('width', sLen);
+        sSh.setAttribute('height', sH);
+        sSh.setAttribute('rx', sH / 2);
+        sSh.setAttribute('fill', 'rgba(0,0,0,0.06)');
+        svg.appendChild(sSh);
+        const sBg = document.createElementNS(ns, 'rect');
+        sBg.setAttribute('x', sMx - sLen / 2);
+        sBg.setAttribute('y', lineY - sH / 2);
+        sBg.setAttribute('width', sLen);
+        sBg.setAttribute('height', sH);
+        sBg.setAttribute('rx', sH / 2);
+        sBg.setAttribute('fill', '#fff');
+        sBg.setAttribute('stroke', '#7c3aed');
+        sBg.setAttribute('stroke-width', '1.5');
+        svg.appendChild(sBg);
+        const sLbl = document.createElementNS(ns, 'text');
+        sLbl.setAttribute('x', sMx);
+        sLbl.setAttribute('y', lineY + 5);
+        sLbl.setAttribute('text-anchor', 'middle');
+        sLbl.setAttribute('fill', '#7c3aed');
+        sLbl.setAttribute('font-size', '12');
+        sLbl.setAttribute('font-family', 'Inter, sans-serif');
+        sLbl.setAttribute('font-weight', '700');
+        sLbl.textContent = sText;
+        svg.appendChild(sLbl);
+      }
 
     }
 
