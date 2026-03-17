@@ -1779,7 +1779,7 @@
         <span class="viewer-title-text" id="viewer-title"></span>
       </div>
       <div class="viewer-toolbar-right">
-        <button class="btn-export" onclick="exportAsPPTX()" id="btn-pptx" style="color:#e87400;border-color:rgba(232,116,0,0.3);display:none;">&#8681; PPTX</button>
+        <button class="btn-export" onclick="handlePptxExport()" id="btn-pptx" style="color:#e87400;border-color:rgba(232,116,0,0.3);display:none;">&#8681; PPTX</button>
         <button class="btn-export blue" onclick="exportAsImage('svg')">&#8681; SVG</button>
         <button class="btn-export green" onclick="exportAsImage('png', 2)">&#8681; PNG 2x</button>
         <button class="btn-export" onclick="exportAsImage('png', 4)">&#8681; PNG 4x</button>
@@ -2542,7 +2542,7 @@
       if (id === 'ki-anwendungen') requestAnimationFrame(() => lucide.createIcons());
       if (id === 'ki-architektur') requestAnimationFrame(() => lucide.createIcons());
       // PPTX-Button nur fuer Konzepte mit Export-Daten anzeigen
-      const pptxConcepts = ['ki-anwendungen'];
+      const pptxConcepts = ['ki-anwendungen', 'ki-architektur'];
       const btnPptx = document.getElementById('btn-pptx');
       btnPptx.style.display = pptxConcepts.includes(id) ? '' : 'none';
     }
@@ -2688,6 +2688,11 @@
     window.addEventListener('resize', () => { if (currentDiagram === 'software-entwicklung') drawArrows(); });
 
     // ── EXPORT ───────────────────────────────────────────────────
+    function handlePptxExport() {
+      if (currentDiagram === 'ki-architektur') return exportArchPPTX();
+      return exportAsPPTX();
+    }
+
     async function exportAsPPTX() {
       // Libs laden
       async function loadScript(url) {
@@ -2806,6 +2811,91 @@
       }
 
       pptx.writeFile({ fileName: 'KI-Anwendungen Microsoft-Stack.pptx' });
+    }
+
+    async function exportArchPPTX() {
+      async function loadScript(url) {
+        const s = document.createElement('script'); s.src = url; document.head.appendChild(s);
+        await new Promise((r, e) => { s.onload = r; s.onerror = e; });
+      }
+      if (!window.PptxGenJS) await loadScript('https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js');
+      if (!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+
+      const el = document.getElementById('diagram-ki-arch');
+      if (!el) return;
+
+      // Light-Mode fuer weissen Hintergrund
+      const wasDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (wasDark) document.documentElement.setAttribute('data-theme', 'light');
+      el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = 'none');
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      async function capture(selector) {
+        const node = el.querySelector(selector);
+        if (!node) return null;
+        const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        return { data: canvas.toDataURL('image/png'), w: node.offsetWidth, h: node.offsetHeight };
+      }
+
+      const sections = {
+        title: await capture('.arch-title'),
+        flow:  await capture('.arch-flow'),
+        data:  await capture('.arch-data-section'),
+        explain: await capture('.arch-explanation'),
+      };
+
+      // Wiederherstellen
+      el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = '');
+      if (wasDark) document.documentElement.setAttribute('data-theme', 'dark');
+
+      const pptx = new PptxGenJS();
+      pptx.layout = 'LAYOUT_16x9';
+      pptx.author = 'KALYRO IT GmbH';
+      const SW = 10, SH = 5.625;
+
+      // Slide 1: Titel
+      if (sections.title) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        const r = sections.title.w / sections.title.h;
+        const w = 8, h = w / r;
+        slide.addImage({ data: sections.title.data, x: (SW - w) / 2, y: (SH - h) / 2, w, h });
+      }
+
+      // Slide 2: Architektur-Flow + Datenquellen
+      if (sections.flow || sections.data) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        slide.addText('TECHNISCHE ARCHITEKTUR', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: '4a5568', align: 'center', charSpacing: 3, bold: true });
+        let yPos = 0.55;
+        if (sections.flow) {
+          const r = sections.flow.w / sections.flow.h;
+          let w = 9.2, h = w / r;
+          if (h > 2.4) { h = 2.4; w = h * r; }
+          slide.addImage({ data: sections.flow.data, x: (SW - w) / 2, y: yPos, w, h });
+          yPos += h + 0.15;
+        }
+        if (sections.data) {
+          const r = sections.data.w / sections.data.h;
+          let w = 8, h = w / r;
+          const maxH = SH - yPos - 0.2;
+          if (h > maxH) { h = maxH; w = h * r; }
+          slide.addImage({ data: sections.data.data, x: (SW - w) / 2, y: yPos, w, h });
+        }
+      }
+
+      // Slide 3: Kernbotschaften
+      if (sections.explain) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        slide.addText('WAS DAS BEDEUTET', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: '4a5568', align: 'center', charSpacing: 3, bold: true });
+        const r = sections.explain.w / sections.explain.h;
+        let w = 9, h = w / r;
+        if (h > 4.2) { h = 4.2; w = h * r; }
+        slide.addImage({ data: sections.explain.data, x: (SW - w) / 2, y: 0.6 + (4.2 - h) / 2, w, h });
+      }
+
+      pptx.writeFile({ fileName: 'KI-Architektur.pptx' });
     }
     function getActiveElement() {
       if (currentDiagram === 'cicd-infinity') return document.getElementById('diagram-cicd');
