@@ -2,6 +2,8 @@
 Thumbs.db
 Desktop.ini
 .DS_Store
+.playwright-mcp/
+.claude/
 
 # IDE
 .vscode/
