@@ -2824,14 +2824,12 @@
       const el = document.getElementById('diagram-ki-arch');
       if (!el) return;
 
-      // Dark-Mode sicherstellen (Farben sind fuer dunklen Hintergrund optimiert)
-      const wasDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (!wasDark) document.documentElement.setAttribute('data-theme', 'dark');
       // Gradient-Hintergrund ausblenden damit html2canvas sauberen Hintergrund nutzt
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = 'none');
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-      const BG = '#0e1220';
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const BG = isDark ? '#0e1220' : '#ffffff';
 
       async function capture(selector) {
         const node = el.querySelector(selector);
@@ -2849,14 +2847,13 @@
 
       // Wiederherstellen
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = '');
-      if (!wasDark) document.documentElement.setAttribute('data-theme', 'light');
 
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
       pptx.author = 'KALYRO IT GmbH';
       const SW = 10, SH = 5.625;
-      const SLIDE_BG = '0E1220';
-      const LABEL_COLOR = '8b95a8';
+      const SLIDE_BG = isDark ? '0E1220' : 'FFFFFF';
+      const LABEL_COLOR = isDark ? '8b95a8' : '4a5568';
 
       // Slide 1: Titel
       if (sections.title) {
