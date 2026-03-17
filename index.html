@@ -1582,6 +1582,7 @@
         <span class="viewer-title-text" id="viewer-title"></span>
       </div>
       <div class="viewer-toolbar-right">
+        <button class="btn-export" onclick="exportAsPPTX()" id="btn-pptx" style="color:#e87400;border-color:rgba(232,116,0,0.3);display:none;">&#8681; PPTX</button>
         <button class="btn-export blue" onclick="exportAsImage('svg')">&#8681; SVG</button>
         <button class="btn-export green" onclick="exportAsImage('png', 2)">&#8681; PNG 2x</button>
         <button class="btn-export" onclick="exportAsImage('png', 4)">&#8681; PNG 4x</button>
@@ -2258,6 +2259,10 @@
       document.body.style.overflow = 'hidden';
       history.pushState({ concept: id }, '', '#konzept/' + id);
       if (id === 'software-entwicklung') requestAnimationFrame(drawArrows);
+      // PPTX-Button nur fuer Konzepte mit Export-Daten anzeigen
+      const pptxConcepts = ['ki-anwendungen'];
+      const btnPptx = document.getElementById('btn-pptx');
+      btnPptx.style.display = pptxConcepts.includes(id) ? '' : 'none';
     }
     function closeViewer() {
       const viewer = document.getElementById('viewer');
@@ -2401,6 +2406,125 @@
     window.addEventListener('resize', () => { if (currentDiagram === 'software-entwicklung') drawArrows(); });
 
     // ── EXPORT ───────────────────────────────────────────────────
+    async function exportAsPPTX() {
+      // Libs laden
+      async function loadScript(url) {
+        const s = document.createElement('script');
+        s.src = url;
+        document.head.appendChild(s);
+        await new Promise((r, e) => { s.onload = r; s.onerror = e; });
+      }
+      if (!window.PptxGenJS) await loadScript('https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js');
+      if (!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+
+      const el = getActiveElement();
+      if (!el) return;
+
+      // Light-Mode fuer weissen Hintergrund
+      const wasDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (wasDark) document.documentElement.setAttribute('data-theme', 'light');
+      el.querySelectorAll('.bg-ki').forEach(b => b.style.display = 'none');
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      // Sektionen als Bilder capturen
+      async function capture(selector) {
+        const node = el.querySelector(selector);
+        if (!node) return null;
+        const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        return { data: canvas.toDataURL('image/png'), w: node.offsetWidth, h: node.offsetHeight };
+      }
+
+      const sections = {
+        title:    await capture('.ki-title'),
+        roles:    await capture('.ki-roles'),
+        compare:  await capture('.ki-compare'),
+        stack:    await capture('.ki-stack'),
+        flow:     await capture('.ki-flow'),
+        build:    await capture('.ki-build-grid'),
+        stats:    await capture('.ki-stats'),
+        messages: await capture('.ki-messages'),
+      };
+
+      // Wiederherstellen
+      el.querySelectorAll('.bg-ki').forEach(b => b.style.display = '');
+      if (wasDark) document.documentElement.setAttribute('data-theme', 'dark');
+
+      // PPTX erzeugen
+      const pptx = new PptxGenJS();
+      pptx.layout = 'LAYOUT_16x9';
+      pptx.author = 'KALYRO IT GmbH';
+      const SW = 10, SH = 5.625; // Slide-Groesse in Zoll (16:9)
+
+      function addImageSlide(img, slideTitle) {
+        if (!img) return;
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        // Bild skalieren damit es auf die Slide passt (mit Rand)
+        const margin = 0.4;
+        const maxW = SW - margin * 2;
+        const maxH = SH - margin * 2 - (slideTitle ? 0.5 : 0);
+        const ratio = img.w / img.h;
+        let w = maxW, h = w / ratio;
+        if (h > maxH) { h = maxH; w = h * ratio; }
+        const x = (SW - w) / 2;
+        const y = slideTitle ? 0.6 + (maxH - h) / 2 : margin + (maxH - h) / 2;
+        if (slideTitle) {
+          slide.addText(slideTitle, { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: '4a5568', align: 'center', charSpacing: 3, bold: true });
+        }
+        slide.addImage({ data: img.data, x: x, y: y, w: w, h: h });
+      }
+
+      // Slide 1: Titel
+      if (sections.title) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        const img = sections.title;
+        const ratio = img.w / img.h;
+        const w = 8, h = w / ratio;
+        slide.addImage({ data: img.data, x: (SW - w) / 2, y: (SH - h) / 2, w: w, h: h });
+      }
+
+      // Slide 2: Rollen
+      addImageSlide(sections.roles, 'UNSERE ZWEI ROLLEN');
+
+      // Slide 3: Bisher vs. Heute
+      addImageSlide(sections.compare, 'BISHER VS. HEUTE');
+
+      // Slide 4: Microsoft-Stack
+      addImageSlide(sections.stack, 'FUNDAMENT \u2014 MICROSOFT-STACK');
+
+      // Slide 5: Flow + Was wir bauen
+      if (sections.flow && sections.build) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        // Flow oben
+        const fr = sections.flow.w / sections.flow.h;
+        let fw = 9, fh = fw / fr;
+        if (fh > 1.8) { fh = 1.8; fw = fh * fr; }
+        slide.addImage({ data: sections.flow.data, x: (SW - fw) / 2, y: 0.3, w: fw, h: fh });
+        // Build unten
+        const br = sections.build.w / sections.build.h;
+        let bw = 9, bh = bw / br;
+        if (bh > 2.8) { bh = 2.8; bw = bh * br; }
+        slide.addImage({ data: sections.build.data, x: (SW - bw) / 2, y: 0.3 + fh + 0.2, w: bw, h: bh });
+      }
+
+      // Slide 6: Zahlen + Kernbotschaften
+      if (sections.stats && sections.messages) {
+        const slide = pptx.addSlide();
+        slide.background = { color: 'FFFFFF' };
+        const sr = sections.stats.w / sections.stats.h;
+        let sw2 = 8, sh2 = sw2 / sr;
+        if (sh2 > 1.8) { sh2 = 1.8; sw2 = sh2 * sr; }
+        slide.addImage({ data: sections.stats.data, x: (SW - sw2) / 2, y: 0.3, w: sw2, h: sh2 });
+        const mr = sections.messages.w / sections.messages.h;
+        let mw = 9, mh = mw / mr;
+        if (mh > 2.8) { mh = 2.8; mw = mh * mr; }
+        slide.addImage({ data: sections.messages.data, x: (SW - mw) / 2, y: 0.3 + sh2 + 0.3, w: mw, h: mh });
+      }
+
+      pptx.writeFile({ fileName: 'KI-Anwendungen Microsoft-Stack.pptx' });
+    }
     function getActiveElement() {
       if (currentDiagram === 'cicd-infinity') return document.getElementById('diagram-cicd');
       if (currentDiagram === 'ki-anwendungen') return document.getElementById('diagram-ki-apps');

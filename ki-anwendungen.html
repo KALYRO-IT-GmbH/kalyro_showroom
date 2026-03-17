@@ -260,6 +260,120 @@
       .ki-build-grid { grid-template-columns: 1fr 1fr; }
       .ki-flow-step { font-size: 11px; padding: 6px 10px; }
     }
+
+    /* ── Print / PDF ───────────────────────────── */
+    @media print {
+      @page {
+        size: A4; margin: 16mm 14mm;
+      }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+      body { background: #fff !important; color: #111 !important; font-size: 11px; }
+      .ki-bg { display: none !important; }
+      .ki-page { padding: 0; max-width: 100%; }
+
+      .ki-header { margin-bottom: 24px; }
+      .ki-header h1 { font-size: 22px; color: #111 !important; }
+      .ki-header .sub { font-size: 12px; color: #555 !important; }
+
+      .section-label { font-size: 9px; color: #888 !important; margin-bottom: 8px; letter-spacing: 2px; }
+
+      /* Rollen */
+      .ki-roles { gap: 12px; margin-bottom: 24px; }
+      .ki-role-card {
+        background: #f8f9fa !important; border: 1px solid #ddd !important;
+        padding: 14px 16px; border-radius: 10px;
+      }
+      .ki-role-card:hover { transform: none !important; box-shadow: none !important; }
+      .role-icon { width: 36px !important; height: 36px !important; font-size: 18px !important; margin-bottom: 8px !important; }
+      .role-prozess .role-icon { background: rgba(30,95,170,0.1) !important; }
+      .role-architekt .role-icon { background: rgba(22,163,74,0.1) !important; }
+      .ki-role-card h3 { font-size: 13px; color: #111 !important; }
+      .ki-role-card p { font-size: 10px; color: #444 !important; }
+
+      /* Vergleich Timeline */
+      .ki-compare { margin-bottom: 20px; page-break-inside: avoid; }
+      .ki-cmp-header { margin-bottom: 10px; }
+      .ki-cmp-header .cmp-h-label { font-size: 9px; padding: 5px 10px; border-radius: 6px; }
+      .ki-cmp-header .cmp-h-before { background: rgba(220,38,38,0.08) !important; color: #dc2626 !important; }
+      .ki-cmp-header .cmp-h-after  { background: rgba(22,163,74,0.08) !important; color: #16a34a !important; }
+      .ki-cmp-timeline::before { background: linear-gradient(180deg, #dc2626, #16a34a) !important; opacity: 0.2 !important; }
+      .ki-cmp-row { margin-bottom: 8px; }
+      .ki-cmp-num span {
+        width: 26px !important; height: 26px !important; font-size: 11px !important;
+        background: linear-gradient(135deg, #1e5faa, #16a34a) !important; color: #fff !important;
+      }
+      .ki-cmp-card {
+        padding: 8px 10px; border-radius: 8px;
+        background: #f8f9fa !important; border: 1px solid #ddd !important;
+      }
+      .ki-cmp-card:hover { transform: none !important; box-shadow: none !important; }
+      .ki-cmp-card.cmp-after { border-color: rgba(22,163,74,0.3) !important; }
+      .ki-cmp-card .cmp-icon { font-size: 14px; margin-bottom: 2px; }
+      .ki-cmp-card .cmp-text { font-size: 10px; color: #333 !important; }
+      .ki-cmp-card.cmp-after .cmp-text { color: #111 !important; }
+      .ki-cmp-summary { margin-top: 12px; }
+      .ki-cmp-summary-card { font-size: 11px; padding: 8px 12px; border-radius: 8px; }
+      .ki-cmp-summary-card.s-before { background: rgba(220,38,38,0.05) !important; color: #dc2626 !important; border: 1px dashed rgba(220,38,38,0.3) !important; }
+      .ki-cmp-summary-card.s-after  { background: rgba(22,163,74,0.06) !important; color: #16a34a !important; border: 1px solid rgba(22,163,74,0.3) !important; }
+
+      /* Stack */
+      .ki-stack { gap: 10px; margin-bottom: 20px; page-break-inside: avoid; }
+      .ki-stack-card {
+        padding: 12px 14px; border-radius: 10px;
+        background: #f8f9fa !important; border: 1px solid #ddd !important;
+      }
+      .ki-stack-card .stack-icon { font-size: 20px; margin-bottom: 6px; }
+      .ki-stack-card h4 { font-size: 12px; color: #111 !important; }
+      .ki-stack-card .stack-sub { font-size: 9px; color: #888 !important; }
+      .ki-stack-card ul li { font-size: 10px; color: #444 !important; }
+      .stack-identity ul li::before { background: #1e5faa !important; }
+      .stack-hosting  ul li::before { background: #e87400 !important; }
+      .stack-security ul li::before { background: #16a34a !important; }
+
+      /* Flow */
+      .ki-flow {
+        padding: 12px 14px; margin-bottom: 20px; border-radius: 10px;
+        background: #f8f9fa !important; border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+      }
+      .ki-flow-step {
+        font-size: 10px; padding: 5px 10px; border-radius: 6px;
+        background: rgba(30,95,170,0.08) !important; color: #111 !important;
+      }
+      .ki-flow-arrow { font-size: 14px; color: #999 !important; }
+
+      /* Build Grid */
+      .ki-build-grid { gap: 10px; margin-bottom: 20px; page-break-inside: avoid; }
+      .ki-build-item {
+        padding: 14px 10px; border-radius: 10px;
+        background: #f8f9fa !important; border: 1px solid #ddd !important;
+      }
+      .ki-build-item:hover { transform: none !important; }
+      .ki-build-item .build-icon { font-size: 24px; margin-bottom: 6px; }
+      .ki-build-item h5 { font-size: 11px; color: #111 !important; }
+      .ki-build-item .build-time { font-size: 10px; color: #16a34a !important; }
+
+      /* Stats */
+      .ki-stats { gap: 16px; margin-bottom: 20px; page-break-inside: avoid; }
+      .ki-stat .stat-num {
+        font-size: 36px !important;
+        background: linear-gradient(135deg, #1e5faa, #16a34a) !important;
+        -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important;
+      }
+      .ki-stat .stat-label { font-size: 10px; color: #555 !important; }
+
+      /* Kernbotschaften */
+      .ki-messages { gap: 10px; page-break-inside: avoid; }
+      .ki-message {
+        padding: 12px 14px; border-radius: 10px;
+        background: #f8f9fa !important;
+        border-left: 3px solid #1e5faa !important;
+      }
+      .ki-message:nth-child(2) { border-left-color: #16a34a !important; }
+      .ki-message:nth-child(3) { border-left-color: #e87400 !important; }
+      .ki-message h5 { font-size: 12px; color: #111 !important; }
+      .ki-message p { font-size: 10px; color: #444 !important; }
+    }
   </style>
 </head>
 <body>
