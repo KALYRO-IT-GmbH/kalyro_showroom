@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KALYRO IT Showroom — Konzepte erleben</title>
-  <meta name="description" content="Interaktive Infografiken und Konzepte der Kalyro GmbH. Software-Entwicklung, CI/CD, Cloud-Hosting und mehr — visuell erklaert.">
-  <meta property="og:title" content="KALYRO IT Showroom">
-  <meta property="og:description" content="Interaktive Infografiken und Konzepte der Kalyro GmbH.">
-  <meta property="og:type" content="website">
+  <meta name="description" content="Interaktive Infografiken und Konzepte der Kalyro GmbH. Software-Entwicklung, CI/CD, Cloud-Hosting und mehr.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    /* ══════════════════════════════════════════════
+       @PROPERTY for animated gradient borders
+       ══════════════════════════════════════════════ */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @property --shimmer-pos {
+      syntax: '<percentage>';
+      initial-value: -100%;
+      inherits: false;
+    }
+
     /* ══════════════════════════════════════════════
        CSS CUSTOM PROPERTIES
        ══════════════════════════════════════════════ */
@@ -21,39 +32,35 @@
       --accent-orange: #e87400;
       --accent-red: #dc2626;
       --accent-purple: #7c3aed;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --text-primary: #1e293b;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --bg-page: #f8fafc;
-      --bg-surface: #ffffff;
-      --bg-surface-hover: #f1f5f9;
-      --bg-glass: rgba(255,255,255,0.88);
-      --border-light: #e2e8f0;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 24px rgba(0,0,0,0.06);
-      --shadow-lg: 0 16px 48px rgba(0,0,0,0.1);
-      --radius-sm: 12px;
-      --radius-md: 20px;
-      --radius-lg: 28px;
-      --transition: 0.35s cubic-bezier(.4,0,.2,1);
+      /* Kalyro Logo-Farben fuer Animationen */
+      --kalyro-blue: #1e5faa;
+      --kalyro-orange: #e87400;
     }
 
     [data-theme="dark"] {
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --bg-page: #0f172a;
-      --bg-surface: #1e293b;
-      --bg-surface-hover: #334155;
-      --bg-glass: rgba(15,23,42,0.92);
-      --border-light: #334155;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-      --shadow-md: 0 4px 24px rgba(0,0,0,0.3);
-      --shadow-lg: 0 16px 48px rgba(0,0,0,0.4);
+      --bg-page: #07080f;
+      --bg-surface: rgba(255,255,255,0.04);
+      --bg-surface-solid: #10121c;
+      --bg-surface-hover: rgba(255,255,255,0.08);
+      --bg-glass: rgba(10,12,20,0.75);
+      --text-primary: #f0f2f5;
+      --text-secondary: #8b95a8;
+      --text-muted: #4a5568;
+      --border-light: rgba(255,255,255,0.08);
+      --border-glow: rgba(30,95,170,0.3);
+    }
+
+    [data-theme="light"] {
+      --bg-page: #f8fafc;
+      --bg-surface: rgba(255,255,255,0.8);
+      --bg-surface-solid: #ffffff;
+      --bg-surface-hover: rgba(0,0,0,0.04);
+      --bg-glass: rgba(255,255,255,0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-light: rgba(0,0,0,0.08);
+      --border-glow: rgba(30,95,170,0.2);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,50 +71,140 @@
       color: var(--text-primary);
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.4s, color 0.4s;
+      transition: background 0.5s, color 0.5s;
     }
 
     /* ══════════════════════════════════════════════
-       STICKY HEADER / NAVIGATION
+       GRAIN TEXTURE OVERLAY
+       ══════════════════════════════════════════════ */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ══════════════════════════════════════════════
+       AURORA BACKGROUND (always visible)
+       ══════════════════════════════════════════════ */
+    .aurora {
+      position: fixed; inset: 0; z-index: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    .aurora-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(140px);
+      will-change: transform;
+    }
+    [data-theme="dark"] .aurora-blob { opacity: 0.35; }
+    [data-theme="light"] .aurora-blob { opacity: 0.15; }
+
+    .aurora-blob.ab1 {
+      width: 700px; height: 700px; top: -15%; left: -10%;
+      background: radial-gradient(circle, #1e5faa, transparent 70%);
+      animation: auroraFloat1 16s ease-in-out infinite alternate;
+    }
+    .aurora-blob.ab2 {
+      width: 600px; height: 600px; top: 30%; right: -5%;
+      background: radial-gradient(circle, #e87400, transparent 70%);
+      animation: auroraFloat2 20s ease-in-out infinite alternate;
+    }
+    .aurora-blob.ab3 {
+      width: 500px; height: 500px; bottom: -10%; left: 30%;
+      background: radial-gradient(circle, #e87400, transparent 70%);
+      animation: auroraFloat3 18s ease-in-out infinite alternate;
+    }
+    .aurora-blob.ab4 {
+      width: 400px; height: 400px; top: 60%; left: 5%;
+      background: radial-gradient(circle, #1e5faa, transparent 70%);
+      animation: auroraFloat1 22s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes auroraFloat1 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(80px, -40px) scale(1.15); }
+      100% { transform: translate(-30px, 60px) scale(0.95); }
+    }
+    @keyframes auroraFloat2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(-60px, 50px) scale(1.1); }
+      100% { transform: translate(40px, -80px) scale(1.05); }
+    }
+    @keyframes auroraFloat3 {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(50px, 30px) scale(1.2); }
+      100% { transform: translate(-70px, -20px) scale(0.9); }
+    }
+
+    /* ══════════════════════════════════════════════
+       SCROLL PROGRESS BAR
+       ══════════════════════════════════════════════ */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; z-index: 1000;
+      background: linear-gradient(90deg, var(--kalyro-blue), var(--kalyro-orange), var(--kalyro-blue));
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: scrollGrow linear;
+      animation-timeline: scroll(root);
+    }
+    @keyframes scrollGrow { to { transform: scaleX(1); } }
+
+    /* ══════════════════════════════════════════════
+       NAVIGATION
        ══════════════════════════════════════════════ */
     .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 64px;
+      padding: 0 40px; height: 68px;
       background: var(--bg-glass);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
       border-bottom: 1px solid var(--border-light);
-      transition: background 0.4s;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s, opacity 0.4s;
+      /* Standardmaessig ausgeblendet — wird per JS eingeblendet */
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    .nav.nav-visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .nav.nav-hidden {
+      transform: translateY(-100%);
+      opacity: 0;
     }
     .nav-brand {
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 14px;
       text-decoration: none; color: var(--text-primary);
     }
-    .nav-brand img { height: 32px; object-fit: contain; }
+    .nav-brand img { height: 34px; object-fit: contain; }
     .nav-brand span {
-      font-size: 13px; font-weight: 600; letter-spacing: 2px;
+      font-size: 11px; font-weight: 700; letter-spacing: 3px;
       text-transform: uppercase; color: var(--text-muted);
     }
-    .nav-links {
-      display: flex; align-items: center; gap: 8px;
-      list-style: none;
-    }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
     .nav-links a {
-      padding: 8px 16px; border-radius: 8px;
-      font-size: 14px; font-weight: 500; text-decoration: none;
-      color: var(--text-secondary); transition: all 0.2s;
+      padding: 8px 18px; border-radius: 10px;
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      color: var(--text-secondary); transition: all 0.25s;
     }
     .nav-links a:hover, .nav-links a.active {
       background: var(--bg-surface-hover); color: var(--text-primary);
     }
-    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
     .btn-icon {
-      width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-light);
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--border-light);
       background: var(--bg-surface); color: var(--text-secondary);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 18px; transition: all 0.2s;
+      cursor: pointer; font-size: 18px; transition: all 0.25s;
     }
-    .btn-icon:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
+    .btn-icon:hover {
+      background: var(--bg-surface-hover); color: var(--text-primary);
+      border-color: var(--border-glow);
+    }
     .hamburger { display: none; }
 
     /* ══════════════════════════════════════════════
@@ -116,240 +213,385 @@
     .hero {
       position: relative; min-height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 120px 24px 80px;
-      overflow: hidden;
+      text-align: center; padding: 140px 24px 100px;
+      z-index: 1;
     }
-    .hero-bg {
-      position: absolute; inset: 0; overflow: hidden; z-index: 0;
-    }
-    .hero-blob {
-      position: absolute; border-radius: 50%; filter: blur(120px);
-      animation: drift 14s ease-in-out infinite alternate;
-    }
-    .hero-blob.a { width: 600px; height: 600px; top: -200px; left: -100px; background: radial-gradient(circle, rgba(30,95,170,0.15), transparent 70%); }
-    .hero-blob.b { width: 500px; height: 500px; top: 100px; right: -50px; background: radial-gradient(circle, rgba(232,116,0,0.12), transparent 70%); animation-delay: -5s; }
-    .hero-blob.c { width: 550px; height: 550px; bottom: -100px; left: 30%; background: radial-gradient(circle, rgba(22,163,74,0.12), transparent 70%); animation-delay: -9s; }
-    @keyframes drift { to { transform: translate(30px,-20px) scale(1.08); } }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; }
 
-    [data-theme="dark"] .hero-blob.a { background: radial-gradient(circle, rgba(30,95,170,0.25), transparent 70%); }
-    [data-theme="dark"] .hero-blob.b { background: radial-gradient(circle, rgba(232,116,0,0.2), transparent 70%); }
-    [data-theme="dark"] .hero-blob.c { background: radial-gradient(circle, rgba(22,163,74,0.2), transparent 70%); }
+    .hero-logo {
+      height: 280px; object-fit: contain; margin-bottom: 56px;
+      animation: heroFadeIn 1s 0.2s both;
+    }
 
-    .hero-content { position: relative; z-index: 2; max-width: 800px; }
-    .hero-logo { height: 160px; object-fit: contain; margin-bottom: 40px; }
+    /* Shimmer gradient text */
     .hero h1 {
-      font-size: 56px; font-weight: 800; letter-spacing: -1px;
-      line-height: 1.1; margin-bottom: 20px;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 900; letter-spacing: -2px;
+      line-height: 1.05; margin-bottom: 24px;
+      background: linear-gradient(
+        90deg,
+        var(--text-primary) 0%,
+        var(--kalyro-blue) 30%,
+        var(--kalyro-orange) 50%,
+        var(--kalyro-blue) 70%,
+        var(--text-primary) 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4s ease-in-out infinite, heroFadeIn 1s 0.4s both;
     }
+    @keyframes shimmer {
+      0%   { background-position: 100% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .hero p {
-      font-size: 20px; font-weight: 400; color: var(--text-secondary);
-      line-height: 1.6; max-width: 600px; margin: 0 auto 40px;
+      font-size: 19px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.7; max-width: 620px; margin: 0 auto 48px;
+      animation: heroFadeIn 1s 0.6s both;
     }
+
     .hero-cta {
       display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: heroFadeIn 1s 0.8s both;
     }
+
+    /* Magnetic button base */
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px; border-radius: 12px;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px; border-radius: 14px;
       font-size: 15px; font-weight: 600; font-family: inherit;
       text-decoration: none; border: none; cursor: pointer;
-      transition: all 0.25s;
+      transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), box-shadow 0.3s, background 0.3s;
+      will-change: transform;
     }
+    .btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
     .btn-primary {
-      background: var(--accent-blue); color: #fff;
-      box-shadow: 0 4px 16px rgba(30,95,170,0.3);
+      background: linear-gradient(135deg, var(--kalyro-blue), #2a7bc8);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(30,95,170,0.35), 0 0 0 1px rgba(30,95,170,0.2);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,95,170,0.4); }
+    .btn-primary:hover {
+      box-shadow: 0 8px 40px rgba(30,95,170,0.5), 0 0 0 1px rgba(30,95,170,0.4);
+    }
     .btn-secondary {
-      background: var(--bg-surface); color: var(--text-primary);
+      background: var(--bg-surface);
+      color: var(--text-primary);
       border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px);
     }
-    .btn-secondary:hover { background: var(--bg-surface-hover); transform: translateY(-2px); }
+    .btn-secondary:hover { background: var(--bg-surface-hover); }
 
     .hero-scroll-hint {
-      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 8px;
-      color: var(--text-muted); font-size: 12px; font-weight: 500;
-      letter-spacing: 1px; text-transform: uppercase;
-      animation: bounce 2s infinite;
+      color: var(--text-muted); font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      animation: floatBounce 2.5s ease-in-out infinite;
     }
-    .hero-scroll-hint svg { width: 24px; height: 24px; stroke: var(--text-muted); }
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
+    .hero-scroll-hint svg { width: 20px; height: 20px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+    @keyframes floatBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+      50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
     }
 
     /* ══════════════════════════════════════════════
-       SECTION SHARED
+       SCROLL-DRIVEN REVEAL (CSS only where supported, JS fallback)
+       ══════════════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(50px);
+      transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.8s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Native CSS scroll-driven (progressive enhancement) */
+    @supports (animation-timeline: view()) {
+      .reveal-css {
+        animation: cssFadeIn linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 40%;
+      }
+      @keyframes cssFadeIn {
+        from { opacity: 0; transform: translateY(50px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    /* ══════════════════════════════════════════════
+       SECTIONS
        ══════════════════════════════════════════════ */
     .section {
-      padding: 100px 24px;
+      position: relative; z-index: 1;
+      padding: 120px 24px;
       max-width: 1280px; margin: 0 auto;
     }
-    .section-header {
-      text-align: center; margin-bottom: 64px;
-    }
+    .section-header { text-align: center; margin-bottom: 72px; }
     .section-label {
-      font-size: 12px; font-weight: 700; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--accent-blue);
-      margin-bottom: 12px;
+      font-size: 12px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--kalyro-blue);
+      margin-bottom: 16px;
     }
     .section-title {
-      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; letter-spacing: -1px;
       color: var(--text-primary); margin-bottom: 16px;
     }
     .section-subtitle {
-      font-size: 18px; color: var(--text-secondary);
-      max-width: 600px; margin: 0 auto; line-height: 1.6;
-    }
-
-    /* Scroll reveal animation */
-    .reveal {
-      opacity: 0; transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1; transform: translateY(0);
+      font-size: 17px; color: var(--text-secondary);
+      max-width: 560px; margin: 0 auto; line-height: 1.7;
     }
 
     /* ══════════════════════════════════════════════
-       GALLERY (Konzept-Uebersicht)
+       GALLERY — 3D TILT CARDS WITH GLOW
        ══════════════════════════════════════════════ */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
       gap: 32px;
     }
+
+    /* Gradient border wrapper */
+    .gallery-card-wrapper {
+      position: relative; border-radius: 22px;
+      padding: 1px;
+      background: var(--border-light);
+      transition: all 0.5s;
+    }
+    .gallery-card-wrapper:hover {
+      background: conic-gradient(
+        from var(--angle, 0deg),
+        var(--kalyro-blue), var(--kalyro-orange), var(--kalyro-blue), var(--kalyro-orange)
+      );
+      animation: rotateBorder 3s linear infinite;
+    }
+    @keyframes rotateBorder { to { --angle: 360deg; } }
+
     .gallery-card {
-      position: relative; border-radius: var(--radius-md); overflow: hidden;
-      background: var(--bg-surface); border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-md);
-      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative; border-radius: 21px; overflow: hidden;
+      background: var(--bg-surface-solid);
       cursor: pointer; text-decoration: none; color: inherit;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.3s;
     }
     .gallery-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
+
+    /* Cursor glow effect */
+    .gallery-card .glow {
+      position: absolute; inset: 0; z-index: 1;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.4s;
+      background: radial-gradient(
+        600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+        rgba(30,95,170,0.15), transparent 60%
+      );
+    }
+    .gallery-card:hover .glow { opacity: 1; }
+
     .gallery-card-preview {
-      position: relative; height: 220px; overflow: hidden;
-      background: linear-gradient(140deg, #f0f4f8, #e8edf2);
-    }
-    [data-theme="dark"] .gallery-card-preview {
-      background: linear-gradient(140deg, #1a2332, #243044);
-    }
-    .gallery-card-preview .preview-visual {
-      position: absolute; inset: 0;
+      position: relative; height: 200px; overflow: hidden;
+      background: linear-gradient(140deg, rgba(30,95,170,0.1), rgba(232,116,0,0.08));
       display: flex; align-items: center; justify-content: center;
-      padding: 20px;
+      padding: 24px;
     }
-    .gallery-card-preview .preview-visual svg {
+    .gallery-card-preview svg {
       width: 100%; height: 100%; object-fit: contain;
     }
     .gallery-card-preview .preview-icon {
-      font-size: 64px; opacity: 0.6;
+      font-size: 56px; opacity: 0.4;
     }
+
     .gallery-card-body {
-      padding: 24px 28px 28px;
+      position: relative; z-index: 2;
+      padding: 28px 28px 32px;
     }
-    .gallery-card-body .gc-tag {
-      display: inline-block; padding: 4px 12px; border-radius: 20px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-      text-transform: uppercase; margin-bottom: 12px;
+    .gc-tag {
+      display: inline-block; padding: 5px 14px; border-radius: 20px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 14px;
+      border: 1px solid;
     }
-    .gc-tag-blue { background: #eff6ff; color: var(--accent-blue); }
-    .gc-tag-coral { background: #fff5f5; color: #e8645a; }
-    .gc-tag-green { background: #f0fdf4; color: var(--accent-green); }
-    .gc-tag-orange { background: #fff7ed; color: var(--accent-orange); }
-    .gc-tag-purple { background: #f3f0ff; color: var(--accent-purple); }
-    [data-theme="dark"] .gc-tag-blue { background: rgba(30,95,170,0.2); }
-    [data-theme="dark"] .gc-tag-coral { background: rgba(232,100,90,0.2); }
-    [data-theme="dark"] .gc-tag-green { background: rgba(22,163,74,0.2); }
-    [data-theme="dark"] .gc-tag-orange { background: rgba(232,116,0,0.2); }
-    [data-theme="dark"] .gc-tag-purple { background: rgba(124,58,237,0.2); }
+    .gc-tag-blue { color: var(--kalyro-blue); border-color: rgba(30,95,170,0.3); background: rgba(30,95,170,0.1); }
+    .gc-tag-coral { color: #e8645a; border-color: rgba(232,100,90,0.3); background: rgba(232,100,90,0.1); }
+    .gc-tag-green { color: var(--kalyro-green); border-color: rgba(22,163,74,0.3); background: rgba(22,163,74,0.1); }
+    .gc-tag-orange { color: var(--kalyro-orange); border-color: rgba(232,116,0,0.3); background: rgba(232,116,0,0.1); }
+    .gc-tag-purple { color: var(--accent-purple); border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.1); }
+
     .gallery-card-body h3 {
-      font-size: 20px; font-weight: 700; margin-bottom: 8px;
-      color: var(--text-primary);
+      font-size: 21px; font-weight: 700; margin-bottom: 10px;
+      color: var(--text-primary); line-height: 1.3;
     }
     .gallery-card-body p {
-      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+      font-size: 14px; color: var(--text-secondary); line-height: 1.7;
     }
     .gallery-card-arrow {
-      position: absolute; bottom: 24px; right: 24px;
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--bg-surface-hover);
+      position: absolute; bottom: 28px; right: 28px;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-surface-hover); border: 1px solid var(--border-light);
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s;
+      transition: all 0.35s;
     }
     .gallery-card:hover .gallery-card-arrow {
-      background: var(--accent-blue); color: #fff;
+      background: var(--kalyro-blue); border-color: transparent;
+      box-shadow: 0 4px 20px rgba(30,95,170,0.5);
     }
     .gallery-card-arrow svg {
-      width: 18px; height: 18px;
-      stroke: var(--text-muted); stroke-width: 2; fill: none;
+      width: 18px; height: 18px; stroke: var(--text-muted); stroke-width: 2; fill: none;
     }
     .gallery-card:hover .gallery-card-arrow svg { stroke: #fff; }
 
+    /* Coming soon state */
+    .gallery-card-wrapper.coming-soon { opacity: 0.45; pointer-events: none; }
+
     /* ══════════════════════════════════════════════
-       VIEWER (Vollbild-Infografik)
+       ABOUT / LEISTUNGEN — GLASS CARDS
+       ══════════════════════════════════════════════ */
+    .about-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .about-card {
+      position: relative; padding: 36px 30px;
+      border-radius: 20px; overflow: hidden;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px);
+      transition: transform 0.4s cubic-bezier(.22,1,.36,1), box-shadow 0.4s, border-color 0.4s;
+    }
+    .about-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+      border-color: var(--border-glow);
+    }
+
+    /* Cursor glow on about cards */
+    .about-card .card-glow {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0;
+      transition: opacity 0.4s;
+      background: radial-gradient(
+        400px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+        rgba(30,95,170,0.1), transparent 60%
+      );
+    }
+    .about-card:hover .card-glow { opacity: 1; }
+
+    .about-card .about-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+    }
+    .about-card h3 {
+      font-size: 17px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .about-card p {
+      font-size: 14px; color: var(--text-secondary); line-height: 1.7;
+    }
+
+    /* Tech logos */
+    .tech-row {
+      display: flex; justify-content: center; gap: 48px;
+      flex-wrap: wrap; padding: 56px 0 0;
+    }
+    .tech-logo {
+      height: 32px; object-fit: contain; opacity: 0.3;
+      filter: grayscale(100%) brightness(1.5);
+      transition: all 0.4s;
+    }
+    [data-theme="light"] .tech-logo { filter: grayscale(100%); opacity: 0.4; }
+    .tech-logo:hover { opacity: 1; filter: grayscale(0%) brightness(1); }
+
+    /* ══════════════════════════════════════════════
+       CTA SECTION
+       ══════════════════════════════════════════════ */
+    .cta-section {
+      position: relative; z-index: 1;
+      padding: 120px 24px; text-align: center;
+    }
+    .cta-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+    .cta-content h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800; color: var(--text-primary);
+      margin-bottom: 16px; letter-spacing: -0.5px;
+    }
+    .cta-content p {
+      font-size: 17px; color: var(--text-secondary); margin-bottom: 36px; line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════════════
+       PAGE FOOTER
+       ══════════════════════════════════════════════ */
+    .page-footer {
+      position: relative; z-index: 1;
+      padding: 40px 24px; text-align: center;
+      border-top: 1px solid var(--border-light);
+    }
+    .page-footer p { font-size: 13px; color: var(--text-muted); }
+
+    /* ══════════════════════════════════════════════
+       VIEWER (Fullscreen overlay)
        ══════════════════════════════════════════════ */
     .viewer {
-      display: none; /* shown via JS */
-      position: fixed; inset: 0; z-index: 300;
+      display: none;
+      position: fixed; inset: 0; z-index: 600;
       background: var(--bg-page);
       overflow-y: auto;
-      animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .viewer.open {
+      display: block;
+      animation: viewerIn 0.4s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes viewerIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to   { opacity: 1; transform: scale(1); }
+    }
 
     .viewer-toolbar {
       position: sticky; top: 0; z-index: 10;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 24px; height: 56px;
+      padding: 12px 28px; height: 56px;
       background: var(--bg-glass);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
       border-bottom: 1px solid var(--border-light);
     }
-    .viewer-toolbar-left {
-      display: flex; align-items: center; gap: 16px;
-    }
+    .viewer-toolbar-left { display: flex; align-items: center; gap: 16px; }
     .viewer-back {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-light);
+      padding: 8px 16px; border-radius: 10px;
+      border: 1px solid var(--border-light);
       background: var(--bg-surface); color: var(--text-secondary);
       font-size: 13px; font-weight: 600; font-family: inherit;
-      cursor: pointer; transition: all 0.2s;
+      cursor: pointer; transition: all 0.25s;
     }
     .viewer-back:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-    .viewer-back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
-    .viewer-title-text {
-      font-size: 15px; font-weight: 700; color: var(--text-primary);
-    }
-    .viewer-toolbar-right {
-      display: flex; align-items: center; gap: 8px;
-    }
+    .viewer-back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .viewer-title-text { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+    .viewer-toolbar-right { display: flex; align-items: center; gap: 8px; }
     .btn-export {
-      padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border-light);
+      padding: 7px 16px; border-radius: 8px;
+      border: 1px solid var(--border-light);
       background: var(--bg-surface); color: var(--text-secondary);
       font-size: 12px; font-weight: 600; font-family: inherit;
       cursor: pointer; transition: all 0.2s;
     }
     .btn-export:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-    .btn-export.blue { background: #eff6ff; border-color: #93c5fd; color: var(--accent-blue); }
-    .btn-export.green { background: #f0fdf4; border-color: #86efac; color: var(--accent-green); }
+    .btn-export.blue { color: var(--kalyro-blue); border-color: rgba(30,95,170,0.3); }
+    .btn-export.green { color: var(--kalyro-green); border-color: rgba(22,163,74,0.3); }
 
     .viewer-content {
       display: flex; justify-content: center; align-items: flex-start;
-      padding: 32px 24px 80px;
-      min-height: calc(100vh - 56px);
+      padding: 32px 24px 40px; min-height: calc(100vh - 56px);
     }
-
-    /* Viewer navigation between concepts */
     .viewer-nav {
-      display: flex; justify-content: center; gap: 16px;
-      padding: 24px;
+      display: flex; justify-content: center; gap: 16px; padding: 24px;
     }
     .viewer-nav-btn {
       display: flex; align-items: center; gap: 8px;
@@ -357,58 +599,46 @@
       border: 1px solid var(--border-light);
       background: var(--bg-surface); color: var(--text-secondary);
       font-size: 14px; font-weight: 600; font-family: inherit;
-      cursor: pointer; transition: all 0.2s;
+      cursor: pointer; transition: all 0.25s;
     }
     .viewer-nav-btn:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-    .viewer-nav-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+    .viewer-nav-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
 
     /* ══════════════════════════════════════════════
        INFOGRAPHIC: Software-Entwicklung
        ══════════════════════════════════════════════ */
     .infographic {
-      position: relative;
-      width: 1500px; max-width: 96vw;
+      position: relative; width: 1500px; max-width: 96vw;
     }
-    .bg { position: absolute; inset: 0; border-radius: var(--radius-lg); overflow: hidden;
-      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%); }
-    [data-theme="dark"] .bg {
-      background: linear-gradient(140deg, #0f172a 0%, #1a2332 35%, #162032 65%, #0f172a 100%);
+    .inf-bg {
+      position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
     }
-    .blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.12;
-      animation: drift 14s ease-in-out infinite alternate; }
-    .blob.a { width: 520px; height: 520px; top: -120px; left: -60px; background: radial-gradient(circle, #93c5fd, transparent 70%); }
-    .blob.b { width: 420px; height: 420px; top: 80px; right: 60px; background: radial-gradient(circle, #fdba74, transparent 70%); animation-delay: -5s; }
-    .blob.c { width: 460px; height: 460px; bottom: -60px; left: 280px; background: radial-gradient(circle, #86efac, transparent 70%); animation-delay: -9s; }
-    .blob.d { width: 360px; height: 360px; bottom: 40px; right: -40px; background: radial-gradient(circle, #fca5a5, transparent 70%); animation-delay: -3s; }
-    [data-theme="dark"] .blob { opacity: 0.08; }
+    [data-theme="dark"] .inf-bg {
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
+    }
+    .inf-blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.12;
+      animation: auroraFloat1 14s ease-in-out infinite alternate; }
+    [data-theme="dark"] .inf-blob { opacity: 0.08; }
+    .inf-blob.a { width: 520px; height: 520px; top: -120px; left: -60px; background: radial-gradient(circle, #93c5fd, transparent 70%); }
+    .inf-blob.b { width: 420px; height: 420px; top: 80px; right: 60px; background: radial-gradient(circle, #fdba74, transparent 70%); animation-delay: -5s; }
+    .inf-blob.c { width: 460px; height: 460px; bottom: -60px; left: 280px; background: radial-gradient(circle, #86efac, transparent 70%); animation-delay: -9s; }
+    .inf-blob.d { width: 360px; height: 360px; bottom: 40px; right: -40px; background: radial-gradient(circle, #fca5a5, transparent 70%); animation-delay: -3s; }
 
-    .title { position: relative; text-align: center; padding: 72px 40px 12px; z-index: 2; }
-    .title h1 {
-      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
-      color: var(--text-primary);
-    }
-    .title .sub { font-size: 14px; color: var(--text-muted); margin-top: 8px;
+    .inf-title { position: relative; text-align: center; padding: 72px 40px 12px; z-index: 2; }
+    .inf-title h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
+    .inf-title .sub { font-size: 14px; color: var(--text-muted); margin-top: 8px;
       font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
 
-    .cards-area {
-      position: relative; z-index: 2;
-      padding: 36px 48px 0;
-    }
-    .cards-row {
-      display: flex; gap: 60px; justify-content: center; align-items: stretch;
-    }
+    .cards-area { position: relative; z-index: 2; padding: 36px 48px 0; }
+    .cards-row { display: flex; gap: 60px; justify-content: center; align-items: stretch; }
 
-    /* Kalyro Wrapper */
     .kalyro-wrapper {
       display: flex; flex-direction: column; align-items: center;
-      background: var(--bg-surface); border: 2px solid var(--accent-blue); border-radius: 24px;
-      padding: 20px 24px 24px;
-      box-shadow: 0 4px 24px rgba(30,95,170,0.08);
+      background: var(--bg-surface-solid); border: 2px solid var(--accent-blue); border-radius: 24px;
+      padding: 20px 24px 24px; box-shadow: 0 4px 24px rgba(30,95,170,0.08);
     }
-    .kalyro-wrapper-header {
-      display: flex; flex-direction: column; align-items: center;
-      margin-bottom: 16px;
-    }
+    .kalyro-wrapper-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
     .kalyro-wrapper-header img { height: 56px; object-fit: contain; margin-bottom: 8px; }
     .kalyro-wrapper-header .wrapper-subtitle {
       font-size: 12px; font-weight: 500; color: var(--text-muted);
@@ -416,49 +646,29 @@
     }
     .kalyro-wrapper .inner-cards { display: flex; gap: 72px; }
 
-    /* Right Wrapper */
     .right-wrapper {
       display: flex; flex-direction: column; align-items: center;
-      background: var(--bg-surface); border: 2px solid var(--accent-red); border-radius: 24px;
-      padding: 16px 20px 20px;
-      box-shadow: 0 4px 24px rgba(220,38,38,0.06);
+      background: var(--bg-surface-solid); border: 2px solid var(--accent-red); border-radius: 24px;
+      padding: 16px 20px 20px; box-shadow: 0 4px 24px rgba(220,38,38,0.06);
     }
-    .right-wrapper-header {
-      display: flex; flex-direction: column; align-items: center;
-      margin-bottom: 12px;
-    }
+    .right-wrapper-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 12px; }
     .right-wrapper-header h3 { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-    .right-wrapper-header .wrapper-subtitle {
-      font-size: 11px; font-weight: 500; color: var(--text-muted); text-align: center;
-    }
+    .right-wrapper-header .wrapper-subtitle { font-size: 11px; font-weight: 500; color: var(--text-muted); text-align: center; }
     .right-wrapper .inner-cards-right { display: flex; gap: 24px; align-items: stretch; }
     .right-wrapper .card { max-width: 240px; min-width: 200px; }
 
-    /* Cards */
     .card {
-      flex: 1; max-width: 240px; min-width: 200px; border-radius: var(--radius-md); overflow: hidden;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-md), var(--shadow-sm);
-      transition: transform var(--transition), box-shadow var(--transition);
+      flex: 1; max-width: 240px; min-width: 200px; border-radius: 20px; overflow: hidden;
+      background: var(--bg-surface-solid);
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s;
     }
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg), 0 2px 6px rgba(0,0,0,0.06);
-    }
-    .card-head {
-      position: relative; padding: 22px 24px 18px; overflow: hidden;
-    }
-    .card-head::before {
-      content: ''; position: absolute; inset: 0; opacity: 0.06;
-    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
+    .card-head { position: relative; padding: 22px 24px 18px; overflow: hidden; }
+    .card-head::before { content: ''; position: absolute; inset: 0; opacity: 0.06; }
     .card-head .icons { display: flex; gap: 10px; margin-bottom: 14px; justify-content: center; }
     .card-head .icons.single-logo .ico { width: 102px; height: 102px; border-radius: 16px; }
-    .card-head .ico.ico-overlap {
-      margin-left: -18px; z-index: 1;
-      border: 2px solid var(--bg-surface);
-      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
-    }
     .card-head .ico {
       width: 46px; height: 46px; border-radius: 13px;
       display: flex; align-items: center; justify-content: center;
@@ -471,7 +681,6 @@
       border: none; padding: 0; overflow: hidden;
     }
     .card-head .logo-icon img { width: 80%; height: 80%; object-fit: contain; }
-    .card-head .logo-icon svg { width: 60%; height: 60%; }
     .card-head h2 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
     .card-head .tag {
       display: inline-block; margin-top: 5px; padding: 3px 10px;
@@ -483,116 +692,78 @@
     .card-body li {
       display: flex; align-items: center; gap: 12px;
       padding: 9px 0; font-size: 14px; font-weight: 500;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary); border-bottom: 1px solid var(--border-light);
     }
     .card-body li:last-child { border-bottom: none; }
     .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-    /* Card color accents */
     .c-blue .card-head::before { background: linear-gradient(135deg, #3b82f6, #6366f1); }
-    .c-blue .ico { background: #eff6ff; color: var(--accent-blue); }
-    .c-blue .tag { background: #eff6ff; color: var(--accent-blue); }
+    .c-blue .ico { background: rgba(30,95,170,0.15); color: var(--accent-blue); }
+    .c-blue .tag { background: rgba(30,95,170,0.15); color: var(--accent-blue); }
     .c-blue .dot { background: var(--accent-blue); }
     .c-green .card-head::before { background: linear-gradient(135deg, #22c55e, #10b981); }
-    .c-green .ico { background: #f0fdf4; color: var(--accent-green); }
-    .c-green .tag { background: #f0fdf4; color: var(--accent-green); }
+    .c-green .ico { background: rgba(22,163,74,0.15); color: var(--accent-green); }
+    .c-green .tag { background: rgba(22,163,74,0.15); color: var(--accent-green); }
     .c-green .dot { background: var(--accent-green); }
     .c-orange .card-head::before { background: linear-gradient(135deg, #f97316, #eab308); }
-    .c-orange .ico { background: #fff7ed; color: var(--accent-orange); }
-    .c-orange .tag { background: #fff7ed; color: var(--accent-orange); }
+    .c-orange .ico { background: rgba(232,116,0,0.15); color: var(--accent-orange); }
+    .c-orange .tag { background: rgba(232,116,0,0.15); color: var(--accent-orange); }
     .c-orange .dot { background: var(--accent-orange); }
     .c-red .card-head::before { background: linear-gradient(135deg, #ef4444, #f43f5e); }
-    .c-red .ico { background: #fef2f2; color: var(--accent-red); }
-    .c-red .tag { background: #fef2f2; color: var(--accent-red); }
+    .c-red .ico { background: rgba(220,38,38,0.15); color: var(--accent-red); }
+    .c-red .tag { background: rgba(220,38,38,0.15); color: var(--accent-red); }
     .c-red .dot { background: var(--accent-red); }
     .c-purple .card-head::before { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-    .c-purple .ico { background: #f3f0ff; color: var(--accent-purple); }
-    .c-purple .tag { background: #f3f0ff; color: var(--accent-purple); }
+    .c-purple .ico { background: rgba(124,58,237,0.15); color: var(--accent-purple); }
+    .c-purple .tag { background: rgba(124,58,237,0.15); color: var(--accent-purple); }
     .c-purple .dot { background: var(--accent-purple); }
 
-    [data-theme="dark"] .c-blue .ico { background: rgba(30,95,170,0.2); }
-    [data-theme="dark"] .c-green .ico { background: rgba(22,163,74,0.2); }
-    [data-theme="dark"] .c-orange .ico { background: rgba(232,116,0,0.2); }
-    [data-theme="dark"] .c-red .ico { background: rgba(220,38,38,0.2); }
-    [data-theme="dark"] .c-purple .ico { background: rgba(124,58,237,0.2); }
-    [data-theme="dark"] .c-blue .tag { background: rgba(30,95,170,0.2); }
-    [data-theme="dark"] .c-green .tag { background: rgba(22,163,74,0.2); }
-    [data-theme="dark"] .c-orange .tag { background: rgba(232,116,0,0.2); }
-    [data-theme="dark"] .c-red .tag { background: rgba(220,38,38,0.2); }
-    [data-theme="dark"] .c-purple .tag { background: rgba(124,58,237,0.2); }
-
-    /* SVG Arrows Overlay */
     .arrows-svg {
       position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none; z-index: 3; overflow: visible;
+      width: 100%; height: 100%; pointer-events: none; z-index: 3; overflow: visible;
     }
 
-    /* Interface Connector Bar */
-    .interface-section {
-      position: relative; z-index: 2; padding: 20px 48px 0;
-    }
+    .interface-section { position: relative; z-index: 2; padding: 20px 48px 0; }
     .interface-bar {
-      display: flex; align-items: center; gap: 20px;
-      width: 100%;
-      background: var(--bg-surface);
-      border: 2px solid var(--accent-purple);
-      border-radius: 16px;
+      display: flex; align-items: center; gap: 20px; width: 100%;
+      background: var(--bg-surface-solid);
+      border: 2px solid var(--accent-purple); border-radius: 16px;
       padding: 14px 28px;
-      box-shadow: 0 4px 24px rgba(124,58,237,0.08), var(--shadow-sm);
+      box-shadow: 0 4px 24px rgba(124,58,237,0.08);
     }
     .interface-bar .if-icon {
       width: 40px; height: 40px; border-radius: 10px;
-      background: #f3f0ff; flex-shrink: 0;
+      background: rgba(124,58,237,0.15); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       border: 1px solid rgba(124,58,237,0.12);
     }
-    [data-theme="dark"] .interface-bar .if-icon { background: rgba(124,58,237,0.15); }
     .interface-bar .if-icon img { width: 26px; height: 26px; object-fit: contain; }
-    .interface-bar .if-title {
-      font-size: 15px; font-weight: 700; color: var(--text-primary); white-space: nowrap;
-    }
+    .interface-bar .if-title { font-size: 15px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
     .interface-bar .if-tag {
       display: inline-block; padding: 3px 10px; border-radius: 20px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
-      text-transform: uppercase;
-      background: #f3f0ff; color: var(--accent-purple); white-space: nowrap;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      background: rgba(124,58,237,0.15); color: var(--accent-purple); white-space: nowrap;
     }
-    [data-theme="dark"] .interface-bar .if-tag { background: rgba(124,58,237,0.2); }
-    .interface-bar .if-sep {
-      width: 1px; height: 28px; background: var(--border-light); flex-shrink: 0;
-    }
-    .interface-bar .if-items {
-      display: flex; gap: 24px; flex-wrap: wrap; list-style: none;
-    }
+    .interface-bar .if-sep { width: 1px; height: 28px; background: var(--border-light); flex-shrink: 0; }
+    .interface-bar .if-items { display: flex; gap: 24px; flex-wrap: wrap; list-style: none; }
     .interface-bar .if-items li {
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; font-weight: 500; color: var(--text-secondary); white-space: nowrap;
     }
-    .interface-bar .if-items .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent-purple); flex-shrink: 0;
-    }
+    .interface-bar .if-items .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-purple); flex-shrink: 0; }
 
-    /* Footer in infographic */
     .infographic-footer {
       position: relative; z-index: 2;
       display: flex; justify-content: center; align-items: center;
       gap: 36px; padding: 28px 40px 44px;
     }
     .footer-item { font-size: 16px; font-weight: 600; color: var(--text-secondary); }
-    .footer-sep {
-      width: 48px; height: 2px; position: relative;
-      background: linear-gradient(90deg, #cbd5e1, #94a3b8);
-    }
+    .footer-sep { width: 48px; height: 2px; position: relative; background: linear-gradient(90deg, #4a5568, #64748b); }
     .footer-sep::after {
       content: ''; position: absolute; right: -5px; top: -4px;
-      border-left: 7px solid #94a3b8;
-      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-left: 7px solid #64748b; border-top: 5px solid transparent; border-bottom: 5px solid transparent;
     }
 
-    /* Device Icons */
     .devices-icons { display: flex; align-items: flex-end; gap: 8px; }
     .dev { border-radius: 6px; background: var(--bg-surface-hover); border: 1px solid var(--border-light); overflow: hidden; }
     .dev-laptop { width: 72px; border-radius: 6px 6px 0 0; }
@@ -605,136 +776,34 @@
     .dev-phone .sblk { height: 7px; }
 
     /* ══════════════════════════════════════════════
-       INFOGRAPHIC: CI/CD Infinity Loop
+       CI/CD INFINITY LOOP
        ══════════════════════════════════════════════ */
     .diagram-cicd {
       position: relative; width: 1100px; max-width: 96vw; margin: 0 auto;
     }
     .diagram-cicd .bg-cicd {
-      position: absolute; inset: 0; border-radius: var(--radius-lg); overflow: hidden;
+      position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
       background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
     }
     [data-theme="dark"] .diagram-cicd .bg-cicd {
-      background: linear-gradient(140deg, #0f172a 0%, #1a2332 35%, #162032 65%, #0f172a 100%);
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
     }
+    .diagram-cicd .title-cicd { position: relative; text-align: center; padding: 52px 40px 0; z-index: 2; }
+    .diagram-cicd .title-cicd h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
+    .diagram-cicd .title-cicd .sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; }
     .diagram-cicd .cicd-content {
       position: relative; z-index: 2;
       display: flex; justify-content: center; align-items: center;
       padding: 40px 40px 48px;
     }
-    .diagram-cicd .cicd-content .infinity-container {
-      position: relative; width: 100%; max-width: 960px;
-    }
-    .diagram-cicd .cicd-content .infinity-container svg {
-      width: 100%; height: auto; display: block;
-    }
-    .diagram-cicd .title-cicd {
-      position: relative; text-align: center; padding: 52px 40px 0; z-index: 2;
-    }
-    .diagram-cicd .title-cicd h1 {
-      font-size: 40px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary);
-    }
-    .diagram-cicd .title-cicd .sub {
-      font-size: 14px; color: var(--text-muted); margin-top: 8px;
-      font-weight: 400; letter-spacing: 3px; text-transform: uppercase;
-    }
-    .phase-label { cursor: default; transition: transform 0.3s ease; }
-    .phase-label:hover .phase-bg { opacity: 0.9; }
-    .phase-label:hover .phase-text { font-weight: 800; }
-    @keyframes flowParticle {
-      0% { offset-distance: 0%; opacity: 0; }
-      5% { opacity: 1; }
-      95% { opacity: 1; }
-      100% { offset-distance: 100%; opacity: 0; }
-    }
-    .flow-dot {
-      position: absolute; width: 8px; height: 8px; border-radius: 50%;
-      offset-rotate: 0deg;
-      animation: flowParticle 6s linear infinite;
-    }
-
-    /* ══════════════════════════════════════════════
-       ABOUT / UEBER UNS
-       ══════════════════════════════════════════════ */
-    .about-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
-    }
-    .about-card {
-      padding: 36px 32px; border-radius: var(--radius-md);
-      background: var(--bg-surface); border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .about-card:hover {
-      transform: translateY(-4px); box-shadow: var(--shadow-md);
-    }
-    .about-card .about-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin-bottom: 20px;
-    }
-    .about-card h3 {
-      font-size: 18px; font-weight: 700; color: var(--text-primary);
-      margin-bottom: 10px;
-    }
-    .about-card p {
-      font-size: 14px; color: var(--text-secondary); line-height: 1.7;
-    }
-
-    /* Tech logos row */
-    .tech-row {
-      display: flex; justify-content: center; gap: 40px;
-      flex-wrap: wrap; padding: 48px 0 0;
-    }
-    .tech-logo {
-      height: 36px; object-fit: contain; opacity: 0.5;
-      filter: grayscale(100%);
-      transition: all 0.3s;
-    }
-    .tech-logo:hover { opacity: 1; filter: grayscale(0%); }
-
-    /* ══════════════════════════════════════════════
-       CTA SECTION
-       ══════════════════════════════════════════════ */
-    .cta-section {
-      position: relative; padding: 100px 24px;
-      text-align: center; overflow: hidden;
-    }
-    .cta-section::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(30,95,170,0.05), rgba(22,163,74,0.05));
-    }
-    [data-theme="dark"] .cta-section::before {
-      background: linear-gradient(135deg, rgba(30,95,170,0.1), rgba(22,163,74,0.08));
-    }
-    .cta-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-    .cta-content h2 {
-      font-size: 36px; font-weight: 800; color: var(--text-primary);
-      margin-bottom: 16px;
-    }
-    .cta-content p {
-      font-size: 18px; color: var(--text-secondary); margin-bottom: 32px;
-      line-height: 1.6;
-    }
-
-    /* ══════════════════════════════════════════════
-       PAGE FOOTER
-       ══════════════════════════════════════════════ */
-    .page-footer {
-      padding: 40px 24px; text-align: center;
-      border-top: 1px solid var(--border-light);
-    }
-    .page-footer p {
-      font-size: 13px; color: var(--text-muted);
-    }
+    .diagram-cicd .infinity-container { position: relative; width: 100%; max-width: 960px; }
+    .diagram-cicd .infinity-container svg { width: 100%; height: auto; display: block; }
 
     /* ══════════════════════════════════════════════
        RESPONSIVE
        ══════════════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .hero h1 { font-size: 40px; }
-      .hero p { font-size: 17px; }
-      .section-title { font-size: 32px; }
+      .section-title { font-size: 2rem; }
       .about-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
       .gallery-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
       .nav-links { display: none; }
@@ -744,85 +813,213 @@
       .cards-row { flex-direction: column; align-items: center; }
       .card { max-width: 90%; }
       .arrows-svg { display: none; }
-      .title h1 { font-size: 26px; }
+      .inf-title h1 { font-size: 26px; }
       .infographic-footer { flex-direction: column; gap: 12px; }
       .footer-sep { display: none; }
     }
     @media (max-width: 640px) {
-      .hero h1 { font-size: 32px; }
-      .hero p { font-size: 16px; }
       .nav { padding: 0 16px; }
-      .section { padding: 64px 16px; }
-      .viewer-toolbar { padding: 12px 16px; }
+      .section { padding: 80px 16px; }
       .viewer-toolbar-right { display: none; }
     }
     @media (max-width: 480px) {
-      .hero h1 { font-size: 28px; }
       .hero-cta { flex-direction: column; align-items: center; }
     }
 
+    /* ══════════════════════════════════════════════
+       ADMIN MODE
+       ══════════════════════════════════════════════ */
+    .admin-badge {
+      display: none;
+      padding: 5px 14px; border-radius: 20px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(232,116,0,0.15); color: var(--kalyro-orange);
+      border: 1px solid rgba(232,116,0,0.3);
+    }
+    body.admin-mode .admin-badge { display: inline-flex; align-items: center; gap: 6px; }
+    body.admin-mode .admin-only { display: block !important; }
+
+    /* Draft overlay on admin-only cards */
+    body.admin-mode .admin-only .gallery-card::after {
+      content: 'ENTWURF';
+      position: absolute; top: 14px; right: 14px; z-index: 10;
+      padding: 4px 12px; border-radius: 8px;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+      background: rgba(232,116,0,0.9); color: #fff;
+    }
+
+    .admin-nav-link { display: none !important; }
+    body.admin-mode .admin-nav-link { display: inline-flex !important; }
+
+    /* Admin login overlay */
+    .admin-login {
+      display: none;
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+    }
+    .admin-login.open { display: flex; }
+    .admin-login-card {
+      width: 100%; max-width: 420px; padding: 40px;
+      background: var(--bg-surface-solid); border-radius: 24px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+    .admin-login-card img { height: 48px; margin-bottom: 24px; }
+    .admin-login-card h2 {
+      font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--text-primary);
+    }
+    .admin-login-card p {
+      font-size: 14px; color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6;
+    }
+    .admin-login-card .btn { width: 100%; justify-content: center; }
+    .admin-login-card .login-info {
+      font-size: 12px; color: var(--text-muted); margin-top: 16px;
+    }
+    .admin-login-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(255,255,255,0.1); border: none;
+      color: #fff; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Admin panel section */
+    .admin-panel {
+      display: none;
+      position: relative; z-index: 1;
+      max-width: 1280px; margin: 0 auto;
+      padding: 120px 24px 60px;
+    }
+    body.admin-mode .admin-panel { display: block; }
+    .admin-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .admin-panel-header h2 {
+      font-size: 24px; font-weight: 800; color: var(--text-primary);
+    }
+    .admin-user {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 16px; border-radius: 12px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .admin-user img {
+      width: 28px; height: 28px; border-radius: 50%;
+    }
+    .admin-user span { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .admin-logout {
+      padding: 6px 14px; border-radius: 8px;
+      background: var(--bg-surface-hover); border: 1px solid var(--border-light);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: all 0.2s;
+    }
+    .admin-logout:hover { color: var(--accent-red); border-color: var(--accent-red); }
+
+    .admin-concepts-list {
+      display: grid; grid-template-columns: 1fr; gap: 16px;
+    }
+    .admin-concept-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-radius: 16px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .admin-concept-info { display: flex; align-items: center; gap: 16px; }
+    .admin-concept-info .status-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .admin-concept-info .status-dot.live { background: var(--accent-green); box-shadow: 0 0 8px rgba(22,163,74,0.4); }
+    .admin-concept-info .status-dot.draft { background: var(--kalyro-orange); box-shadow: 0 0 8px rgba(232,116,0,0.4); }
+    .admin-concept-info h4 { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .admin-concept-info .status-text { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .admin-concept-actions { display: flex; gap: 8px; }
+    .admin-concept-actions button {
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.2s;
+      border: 1px solid var(--border-light);
+      background: var(--bg-surface-hover); color: var(--text-secondary);
+    }
+    .admin-concept-actions button:hover { color: var(--text-primary); }
+    .admin-concept-actions .btn-preview {
+      color: var(--kalyro-blue); border-color: rgba(30,95,170,0.3);
+    }
+
     @media print {
-      .nav, .hero, .cta-section, .page-footer { display: none; }
+      .nav, .hero, .aurora, .cta-section, .page-footer, .scroll-progress { display: none; }
       body { background: #fff; }
-      .bg { background: #f8fafc !important; }
-      .blob { display: none; }
+      body::after { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ══════════════════════════════════════════════
-       NAVIGATION
-       ══════════════════════════════════════════════ -->
-  <nav class="nav" id="nav">
+  <!-- AURORA BACKGROUND -->
+  <div class="aurora" aria-hidden="true">
+    <div class="aurora-blob ab1"></div>
+    <div class="aurora-blob ab2"></div>
+    <div class="aurora-blob ab3"></div>
+    <div class="aurora-blob ab4"></div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
     <a href="#" class="nav-brand" onclick="navigateTo('home'); return false;">
       <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT">
       <span>Showroom</span>
     </a>
     <ul class="nav-links">
-      <li><a href="#konzepte" class="active" onclick="navigateTo('home', 'konzepte')">Konzepte</a></li>
-      <li><a href="#ueber-uns" onclick="navigateTo('home', 'ueber-uns')">Leistungen</a></li>
-      <li><a href="#kontakt" onclick="navigateTo('home', 'kontakt')">Kontakt</a></li>
+      <li><a href="#konzepte" class="active">Konzepte</a></li>
+      <li><a href="#ueber-uns">Leistungen</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+      <li><a href="#admin" class="admin-nav-link" onclick="scrollToAdmin()">Admin</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Dark Mode umschalten">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="admin-badge" id="admin-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Admin
+      </span>
+      <button class="btn-icon" id="theme-toggle" onclick="toggleTheme()" title="Theme wechseln">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
-      <button class="btn-icon hamburger" id="hamburger" onclick="toggleMobileMenu()" title="Menue">
+      <button class="btn-icon" id="admin-login-btn" onclick="isAdmin ? scrollToAdmin() : showAdminLogin()" title="Admin-Zugang">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </button>
+      <button class="btn-icon hamburger" onclick="toggleMobileMenu()" title="Menue">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
   </nav>
 
   <!-- ══════════════════════════════════════════════
-       MAIN CONTENT (scrollable page)
+       MAIN PAGE
        ══════════════════════════════════════════════ -->
   <main id="main-page">
 
     <!-- HERO -->
     <section class="hero" id="hero">
-      <div class="hero-bg">
-        <div class="hero-blob a"></div>
-        <div class="hero-blob b"></div>
-        <div class="hero-blob c"></div>
-      </div>
-      <div class="hero-content reveal">
+      <div class="hero-content">
         <img src="assets/logos/Kalyro_IT_Logo.png" alt="KALYRO IT" class="hero-logo">
         <h1>Wir machen IT sichtbar</h1>
         <p>Interaktive Infografiken und visuelle Konzepte &mdash; von der Idee bis zum produktiven Betrieb. Entdecken Sie, wie moderne IT-Dienstleistung aussieht.</p>
         <div class="hero-cta">
-          <a href="#konzepte" class="btn btn-primary" onclick="navigateTo('home', 'konzepte')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <a href="#konzepte" class="btn btn-primary magnetic">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Konzepte entdecken
           </a>
-          <a href="#ueber-uns" class="btn btn-secondary" onclick="navigateTo('home', 'ueber-uns')">
+          <a href="#ueber-uns" class="btn btn-secondary magnetic">
             Mehr erfahren
           </a>
         </div>
       </div>
       <div class="hero-scroll-hint">
         <span>Scrollen</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
       </div>
     </section>
 
@@ -835,89 +1032,93 @@
       </div>
       <div class="gallery-grid">
 
-        <!-- Card 1: Software-Entwicklung -->
-        <a class="gallery-card reveal" onclick="openViewer('software-entwicklung')" role="button" tabindex="0">
-          <div class="gallery-card-preview">
-            <div class="preview-visual">
+        <!-- Software-Entwicklung -->
+        <div class="gallery-card-wrapper reveal">
+          <div class="gallery-card tilt-card" onclick="openViewer('software-entwicklung')" role="button" tabindex="0">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
               <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="20" y="30" width="80" height="120" rx="10" fill="#dbeafe" stroke="#1e5faa" stroke-width="2"/>
+                <rect x="20" y="30" width="80" height="120" rx="10" fill="rgba(30,95,170,0.15)" stroke="#1e5faa" stroke-width="2"/>
                 <rect x="30" y="36" width="60" height="16" rx="4" fill="#1e5faa"/>
-                <rect x="120" y="30" width="80" height="120" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+                <rect x="120" y="30" width="80" height="120" rx="10" fill="rgba(22,163,74,0.15)" stroke="#16a34a" stroke-width="2"/>
                 <rect x="130" y="36" width="60" height="16" rx="4" fill="#16a34a"/>
-                <rect x="220" y="30" width="80" height="120" rx="10" fill="#fed7aa" stroke="#e87400" stroke-width="2"/>
+                <rect x="220" y="30" width="80" height="120" rx="10" fill="rgba(232,116,0,0.15)" stroke="#e87400" stroke-width="2"/>
                 <rect x="230" y="36" width="60" height="16" rx="4" fill="#e87400"/>
-                <line x1="100" y1="90" x2="120" y2="90" stroke="#94a3b8" stroke-width="2" marker-end="url(#prev-arrow)"/>
-                <line x1="200" y1="90" x2="220" y2="90" stroke="#94a3b8" stroke-width="2" marker-end="url(#prev-arrow)"/>
-                <defs><marker id="prev-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 6 3 L 0 6 z" fill="#94a3b8"/></marker></defs>
+                <line x1="100" y1="90" x2="120" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#pa)"/>
+                <line x1="200" y1="90" x2="220" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#pa)"/>
+                <defs><marker id="pa" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 6 3 L 0 6 z" fill="#4a5568"/></marker></defs>
               </svg>
             </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-blue">Infografik</span>
+              <h3>Moderne Software-Entwicklung &amp; Bereitstellung</h3>
+              <p>End-to-End-Workflow von Anforderung bis Deployment &mdash; Cloud-Hosting, Qualitaetssicherung und Unternehmens-IT.</p>
+            </div>
+            <div class="gallery-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
           </div>
-          <div class="gallery-card-body">
-            <span class="gc-tag gc-tag-blue">Infografik</span>
-            <h3>Moderne Software-Entwicklung &amp; Bereitstellung</h3>
-            <p>End-to-End-Workflow von Anforderung bis Deployment &mdash; mit Cloud-Hosting, Qualitaetssicherung und Unternehmens-IT.</p>
-          </div>
-          <div class="gallery-card-arrow">
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </a>
+        </div>
 
-        <!-- Card 2: CI/CD Infinity Loop -->
-        <a class="gallery-card reveal" onclick="openViewer('cicd-infinity')" role="button" tabindex="0">
-          <div class="gallery-card-preview">
-            <div class="preview-visual">
+        <!-- CI/CD Infinity Loop (Admin only) -->
+        <div class="gallery-card-wrapper reveal admin-only" style="display:none;">
+          <div class="gallery-card tilt-card" onclick="openViewer('cicd-infinity')" role="button" tabindex="0">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
               <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 130,130 A 50,50 0 1 1 130,50 C 155,50 205,130 230,130 A 50,50 0 1 0 230,50 C 205,50 155,130 130,130 Z" stroke="#e8645a" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.7"/>
-                <path d="M 230,50 A 50,50 0 1 1 230,130 C 205,130 155,50 130,50 A 50,50 0 1 0 130,130 C 155,130 205,50 230,50 Z" stroke="#3cc8b4" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.7"/>
-                <circle cx="100" cy="90" r="24" fill="#1e1e3a" opacity="0.5"/>
-                <text x="100" y="96" text-anchor="middle" font-family="Inter" font-size="16" font-weight="800" fill="white">CI</text>
-                <circle cx="260" cy="90" r="24" fill="#1e1e3a" opacity="0.5"/>
-                <text x="260" y="96" text-anchor="middle" font-family="Inter" font-size="16" font-weight="800" fill="white">CD</text>
+                <path d="M 130,130 A 50,50 0 1 1 130,50 C 155,50 205,130 230,130 A 50,50 0 1 0 230,50 C 205,50 155,130 130,130 Z" stroke="#e8645a" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.8"/>
+                <path d="M 230,50 A 50,50 0 1 1 230,130 C 205,130 155,50 130,50 A 50,50 0 1 0 130,130 C 155,130 205,50 230,50 Z" stroke="#3cc8b4" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.8"/>
+                <circle cx="100" cy="90" r="22" fill="#1e1e3a" opacity="0.6"/>
+                <text x="100" y="96" text-anchor="middle" font-family="Inter" font-size="15" font-weight="800" fill="white">CI</text>
+                <circle cx="260" cy="90" r="22" fill="#1e1e3a" opacity="0.6"/>
+                <text x="260" y="96" text-anchor="middle" font-family="Inter" font-size="15" font-weight="800" fill="white">CD</text>
               </svg>
             </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-coral">Entwurf</span>
+              <h3>CI/CD Infinity Loop</h3>
+              <p>Der kontinuierliche Kreislauf von Integration und Deployment &mdash; animiert mit Coral/Teal-Farbschema.</p>
+            </div>
+            <div class="gallery-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
           </div>
-          <div class="gallery-card-body">
-            <span class="gc-tag gc-tag-coral">Prozess</span>
-            <h3>CI/CD Infinity Loop</h3>
-            <p>Der kontinuierliche Kreislauf von Integration und Deployment &mdash; animiert mit Coral/Teal-Farbschema.</p>
-          </div>
-          <div class="gallery-card-arrow">
-            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </a>
+        </div>
 
-        <!-- Card 3: Cloud-Architektur (Vorschau) -->
-        <a class="gallery-card reveal" style="opacity: 0.6; pointer-events: none;">
-          <div class="gallery-card-preview">
-            <div class="preview-visual">
+        <!-- Cloud-Architektur (Admin only) -->
+        <div class="gallery-card-wrapper coming-soon reveal admin-only" style="display:none;">
+          <div class="gallery-card">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
               <span class="preview-icon">&#9729;</span>
             </div>
-          </div>
-          <div class="gallery-card-body">
-            <span class="gc-tag gc-tag-orange">Kommt bald</span>
-            <h3>Cloud-Architektur</h3>
-            <p>Azure-Setup, Skalierung und Monitoring &mdash; Ihre Infrastruktur auf einen Blick.</p>
-          </div>
-        </a>
-
-        <!-- Card 4: Security & Compliance (Vorschau) -->
-        <a class="gallery-card reveal" style="opacity: 0.6; pointer-events: none;">
-          <div class="gallery-card-preview">
-            <div class="preview-visual">
-              <span class="preview-icon">&#128274;</span>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-orange">Entwurf</span>
+              <h3>Cloud-Architektur</h3>
+              <p>Azure-Setup, Skalierung und Monitoring &mdash; Ihre Infrastruktur auf einen Blick.</p>
             </div>
           </div>
-          <div class="gallery-card-body">
-            <span class="gc-tag gc-tag-green">Kommt bald</span>
-            <h3>Security &amp; Compliance</h3>
-            <p>DSGVO, Zero-Trust und Sicherheitskonzepte &mdash; visuell erklaert fuer Entscheider.</p>
+        </div>
+
+        <!-- Security & Compliance (Admin only) -->
+        <div class="gallery-card-wrapper coming-soon reveal admin-only" style="display:none;">
+          <div class="gallery-card">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
+              <span class="preview-icon">&#128274;</span>
+            </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-blue">Entwurf</span>
+              <h3>Security &amp; Compliance</h3>
+              <p>DSGVO, Zero-Trust und Sicherheitskonzepte &mdash; visuell erklaert.</p>
+            </div>
           </div>
-        </a>
+        </div>
 
       </div>
     </section>
 
-    <!-- UEBER KALYRO / LEISTUNGEN -->
+    <!-- LEISTUNGEN -->
     <section class="section" id="ueber-uns">
       <div class="section-header reveal">
         <div class="section-label">Leistungen</div>
@@ -926,32 +1127,38 @@
       </div>
       <div class="about-grid">
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #eff6ff; color: #1e5faa;">&#128187;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(30,95,170,0.12); color: var(--accent-blue);">&#128187;</div>
           <h3>Software-Entwicklung</h3>
-          <p>Individuelle Web- und App-Entwicklung mit modernen Technologien. KI-gestuetzte Workflows fuer hoehere Qualitaet und schnellere Ergebnisse.</p>
+          <p>Individuelle Web- und App-Entwicklung mit modernen Technologien. KI-gestuetzte Workflows fuer hoehere Qualitaet.</p>
         </div>
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #f0fdf4; color: #16a34a;">&#9889;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(22,163,74,0.12); color: var(--accent-green);">&#9889;</div>
           <h3>CI/CD &amp; Automatisierung</h3>
-          <p>Continuous Integration und Deployment fuer zuverlaessige Releases. Automatische Tests, Code-Reviews und Quality Gates.</p>
+          <p>Continuous Integration und Deployment fuer zuverlaessige Releases. Automatische Tests und Quality Gates.</p>
         </div>
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #fff7ed; color: #e87400;">&#9729;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(232,116,0,0.12); color: var(--accent-orange);">&#9729;</div>
           <h3>Cloud &amp; Infrastruktur</h3>
           <p>Azure Cloud-Hosting mit hoher Verfuegbarkeit. Skalierbare Architekturen und professionelles Monitoring.</p>
         </div>
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #fef2f2; color: #dc2626;">&#128274;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(220,38,38,0.12); color: var(--accent-red);">&#128274;</div>
           <h3>Sicherheit &amp; Datenschutz</h3>
           <p>DSGVO-konforme Loesungen, Verschluesselung und Zugriffskontrollen. Ihre Daten sind bei uns sicher.</p>
         </div>
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #f3f0ff; color: #7c3aed;">&#128268;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(167,139,250,0.12); color: var(--accent-purple);">&#128268;</div>
           <h3>Integration &amp; Schnittstellen</h3>
-          <p>REST APIs, Datenbank-Anbindungen und Import/Export. Nahtlose Verbindung mit bestehenden Systemen wie SAP.</p>
+          <p>REST APIs, Datenbank-Anbindungen und Import/Export. Nahtlose Verbindung mit bestehenden Systemen.</p>
         </div>
         <div class="about-card reveal">
-          <div class="about-icon" style="background: #fefce8; color: #ca8a04;">&#129302;</div>
+          <div class="card-glow"></div>
+          <div class="about-icon" style="background: rgba(250,204,21,0.12); color: #eab308;">&#129302;</div>
           <h3>KI &amp; Innovation</h3>
           <p>Einsatz von KI-Assistenzen wie Claude Code fuer intelligente Softwareentwicklung und Prozessoptimierung.</p>
         </div>
@@ -968,23 +1175,50 @@
     <section class="cta-section" id="kontakt">
       <div class="cta-content reveal">
         <h2>Interesse geweckt?</h2>
-        <p>Lassen Sie uns gemeinsam Ihre IT-Vision sichtbar machen. Sprechen Sie uns an &mdash; wir freuen uns auf den Austausch.</p>
-        <a href="mailto:info@kalyro.de" class="btn btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <p>Lassen Sie uns gemeinsam Ihre IT-Vision sichtbar machen. Sprechen Sie uns an.</p>
+        <a href="mailto:info@kalyro.de" class="btn btn-primary magnetic">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Kontakt aufnehmen
         </a>
       </div>
     </section>
 
-    <!-- PAGE FOOTER -->
+    <!-- ADMIN PANEL (nur im Admin-Modus sichtbar) -->
+    <div class="admin-panel" id="admin-panel">
+      <div class="admin-panel-header">
+        <h2>Konzept-Verwaltung</h2>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="admin-user" id="admin-user-info"></div>
+          <button class="admin-logout" onclick="logoutAdmin()">Abmelden</button>
+        </div>
+      </div>
+      <div class="admin-concepts-list" id="admin-concepts-list"></div>
+    </div>
+
     <footer class="page-footer">
       <p>&copy; 2026 Kalyro GmbH &mdash; Alle Rechte vorbehalten.</p>
     </footer>
-
   </main>
 
   <!-- ══════════════════════════════════════════════
-       VIEWER (Fullscreen overlay for diagrams)
+       ADMIN LOGIN OVERLAY
+       ══════════════════════════════════════════════ -->
+  <div class="admin-login" id="admin-login">
+    <button class="admin-login-close" onclick="closeAdminLogin()">&times;</button>
+    <div class="admin-login-card">
+      <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT">
+      <h2>Admin-Zugang</h2>
+      <p>Melden Sie sich mit Ihrem Kalyro Microsoft-Konto an, um auf unveroffentlichte Konzepte und den Admin-Bereich zuzugreifen.</p>
+      <button class="btn btn-primary" onclick="loginWithMicrosoft()" style="width:100%;justify-content:center;">
+        <svg viewBox="0 0 21 21" width="20" height="20" fill="none"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+        Mit Microsoft anmelden
+      </button>
+      <p class="login-info">Nur fuer Mitglieder des Kalyro-Tenants.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       VIEWER
        ══════════════════════════════════════════════ -->
   <div class="viewer" id="viewer">
     <div class="viewer-toolbar">
@@ -998,43 +1232,33 @@
       <div class="viewer-toolbar-right">
         <button class="btn-export blue" onclick="exportAsImage('svg')">&#8681; SVG</button>
         <button class="btn-export green" onclick="exportAsImage('png', 2)">&#8681; PNG 2x</button>
-        <button class="btn-export" onclick="exportAsImage('png', 4)">&#8681; PNG 4x Print</button>
+        <button class="btn-export" onclick="exportAsImage('png', 4)">&#8681; PNG 4x</button>
       </div>
     </div>
-
     <div class="viewer-content" id="viewer-content">
 
-      <!-- Software-Entwicklung Infographic -->
-      <div class="infographic" id="infographic" style="display: none;">
-        <div class="bg">
-          <div class="blob a"></div>
-          <div class="blob b"></div>
-          <div class="blob c"></div>
-          <div class="blob d"></div>
+      <!-- Software-Entwicklung -->
+      <div class="infographic" id="infographic" style="display:none;">
+        <div class="inf-bg">
+          <div class="inf-blob a"></div><div class="inf-blob b"></div>
+          <div class="inf-blob c"></div><div class="inf-blob d"></div>
         </div>
-
-        <div class="title">
+        <div class="inf-title">
           <h1>Moderne Software-Entwicklung &amp; Bereitstellung</h1>
           <div class="sub">Von der Idee bis zum sicheren Betrieb</div>
         </div>
-
         <div class="cards-area" id="cards-area">
           <div class="cards-row" id="cards-row">
-
             <div class="kalyro-wrapper">
               <div class="kalyro-wrapper-header">
                 <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT">
                 <div class="wrapper-subtitle">Beratung, Entwicklung &amp; Betrieb &ndash; Ihre IT-Dienstleistung aus einer Hand</div>
               </div>
               <div class="inner-cards">
-
                 <div class="card c-blue" id="card-1">
                   <div class="card-head">
-                    <div class="icons single-logo">
-                      <div class="ico logo-icon"><img src="assets/logos/consultant.png" alt="Fachexperte"></div>
-                    </div>
-                    <h2>Ihr Fachteam</h2>
-                    <span class="tag">Prozesswissen</span>
+                    <div class="icons single-logo"><div class="ico logo-icon"><img src="assets/logos/consultant.png" alt="Fachexperte"></div></div>
+                    <h2>Ihr Fachteam</h2><span class="tag">Prozesswissen</span>
                   </div>
                   <div class="card-body"><ul>
                     <li><span class="dot"></span>Anforderungen &amp; Fachwissen</li>
@@ -1042,15 +1266,13 @@
                     <li><span class="dot"></span>Feedback &amp; Abnahme</li>
                   </ul></div>
                 </div>
-
                 <div class="card c-green" id="card-2">
                   <div class="card-head">
                     <div class="icons">
                       <div class="ico logo-icon"><img src="assets/logos/Claude_Logo.png" alt="Claude"></div>
                       <div class="ico logo-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub"></div>
                     </div>
-                    <h2>Code &amp; Qualit&auml;t</h2>
-                    <span class="tag">CI / CD</span>
+                    <h2>Code &amp; Qualit&auml;t</h2><span class="tag">CI / CD</span>
                   </div>
                   <div class="card-body"><ul>
                     <li><span class="dot"></span>Prozesswissen wird zu Code</li>
@@ -1058,15 +1280,13 @@
                     <li><span class="dot"></span>Qualit&auml;tsgesicherter Code</li>
                   </ul></div>
                 </div>
-
                 <div class="card c-orange" id="card-3">
                   <div class="card-head">
                     <div class="icons">
                       <div class="ico logo-icon"><img src="assets/logos/Azure_Logo.png" alt="Azure"></div>
                       <div class="ico logo-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub"></div>
                     </div>
-                    <h2>Cloud-Hosting</h2>
-                    <span class="tag">Infrastructure</span>
+                    <h2>Cloud-Hosting</h2><span class="tag">Infrastructure</span>
                   </div>
                   <div class="card-body"><ul>
                     <li><span class="dot"></span>Eigene Web-App</li>
@@ -1074,72 +1294,41 @@
                     <li><span class="dot"></span>Weltweit erreichbar</li>
                   </ul></div>
                 </div>
-
               </div>
             </div>
-
             <div class="right-wrapper" id="card-4">
               <div class="right-wrapper-header">
                 <h3>Unternehmens-Software</h3>
                 <div class="wrapper-subtitle">ERP, Daten &amp; sicherer Betrieb</div>
               </div>
               <div class="inner-cards-right">
-
                 <div class="card c-red">
                   <div class="card-head">
                     <div class="icons devices-icons">
-                      <div class="dev dev-laptop">
-                        <div class="scr">
-                          <div class="sblk" style="background:#1e5faa"></div>
-                          <div class="sblk" style="background:#e87400"></div>
-                          <div class="sblk" style="background:#16a34a"></div>
-                          <div class="sblk" style="background:#8b5cf6"></div>
-                        </div>
-                        <div class="base"></div>
-                      </div>
-                      <div class="dev dev-tablet">
-                        <div class="sblk" style="background:#e87400"></div>
-                        <div class="sblk" style="background:#1e5faa"></div>
-                        <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
-                        <div class="sblk" style="background:#dc2626"></div>
-                        <div class="sblk" style="background:#8b5cf6"></div>
-                      </div>
-                      <div class="dev dev-phone">
-                        <div class="sblk" style="background:#1e5faa"></div>
-                        <div class="sblk" style="background:#e87400"></div>
-                        <div class="sblk" style="background:#16a34a; grid-column: span 2"></div>
-                        <div class="sblk" style="background:#dc2626"></div>
-                        <div class="sblk" style="background:#8b5cf6"></div>
-                      </div>
+                      <div class="dev dev-laptop"><div class="scr"><div class="sblk" style="background:#1e5faa"></div><div class="sblk" style="background:#e87400"></div><div class="sblk" style="background:#16a34a"></div><div class="sblk" style="background:#7c3aed"></div></div><div class="base"></div></div>
+                      <div class="dev dev-tablet"><div class="sblk" style="background:#e87400"></div><div class="sblk" style="background:#1e5faa"></div><div class="sblk" style="background:#16a34a; grid-column: span 2"></div><div class="sblk" style="background:#dc2626"></div><div class="sblk" style="background:#7c3aed"></div></div>
+                      <div class="dev dev-phone"><div class="sblk" style="background:#1e5faa"></div><div class="sblk" style="background:#e87400"></div><div class="sblk" style="background:#16a34a; grid-column: span 2"></div><div class="sblk" style="background:#dc2626"></div><div class="sblk" style="background:#7c3aed"></div></div>
                     </div>
-                    <h2>Software-Nutzung</h2>
-                    <span class="tag">Deployment</span>
+                    <h2>Software-Nutzung</h2><span class="tag">Deployment</span>
                   </div>
                   <div class="card-body"><ul>
                     <li><span class="dot"></span>Datenschutz</li>
                     <li><span class="dot"></span>Interne Systeme</li>
                   </ul></div>
                 </div>
-
                 <div class="card c-purple">
                   <div class="card-head">
-                    <div class="icons single-logo">
-                      <div class="ico logo-icon"><img src="assets/logos/Database_Icon.png" alt="Datenbank"></div>
-                    </div>
-                    <h2>Daten &amp; Wissen</h2>
-                    <span class="tag">Datenbank</span>
+                    <div class="icons single-logo"><div class="ico logo-icon"><img src="assets/logos/Database_Icon.png" alt="Datenbank"></div></div>
+                    <h2>Daten &amp; Wissen</h2><span class="tag">Datenbank</span>
                   </div>
                   <div class="card-body"><ul>
                     <li><span class="dot"></span>Datenbanken &amp; Speicher</li>
                     <li><span class="dot"></span>Fach- &amp; Prozessdaten</li>
                   </ul></div>
                 </div>
-
               </div>
             </div>
-
           </div>
-
           <div class="interface-section">
             <div class="interface-bar" id="interface-card">
               <div class="if-icon"><img src="assets/logos/API_Icon.png" alt="REST API"></div>
@@ -1153,10 +1342,8 @@
               </ul>
             </div>
           </div>
-
           <svg class="arrows-svg" id="arrows-svg"></svg>
         </div>
-
         <div class="infographic-footer">
           <span class="footer-item">Innovative Loesungen</span>
           <span class="footer-sep"></span>
@@ -1166,8 +1353,8 @@
         </div>
       </div>
 
-      <!-- CI/CD Infinity Loop Diagram -->
-      <div class="diagram-cicd" id="diagram-cicd" style="display: none;">
+      <!-- CI/CD Infinity Loop -->
+      <div class="diagram-cicd" id="diagram-cicd" style="display:none;">
         <div class="bg-cicd"></div>
         <div class="title-cicd">
           <h1>CI/CD Infinity Loop</h1>
@@ -1177,43 +1364,23 @@
           <div class="infinity-container" id="infinity-container">
             <svg id="infinity-svg" viewBox="-10 0 1020 540" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.10)"/>
-                </filter>
-                <linearGradient id="ci-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#f0837a"/>
-                  <stop offset="50%" stop-color="#e8645a"/>
-                  <stop offset="100%" stop-color="#f0837a"/>
-                </linearGradient>
-                <linearGradient id="cd-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#5eecd4"/>
-                  <stop offset="50%" stop-color="#3cc8b4"/>
-                  <stop offset="100%" stop-color="#5eecd4"/>
-                </linearGradient>
-                <linearGradient id="ci-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#d4564c"/>
-                  <stop offset="50%" stop-color="#c0443a"/>
-                  <stop offset="100%" stop-color="#d4564c"/>
-                </linearGradient>
-                <linearGradient id="cd-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#2aaa96"/>
-                  <stop offset="50%" stop-color="#1e9484"/>
-                  <stop offset="100%" stop-color="#2aaa96"/>
-                </linearGradient>
+                <filter id="loop-shadow" x="-15%" y="-15%" width="130%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.10)"/></filter>
+                <linearGradient id="ci-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0837a"/><stop offset="50%" stop-color="#e8645a"/><stop offset="100%" stop-color="#f0837a"/></linearGradient>
+                <linearGradient id="cd-grad" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#5eecd4"/><stop offset="50%" stop-color="#3cc8b4"/><stop offset="100%" stop-color="#5eecd4"/></linearGradient>
+                <linearGradient id="ci-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#d4564c"/><stop offset="50%" stop-color="#c0443a"/><stop offset="100%" stop-color="#d4564c"/></linearGradient>
+                <linearGradient id="cd-border" x1="0" y1="100" x2="0" y2="440" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#2aaa96"/><stop offset="50%" stop-color="#1e9484"/><stop offset="100%" stop-color="#2aaa96"/></linearGradient>
                 <path id="seg-left-lobe" d="M 310,440 A 170,170 0 1 1 310,100" fill="none"/>
-                <path id="seg-cross-upper" d="M 310,100 C 420,100  580,440  690,440" fill="none"/>
+                <path id="seg-cross-upper" d="M 310,100 C 420,100 580,440 690,440" fill="none"/>
                 <path id="seg-right-lobe" d="M 690,440 A 170,170 0 1 0 690,100" fill="none"/>
-                <path id="seg-cross-lower" d="M 690,100 C 580,100  420,440  310,440" fill="none"/>
+                <path id="seg-cross-lower" d="M 690,100 C 580,100 420,440 310,440" fill="none"/>
                 <path id="inf-path" d="M 310,100 A 170,170 0 1 0 310,440 C 420,440 580,100 690,100 A 170,170 0 1 1 690,440 C 580,440 420,100 310,100 Z" fill="none"/>
               </defs>
-
               <g filter="url(#loop-shadow)" opacity="0.3">
                 <use href="#seg-left-lobe" stroke="#333" stroke-width="78" stroke-linecap="round"/>
                 <use href="#seg-cross-upper" stroke="#333" stroke-width="78" stroke-linecap="round"/>
                 <use href="#seg-right-lobe" stroke="#333" stroke-width="78" stroke-linecap="round"/>
                 <use href="#seg-cross-lower" stroke="#333" stroke-width="78" stroke-linecap="round"/>
               </g>
-
               <use href="#seg-left-lobe" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
               <use href="#seg-left-lobe" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
               <use href="#seg-cross-lower" stroke="url(#cd-border)" stroke-width="74" stroke-linecap="round"/>
@@ -1222,45 +1389,18 @@
               <use href="#seg-right-lobe" stroke="url(#cd-grad)" stroke-width="66" stroke-linecap="round"/>
               <use href="#seg-cross-upper" stroke="url(#ci-border)" stroke-width="74" stroke-linecap="round"/>
               <use href="#seg-cross-upper" stroke="url(#ci-grad)" stroke-width="66" stroke-linecap="round"/>
-
               <circle cx="225" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
               <circle cx="775" cy="270" r="100" fill="#1e1e3a" opacity="0.65"/>
               <text x="225" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CI</text>
               <text x="775" y="288" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800" fill="white">CD</text>
-
-              <g transform="translate(285,82)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">code</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(60,0)"/>
-              </g>
-              <g transform="translate(52,278)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">build</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-8,-30) rotate(-90)"/>
-              </g>
-              <g transform="translate(270,476)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">test</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
-              </g>
-              <g transform="translate(415,195) rotate(40)">
-                <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#c0443a">plan</text>
-                <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(52,0)"/>
-              </g>
-              <g transform="translate(475,385) rotate(40)">
-                <text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#1e9484">release</text>
-                <polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(75,0)"/>
-              </g>
-              <g transform="translate(660,82)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">deploy</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(78,0)"/>
-              </g>
-              <g transform="translate(880,278)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">Operate</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(98,-30) rotate(90)"/>
-              </g>
-              <g transform="translate(635,476)">
-                <text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">monitor</text>
-                <polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/>
-              </g>
-
+              <g transform="translate(285,82)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">code</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(60,0)"/></g>
+              <g transform="translate(52,278)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">build</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-8,-30) rotate(-90)"/></g>
+              <g transform="translate(270,476)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#c0443a">test</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/></g>
+              <g transform="translate(415,195) rotate(40)"><text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#c0443a">plan</text><polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(52,0)"/></g>
+              <g transform="translate(475,385) rotate(40)"><text font-family="Inter, sans-serif" font-size="22" font-weight="600" font-style="italic" fill="#1e9484">release</text><polygon points="0,-5 9,0 0,5" fill="#888" transform="translate(75,0)"/></g>
+              <g transform="translate(660,82)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">deploy</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(78,0)"/></g>
+              <g transform="translate(880,278)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">Operate</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(98,-30) rotate(90)"/></g>
+              <g transform="translate(635,476)"><text font-family="Inter, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#1e9484">monitor</text><polygon points="0,-6 10,0 0,6" fill="#888" transform="translate(-12,-8) rotate(180)"/></g>
               <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#inf-path"/></animateMotion></circle>
               <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-2s"><mpath href="#inf-path"/></animateMotion></circle>
               <circle r="6" fill="#fff" opacity="0.9"><animateMotion dur="8s" repeatCount="indefinite" begin="-4s"><mpath href="#inf-path"/></animateMotion></circle>
@@ -1275,491 +1415,461 @@
       </div>
 
     </div>
-
-    <!-- Navigation between concepts -->
     <div class="viewer-nav" id="viewer-nav"></div>
   </div>
-
 
   <!-- ══════════════════════════════════════════════
        JAVASCRIPT
        ══════════════════════════════════════════════ -->
   <script>
-    // ── Concept Registry ──────────────────────────────────────────
+    // ── Nav Reveal on Scroll ──────────────────────────────────────
+    // Header ist beim Start ausgeblendet, erscheint beim Runterscrollen,
+    // versteckt sich wieder beim Hochscrollen zum Hero
+    (function() {
+      const nav = document.querySelector('.nav');
+      const SCROLL_THRESHOLD = 80; // ab wann der Header eingeblendet wird
+      let lastScrollY = 0;
+      let ticking = false;
+
+      function onScroll() {
+        const currentY = window.scrollY;
+
+        if (currentY > SCROLL_THRESHOLD) {
+          // Unterhalb des Hero-Bereichs: Header zeigen
+          nav.classList.add('nav-visible');
+          nav.classList.remove('nav-hidden');
+        } else {
+          // Oben im Hero: Header ausblenden
+          nav.classList.remove('nav-visible');
+          nav.classList.add('nav-hidden');
+        }
+
+        lastScrollY = currentY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(onScroll);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Initialzustand pruefen (falls Seite nicht ganz oben geladen wird)
+      if (window.scrollY > SCROLL_THRESHOLD) {
+        nav.classList.add('nav-visible');
+      }
+    })();
+
+    // ── Concepts Registry (published = oeffentlich sichtbar) ─────
     const concepts = [
-      {
-        id: 'software-entwicklung',
-        title: 'Moderne Software-Entwicklung & Bereitstellung',
-        elementId: 'infographic',
-      },
-      {
-        id: 'cicd-infinity',
-        title: 'CI/CD Infinity Loop',
-        elementId: 'diagram-cicd',
-      },
+      { id: 'software-entwicklung', title: 'Moderne Software-Entwicklung & Bereitstellung', elementId: 'infographic', published: true },
+      { id: 'cicd-infinity', title: 'CI/CD Infinity Loop', elementId: 'diagram-cicd', published: false },
     ];
-
     let currentDiagram = null;
+    let isAdmin = false;
 
-    // ── Viewer ────────────────────────────────────────────────────
-    function openViewer(conceptId) {
-      const concept = concepts.find(c => c.id === conceptId);
-      if (!concept) return;
+    // ── ADMIN / MICROSOFT TENANT AUTH ───────────────────────────
+    // Azure AD / Entra ID Anmeldung ueber MSAL.js
+    // Konfiguration: Tenant-ID und Client-ID der Kalyro Azure App Registration
+    const MSAL_CONFIG = {
+      auth: {
+        // TODO: Echte Client-ID aus Azure Portal > App Registrations eintragen
+        clientId: 'KALYRO_CLIENT_ID_HIER_EINTRAGEN',
+        // Kalyro Tenant — nur Kalyro-Konten koennen sich anmelden
+        authority: 'https://login.microsoftonline.com/KALYRO_TENANT_ID_HIER_EINTRAGEN',
+        redirectUri: location.origin + location.pathname,
+      },
+      cache: { cacheLocation: 'localStorage' }
+    };
 
-      currentDiagram = conceptId;
+    let msalInstance = null;
 
-      // Hide all diagram containers, show the selected one
-      concepts.forEach(c => {
-        const el = document.getElementById(c.elementId);
-        if (el) el.style.display = 'none';
-      });
-      const target = document.getElementById(concept.elementId);
-      if (target) target.style.display = 'block';
-
-      // Update viewer title
-      document.getElementById('viewer-title').textContent = concept.title;
-
-      // Build prev/next nav
-      buildViewerNav(conceptId);
-
-      // Show viewer
-      document.getElementById('viewer').style.display = 'block';
-      document.getElementById('main-page').style.display = 'none';
-      document.body.style.overflow = 'hidden';
-
-      // Update URL
-      history.pushState({ concept: conceptId }, '', '#konzept/' + conceptId);
-
-      // Draw arrows if software-entwicklung
-      if (conceptId === 'software-entwicklung') {
-        requestAnimationFrame(drawArrows);
+    async function initMsal() {
+      if (msalInstance) return;
+      // MSAL.js 2.x laden (einmalig)
+      if (!window.msal) {
+        const s = document.createElement('script');
+        s.src = 'https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js';
+        document.head.appendChild(s);
+        await new Promise((resolve, reject) => { s.onload = resolve; s.onerror = reject; });
+      }
+      msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
+      await msalInstance.initialize();
+      // Redirect-Callback verarbeiten (nach Login-Redirect)
+      const resp = await msalInstance.handleRedirectPromise();
+      if (resp && resp.account) {
+        saveSession(resp.account);
+        activateAdmin(resp.account);
       }
     }
 
+    function checkAdminSession() {
+      const session = localStorage.getItem('kalyro-admin');
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          // Session max 24h gueltig
+          if (data.name && (Date.now() - data.ts) < 86400000) {
+            activateAdmin(data);
+            return true;
+          } else {
+            localStorage.removeItem('kalyro-admin');
+          }
+        } catch(e) { localStorage.removeItem('kalyro-admin'); }
+      }
+      return false;
+    }
+
+    function saveSession(account) {
+      const sessionData = {
+        name: account.name || account.username,
+        email: account.username,
+        tenantId: account.tenantId,
+        ts: Date.now()
+      };
+      localStorage.setItem('kalyro-admin', JSON.stringify(sessionData));
+    }
+
+    function activateAdmin(userData) {
+      isAdmin = true;
+      document.body.classList.add('admin-mode');
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+      renderAdminPanel(userData);
+    }
+
+    function renderAdminPanel(userData) {
+      const userInfo = document.getElementById('admin-user-info');
+      const displayName = userData.name || userData.email || 'Kalyro Admin';
+      userInfo.innerHTML = `<span>${displayName}</span>`;
+
+      const list = document.getElementById('admin-concepts-list');
+      list.innerHTML = concepts.map(c => `
+        <div class="admin-concept-row">
+          <div class="admin-concept-info">
+            <div class="status-dot ${c.published ? 'live' : 'draft'}"></div>
+            <div>
+              <h4>${c.title}</h4>
+              <span class="status-text">${c.published ? 'Veroeffentlicht' : 'Entwurf — nur fuer Admins sichtbar'}</span>
+            </div>
+          </div>
+          <div class="admin-concept-actions">
+            <button class="btn-preview" onclick="openViewer('${c.id}')">Vorschau</button>
+          </div>
+        </div>
+      `).join('') + `
+        <div class="admin-concept-row" style="border-style:dashed;opacity:0.5;">
+          <div class="admin-concept-info">
+            <div class="status-dot draft"></div>
+            <div><h4>Cloud-Architektur</h4><span class="status-text">Noch nicht erstellt</span></div>
+          </div>
+        </div>
+        <div class="admin-concept-row" style="border-style:dashed;opacity:0.5;">
+          <div class="admin-concept-info">
+            <div class="status-dot draft"></div>
+            <div><h4>Security &amp; Compliance</h4><span class="status-text">Noch nicht erstellt</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showAdminLogin() {
+      document.getElementById('admin-login').classList.add('open');
+    }
+    function closeAdminLogin() {
+      document.getElementById('admin-login').classList.remove('open');
+    }
+
+    async function loginWithMicrosoft() {
+      try {
+        await initMsal();
+        // Popup-Login (kein Redirect noetig)
+        const resp = await msalInstance.loginPopup({
+          scopes: ['User.Read'],
+          prompt: 'select_account'
+        });
+        if (resp && resp.account) {
+          saveSession(resp.account);
+          closeAdminLogin();
+          activateAdmin(resp.account);
+        }
+      } catch (err) {
+        if (err.errorCode === 'user_cancelled') return;
+        console.error('Login-Fehler:', err);
+        alert('Anmeldung fehlgeschlagen: ' + (err.errorMessage || err.message));
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('kalyro-admin');
+      isAdmin = false;
+      document.body.classList.remove('admin-mode');
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+      if (msalInstance) {
+        msalInstance.logoutPopup().catch(() => {});
+      }
+      location.reload();
+    }
+
+    function scrollToAdmin() {
+      if (!isAdmin) { showAdminLogin(); return; }
+      const el = document.getElementById('admin-panel');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Session beim Laden pruefen
+    checkAdminSession();
+
+    // ── 3D TILT EFFECT ───────────────────────────────────────────
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotX = ((y - cy) / cy) * -6;
+        const rotY = ((x - cx) / cx) * 6;
+        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform 0.5s cubic-bezier(.22,1,.36,1)';
+        card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+      });
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'transform 0.1s ease-out';
+      });
+    });
+
+    // ── CURSOR GLOW on cards ─────────────────────────────────────
+    document.querySelectorAll('.gallery-card, .about-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--glow-x', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--glow-y', (e.clientY - rect.top) + 'px');
+      });
+    });
+
+    // ── MAGNETIC BUTTONS ─────────────────────────────────────────
+    document.querySelectorAll('.magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0, 0)';
+      });
+    });
+
+    // ── SCROLL REVEAL (JS fallback for browsers without animation-timeline) ──
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    // ── NAV ACTIVE STATE ─────────────────────────────────────────
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sectionEls = document.querySelectorAll('section[id]');
+    const scrollObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, { threshold: 0.3 });
+    sectionEls.forEach(s => scrollObs.observe(s));
+
+    // ── VIEWER ───────────────────────────────────────────────────
+    function openViewer(id) {
+      const concept = concepts.find(c => c.id === id);
+      if (!concept) return;
+      // Unveroffentlichte Konzepte nur fuer Admins
+      if (!concept.published && !isAdmin) return;
+      currentDiagram = id;
+      concepts.forEach(c => { const el = document.getElementById(c.elementId); if (el) el.style.display = 'none'; });
+      const target = document.getElementById(concept.elementId);
+      if (target) target.style.display = 'block';
+      document.getElementById('viewer-title').textContent = concept.title;
+      buildViewerNav(id);
+      const viewer = document.getElementById('viewer');
+      viewer.classList.add('open');
+      viewer.style.display = 'block';
+      document.getElementById('main-page').style.display = 'none';
+      document.body.style.overflow = 'hidden';
+      history.pushState({ concept: id }, '', '#konzept/' + id);
+      if (id === 'software-entwicklung') requestAnimationFrame(drawArrows);
+    }
     function closeViewer() {
-      document.getElementById('viewer').style.display = 'none';
+      const viewer = document.getElementById('viewer');
+      viewer.classList.remove('open');
+      viewer.style.display = 'none';
       document.getElementById('main-page').style.display = 'block';
       document.body.style.overflow = '';
       currentDiagram = null;
       history.pushState({}, '', '#konzepte');
     }
-
     function buildViewerNav(currentId) {
       const nav = document.getElementById('viewer-nav');
-      const idx = concepts.findIndex(c => c.id === currentId);
+      const visible = concepts.filter(c => c.published || isAdmin);
+      const idx = visible.findIndex(c => c.id === currentId);
       let html = '';
-      if (idx > 0) {
-        const prev = concepts[idx - 1];
-        html += `<button class="viewer-nav-btn" onclick="openViewer('${prev.id}')">
-          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          ${prev.title}
-        </button>`;
-      }
-      if (idx < concepts.length - 1) {
-        const next = concepts[idx + 1];
-        html += `<button class="viewer-nav-btn" onclick="openViewer('${next.id}')">
-          ${next.title}
-          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>`;
-      }
+      if (idx > 0) { const p = visible[idx-1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${p.id}')"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>${p.title}</button>`; }
+      if (idx < visible.length-1) { const n = visible[idx+1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${n.id}')">${n.title}<svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>`; }
       nav.innerHTML = html;
     }
-
     function navigateTo(page, section) {
-      // Close viewer if open
-      if (document.getElementById('viewer').style.display === 'block') {
-        closeViewer();
-      }
-      if (section) {
-        setTimeout(() => {
-          const el = document.getElementById(section);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 50);
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      if (document.getElementById('viewer').style.display === 'block') closeViewer();
+      if (section) setTimeout(() => { const el = document.getElementById(section); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 50);
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ── URL Routing ───────────────────────────────────────────────
+    // URL routing
     function handleRoute() {
-      const hash = location.hash;
-      if (hash.startsWith('#konzept/')) {
-        const id = hash.replace('#konzept/', '');
-        openViewer(id);
-      }
+      const h = location.hash;
+      if (h === '#admin') { if (!isAdmin) showAdminLogin(); else scrollToAdmin(); return; }
+      if (h.startsWith('#konzept/')) openViewer(h.replace('#konzept/', ''));
     }
     window.addEventListener('popstate', handleRoute);
     window.addEventListener('load', handleRoute);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('viewer').style.display === 'block') closeViewer(); });
 
-    // Close viewer with Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.getElementById('viewer').style.display === 'block') {
-        closeViewer();
-      }
-    });
-
-    // ── Dark Mode ─────────────────────────────────────────────────
+    // ── DARK / LIGHT THEME ───────────────────────────────────────
     function toggleTheme() {
       const html = document.documentElement;
       const isDark = html.getAttribute('data-theme') === 'dark';
-      html.setAttribute('data-theme', isDark ? '' : 'dark');
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
       localStorage.setItem('kalyro-theme', isDark ? 'light' : 'dark');
       updateThemeIcon();
     }
-
     function updateThemeIcon() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const btn = document.getElementById('theme-toggle');
-      btn.innerHTML = isDark
+      document.getElementById('theme-toggle').innerHTML = isDark
         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
     }
-
-    // Apply saved theme
     (function() {
       const saved = localStorage.getItem('kalyro-theme');
-      if (saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-      // Defer icon update until DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateThemeIcon);
-      } else {
-        updateThemeIcon();
-      }
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateThemeIcon);
+      else updateThemeIcon();
     })();
 
-    // ── Scroll Reveal ─────────────────────────────────────────────
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    // ── Nav active state on scroll ────────────────────────────────
-    const navLinks = document.querySelectorAll('.nav-links a');
-    const sections = document.querySelectorAll('section[id]');
-    const scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(link => {
-            link.classList.toggle('active',
-              link.getAttribute('href') === '#' + entry.target.id
-            );
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-    sections.forEach(s => scrollObserver.observe(s));
-
-    // ── Mobile Menu ───────────────────────────────────────────────
+    // ── MOBILE MENU ──────────────────────────────────────────────
     function toggleMobileMenu() {
       const links = document.querySelector('.nav-links');
-      if (links.style.display === 'flex') {
-        links.style.display = 'none';
-      } else {
-        links.style.display = 'flex';
-        links.style.flexDirection = 'column';
-        links.style.position = 'absolute';
-        links.style.top = '64px';
-        links.style.right = '16px';
-        links.style.background = 'var(--bg-surface)';
-        links.style.border = '1px solid var(--border-light)';
-        links.style.borderRadius = '12px';
-        links.style.padding = '8px';
-        links.style.boxShadow = 'var(--shadow-lg)';
-      }
+      if (links.style.display === 'flex') { links.style.display = 'none'; return; }
+      links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:68px;right:16px;background:var(--bg-surface-solid);border:1px solid var(--border-light);border-radius:14px;padding:8px;box-shadow:0 16px 48px rgba(0,0,0,0.3);z-index:100;backdrop-filter:blur(20px);';
     }
 
-    // ── Dynamic Arrow Rendering ───────────────────────────────────
+    // ── ARROWS (Software-Entwicklung) ────────────────────────────
     function drawArrows() {
       const area = document.getElementById('cards-area');
       const svg = document.getElementById('arrows-svg');
       if (!area || !svg) return;
-      const areaRect = area.getBoundingClientRect();
-
+      const aR = area.getBoundingClientRect();
       const cards = [1,2,3,4].map(i => {
         const el = document.getElementById('card-' + i);
         if (!el) return null;
         const r = el.getBoundingClientRect();
-        return {
-          left: r.left - areaRect.left,
-          right: r.right - areaRect.left,
-          top: r.top - areaRect.top,
-          bottom: r.bottom - areaRect.top,
-          cx: (r.left + r.right) / 2 - areaRect.left,
-          cy: (r.top + r.bottom) / 2 - areaRect.top,
-          w: r.width, h: r.height,
-        };
+        return { left: r.left-aR.left, right: r.right-aR.left, top: r.top-aR.top, bottom: r.bottom-aR.top, cx: (r.left+r.right)/2-aR.left, cy: (r.top+r.bottom)/2-aR.top, w: r.width, h: r.height };
       });
       if (cards.some(c => !c)) return;
-
-      const svgW = areaRect.width;
-      const svgH = areaRect.height;
-      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
-      svg.style.width = svgW + 'px';
-      svg.style.height = svgH + 'px';
-      svg.style.position = 'absolute';
-      svg.style.top = '0';
-      svg.style.left = '0';
-
+      const sW = aR.width, sH = aR.height;
+      svg.setAttribute('viewBox', `0 0 ${sW} ${sH}`);
+      svg.style.cssText = `width:${sW}px;height:${sH}px;position:absolute;top:0;left:0;`;
       const ns = 'http://www.w3.org/2000/svg';
       svg.innerHTML = '';
-
       const defs = document.createElementNS(ns, 'defs');
-      defs.innerHTML = `
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <marker id="ah-blue" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#1e5faa"/>
-        </marker>
-        <marker id="ah-green" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/>
-        </marker>
-        <marker id="ah-orange" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#e87400"/>
-        </marker>
-        <marker id="ah-muted" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#94a3b8"/>
-        </marker>
-        <marker id="ah-purple" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#7c3aed"/>
-        </marker>
-        <marker id="ah-green-back" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/>
-        </marker>
-        <linearGradient id="grad-1-2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#60a5fa"/>
-          <stop offset="100%" stop-color="#4ade80"/>
-        </linearGradient>
-        <linearGradient id="grad-2-3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#4ade80"/>
-          <stop offset="100%" stop-color="#fb923c"/>
-        </linearGradient>
-        <linearGradient id="grad-3-4" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#fb923c"/>
-          <stop offset="100%" stop-color="#f87171"/>
-        </linearGradient>
-      `;
+      defs.innerHTML = `<marker id="ah-blue" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto"><path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#1e5faa"/></marker>
+        <marker id="ah-green" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto"><path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/></marker>
+        <marker id="ah-orange" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto"><path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#e87400"/></marker>
+        <marker id="ah-purple" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto"><path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#7c3aed"/></marker>
+        <marker id="ah-green-back" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 12 4 L 0 8 L 3 4 Z" fill="#16a34a"/></marker>`;
       svg.appendChild(defs);
-
-      const midY = cards[0].cy;
-      const arrowPad = 10;
-
-      // Arrow 1->2: "Anforderung"
-      const arrowY1 = midY - 18;
-      drawFlowArrow(svg, ns, {
-        x1: cards[0].right + arrowPad, y1: arrowY1,
-        x2: cards[1].left - arrowPad, y2: arrowY1,
-        stroke: '#1e5faa', marker: 'ah-blue',
-        label: 'Anforderung', labelColor: '#1e5faa',
-      });
-
-      // Arrow 2->1: "Feedback" (reversed, dashed)
-      const arrowY2 = midY + 18;
-      const fbX1 = cards[0].right + arrowPad;
-      const fbX2 = cards[1].left - arrowPad;
-      const fbLine = document.createElementNS(ns, 'line');
-      fbLine.setAttribute('x1', fbX1); fbLine.setAttribute('y1', arrowY2);
-      fbLine.setAttribute('x2', fbX2); fbLine.setAttribute('y2', arrowY2);
-      fbLine.setAttribute('stroke', '#16a34a');
-      fbLine.setAttribute('stroke-width', '2');
-      fbLine.setAttribute('stroke-linecap', 'round');
-      fbLine.setAttribute('stroke-dasharray', '8 5');
-      fbLine.setAttribute('marker-start', 'url(#ah-green-back)');
-      svg.appendChild(fbLine);
-
-      const fbMx = (fbX1 + fbX2) / 2;
-      const fbBadgeY = arrowY2 + 28;
-      drawBadge(svg, ns, fbMx, fbBadgeY, 'Feedback', '#16a34a');
-
-      // Arrow 2->3: "Bereitstellung"
-      drawFlowArrow(svg, ns, {
-        x1: cards[1].right + arrowPad, y1: midY,
-        x2: cards[2].left - arrowPad, y2: midY,
-        stroke: '#16a34a', marker: 'ah-green',
-        label: 'Bereitstellung', labelColor: '#16a34a',
-      });
-
-      // Arrow 3->4: "Deployment"
-      drawFlowArrow(svg, ns, {
-        x1: cards[2].right + arrowPad, y1: midY,
-        x2: cards[3].left - arrowPad, y2: midY,
-        stroke: '#e87400', marker: 'ah-orange',
-        label: 'Deployment', labelColor: '#e87400',
-        dashed: true,
-      });
-
-      // Connector lines to interface card
-      const kalyroWrapper = document.querySelector('.kalyro-wrapper');
-      const rightWrapper = document.querySelector('.right-wrapper');
-      const interfaceCard = document.getElementById('interface-card');
-      if (kalyroWrapper && rightWrapper && interfaceCard) {
-        const kwRect = kalyroWrapper.getBoundingClientRect();
-        const rwRect = rightWrapper.getBoundingClientRect();
-        const icRect = interfaceCard.getBoundingClientRect();
-        const kwBottom = kwRect.bottom - areaRect.top;
-        const rwBottom = rwRect.bottom - areaRect.top;
-        const icTop = icRect.top - areaRect.top;
-        const kwCx = kwRect.left - areaRect.left + kwRect.width / 2;
-        const rwCx = rwRect.left - areaRect.left + rwRect.width / 2;
-        const icLeftEdge = icRect.left - areaRect.left + 20;
-        const icRightEdge = icRect.right - areaRect.left - 20;
-        const icAnchorL = Math.max(icLeftEdge, Math.min(kwCx, icRightEdge));
-        const icAnchorR = Math.max(icLeftEdge, Math.min(rwCx, icRightEdge));
-
-        const midY1 = (kwBottom + icTop) / 2;
+      const midY = cards[0].cy, pad = 10;
+      drawFlowArrow(svg, ns, { x1: cards[0].right+pad, y1: midY-18, x2: cards[1].left-pad, y2: midY-18, stroke: '#1e5faa', marker: 'ah-blue', label: 'Anforderung', labelColor: '#1e5faa' });
+      const fbX1 = cards[0].right+pad, fbX2 = cards[1].left-pad;
+      const fbL = document.createElementNS(ns, 'line');
+      fbL.setAttribute('x1', fbX1); fbL.setAttribute('y1', midY+18); fbL.setAttribute('x2', fbX2); fbL.setAttribute('y2', midY+18);
+      fbL.setAttribute('stroke', '#16a34a'); fbL.setAttribute('stroke-width', '2'); fbL.setAttribute('stroke-linecap', 'round'); fbL.setAttribute('stroke-dasharray', '8 5'); fbL.setAttribute('marker-start', 'url(#ah-green-back)');
+      svg.appendChild(fbL);
+      drawBadge(svg, ns, (fbX1+fbX2)/2, midY+46, 'Feedback', '#16a34a');
+      drawFlowArrow(svg, ns, { x1: cards[1].right+pad, y1: midY, x2: cards[2].left-pad, y2: midY, stroke: '#16a34a', marker: 'ah-green', label: 'Bereitstellung', labelColor: '#16a34a' });
+      drawFlowArrow(svg, ns, { x1: cards[2].right+pad, y1: midY, x2: cards[3].left-pad, y2: midY, stroke: '#e87400', marker: 'ah-orange', label: 'Deployment', labelColor: '#e87400', dashed: true });
+      const kw = document.querySelector('.kalyro-wrapper'), rw = document.querySelector('.right-wrapper'), ic = document.getElementById('interface-card');
+      if (kw && rw && ic) {
+        const kwR = kw.getBoundingClientRect(), rwR = rw.getBoundingClientRect(), icR = ic.getBoundingClientRect();
+        const kwB = kwR.bottom-aR.top, rwB = rwR.bottom-aR.top, icT = icR.top-aR.top;
+        const kwCx = kwR.left-aR.left+kwR.width/2, rwCx = rwR.left-aR.left+rwR.width/2;
+        const icL = icR.left-aR.left+20, icRi = icR.right-aR.left-20;
+        const icAL = Math.max(icL, Math.min(kwCx, icRi)), icAR = Math.max(icL, Math.min(rwCx, icRi));
+        const m1 = (kwB+icT)/2, m2 = (rwB+icT)/2;
         const p1 = document.createElementNS(ns, 'path');
-        p1.setAttribute('d', `M ${kwCx} ${kwBottom + 4} L ${kwCx} ${midY1} L ${icAnchorL} ${midY1} L ${icAnchorL} ${icTop - 4}`);
-        p1.setAttribute('fill', 'none');
-        p1.setAttribute('stroke', '#7c3aed');
-        p1.setAttribute('stroke-width', '2');
-        p1.setAttribute('marker-end', 'url(#ah-purple)');
+        p1.setAttribute('d', `M ${kwCx} ${kwB+4} L ${kwCx} ${m1} L ${icAL} ${m1} L ${icAL} ${icT-4}`);
+        p1.setAttribute('fill', 'none'); p1.setAttribute('stroke', '#7c3aed'); p1.setAttribute('stroke-width', '2'); p1.setAttribute('marker-end', 'url(#ah-purple)');
         svg.appendChild(p1);
-
-        const midY2 = (rwBottom + icTop) / 2;
         const p2 = document.createElementNS(ns, 'path');
-        p2.setAttribute('d', `M ${rwCx} ${rwBottom + 4} L ${rwCx} ${midY2} L ${icAnchorR} ${midY2} L ${icAnchorR} ${icTop - 4}`);
-        p2.setAttribute('fill', 'none');
-        p2.setAttribute('stroke', '#7c3aed');
-        p2.setAttribute('stroke-width', '2');
-        p2.setAttribute('marker-end', 'url(#ah-purple)');
+        p2.setAttribute('d', `M ${rwCx} ${rwB+4} L ${rwCx} ${m2} L ${icAR} ${m2} L ${icAR} ${icT-4}`);
+        p2.setAttribute('fill', 'none'); p2.setAttribute('stroke', '#7c3aed'); p2.setAttribute('stroke-width', '2'); p2.setAttribute('marker-end', 'url(#ah-purple)');
         svg.appendChild(p2);
       }
     }
-
-    function drawFlowArrow(svg, ns, opts) {
-      const { x1, y1, x2, y2, stroke, marker, label, labelColor, dashed } = opts;
+    function drawFlowArrow(svg, ns, o) {
       const line = document.createElementNS(ns, 'line');
-      line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-      line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-      line.setAttribute('stroke', stroke);
-      line.setAttribute('stroke-width', '2');
-      line.setAttribute('stroke-linecap', 'round');
-      line.setAttribute('marker-end', `url(#${marker})`);
-      if (dashed) line.setAttribute('stroke-dasharray', '10 7');
+      line.setAttribute('x1', o.x1); line.setAttribute('y1', o.y1); line.setAttribute('x2', o.x2); line.setAttribute('y2', o.y2);
+      line.setAttribute('stroke', o.stroke); line.setAttribute('stroke-width', '2'); line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('marker-end', `url(#${o.marker})`);
+      if (o.dashed) line.setAttribute('stroke-dasharray', '10 7');
       svg.appendChild(line);
-
-      if (label) {
-        const mx = (x1 + x2) / 2;
-        const badgeY = y1 - 28;
-        drawBadge(svg, ns, mx, badgeY, label, labelColor || stroke);
-      }
+      if (o.label) drawBadge(svg, ns, (o.x1+o.x2)/2, o.y1-28, o.label, o.labelColor || o.stroke);
     }
-
     function drawBadge(svg, ns, cx, cy, text, color) {
-      const textLen = text.length * 7 + 24;
-      const badgeH = 28;
-
-      const shadow = document.createElementNS(ns, 'rect');
-      shadow.setAttribute('x', cx - textLen / 2 + 1);
-      shadow.setAttribute('y', cy - badgeH / 2 + 2);
-      shadow.setAttribute('width', textLen);
-      shadow.setAttribute('height', badgeH);
-      shadow.setAttribute('rx', badgeH / 2);
-      shadow.setAttribute('fill', 'rgba(0,0,0,0.08)');
-      svg.appendChild(shadow);
-
-      const badge = document.createElementNS(ns, 'rect');
-      badge.setAttribute('x', cx - textLen / 2);
-      badge.setAttribute('y', cy - badgeH / 2);
-      badge.setAttribute('width', textLen);
-      badge.setAttribute('height', badgeH);
-      badge.setAttribute('rx', badgeH / 2);
-      badge.setAttribute('fill', document.documentElement.getAttribute('data-theme') === 'dark' ? '#1e293b' : '#fff');
-      badge.setAttribute('stroke', color);
-      badge.setAttribute('stroke-width', '1.5');
-      svg.appendChild(badge);
-
+      const tL = text.length*7+24, bH = 28;
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const sh = document.createElementNS(ns, 'rect');
+      sh.setAttribute('x', cx-tL/2+1); sh.setAttribute('y', cy-bH/2+2); sh.setAttribute('width', tL); sh.setAttribute('height', bH); sh.setAttribute('rx', bH/2); sh.setAttribute('fill', 'rgba(0,0,0,0.12)');
+      svg.appendChild(sh);
+      const bg = document.createElementNS(ns, 'rect');
+      bg.setAttribute('x', cx-tL/2); bg.setAttribute('y', cy-bH/2); bg.setAttribute('width', tL); bg.setAttribute('height', bH); bg.setAttribute('rx', bH/2);
+      bg.setAttribute('fill', isDark ? '#10121c' : '#fff'); bg.setAttribute('stroke', color); bg.setAttribute('stroke-width', '1.5');
+      svg.appendChild(bg);
       const t = document.createElementNS(ns, 'text');
-      t.setAttribute('x', cx);
-      t.setAttribute('y', cy + 5);
-      t.setAttribute('text-anchor', 'middle');
-      t.setAttribute('fill', color);
-      t.setAttribute('font-size', '12');
-      t.setAttribute('font-family', 'Inter, sans-serif');
-      t.setAttribute('font-weight', '700');
-      t.setAttribute('letter-spacing', '0.5');
-      t.textContent = text;
-      svg.appendChild(t);
+      t.setAttribute('x', cx); t.setAttribute('y', cy+5); t.setAttribute('text-anchor', 'middle'); t.setAttribute('fill', color);
+      t.setAttribute('font-size', '12'); t.setAttribute('font-family', 'Inter, sans-serif'); t.setAttribute('font-weight', '700'); t.setAttribute('letter-spacing', '0.5');
+      t.textContent = text; svg.appendChild(t);
     }
+    window.addEventListener('resize', () => { if (currentDiagram === 'software-entwicklung') drawArrows(); });
 
-    window.addEventListener('resize', () => {
-      if (currentDiagram === 'software-entwicklung') drawArrows();
-    });
-
-    // ── Export ─────────────────────────────────────────────────────
+    // ── EXPORT ───────────────────────────────────────────────────
     function getActiveElement() {
       if (currentDiagram === 'cicd-infinity') return document.getElementById('diagram-cicd');
       return document.getElementById('infographic');
     }
-
-    async function exportAsImage(format, scale = 2) {
-      const el = getActiveElement();
-      if (!el) return;
-      const filename = currentDiagram;
-      if (format === 'svg') {
+    async function exportAsImage(fmt, scale = 2) {
+      const el = getActiveElement(); if (!el) return;
+      if (fmt === 'svg') {
         if (currentDiagram === 'cicd-infinity') {
-          const svgEl = el.querySelector('svg');
-          const svgStr = new XMLSerializer().serializeToString(svgEl);
-          downloadBlob('<?xml version="1.0" encoding="UTF-8"?>' + svgStr, filename + '.svg', 'image/svg+xml');
+          const s = new XMLSerializer().serializeToString(el.querySelector('svg'));
+          downloadBlob('<?xml version="1.0" encoding="UTF-8"?>' + s, currentDiagram + '.svg', 'image/svg+xml');
         } else {
-          const svgStr = buildExportSVG(el, el.offsetWidth, el.offsetHeight);
-          downloadBlob(svgStr, filename + '.svg', 'image/svg+xml');
+          downloadBlob(buildExportSVG(el, el.offsetWidth, el.offsetHeight), currentDiagram + '.svg', 'image/svg+xml');
         }
         return;
       }
-      if (!window.html2canvas) {
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        document.head.appendChild(s);
-        await new Promise(r => s.onload = r);
-      }
-      const canvas = await html2canvas(el, { scale, backgroundColor: '#f8fafc', useCORS: true, logging: false });
-      canvas.toBlob(blob => {
-        const a = document.createElement('a');
-        a.download = `${filename}-${scale}x.png`;
-        a.href = URL.createObjectURL(blob);
-        a.click();
-      });
+      if (!window.html2canvas) { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; document.head.appendChild(s); await new Promise(r => s.onload = r); }
+      const canvas = await html2canvas(el, { scale, backgroundColor: '#0c101a', useCORS: true, logging: false });
+      canvas.toBlob(blob => { const a = document.createElement('a'); a.download = `${currentDiagram}-${scale}x.png`; a.href = URL.createObjectURL(blob); a.click(); });
     }
-
     function buildExportSVG(el, w, h) {
       const clone = el.cloneNode(true);
-      const allEls = clone.querySelectorAll('*');
-      const origEls = el.querySelectorAll('*');
-      const props = ['font-family','font-size','font-weight','color','background','background-color',
-        'border','border-radius','padding','margin','display','flex-direction','align-items',
-        'justify-content','gap','width','height','max-width','min-height','position',
-        'inset','overflow','opacity','filter','backdrop-filter','-webkit-backdrop-filter',
-        'box-shadow','letter-spacing','text-transform','text-align','line-height',
-        'grid-template-columns','grid-column','flex','white-space',
-        'background-image','background-clip','-webkit-background-clip','-webkit-text-fill-color'];
-      origEls.forEach((orig, i) => {
-        const cs = getComputedStyle(orig);
-        let s = '';
-        props.forEach(p => { const v = cs.getPropertyValue(p); if (v && v!=='none'&&v!=='normal'&&v!=='0px'&&v!=='auto') s += `${p}:${v};`; });
-        if (allEls[i]) allEls[i].setAttribute('style', s);
-      });
-      return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-  <foreignObject width="100%" height="100%">
-    <div xmlns="http://www.w3.org/1999/xhtml">${clone.outerHTML}</div>
-  </foreignObject>
-</svg>`;
+      const allEls = clone.querySelectorAll('*'), origEls = el.querySelectorAll('*');
+      const props = ['font-family','font-size','font-weight','color','background','background-color','border','border-radius','padding','margin','display','flex-direction','align-items','justify-content','gap','width','height','max-width','min-height','position','inset','overflow','opacity','filter','backdrop-filter','-webkit-backdrop-filter','box-shadow','letter-spacing','text-transform','text-align','line-height','grid-template-columns','grid-column','flex','white-space','background-image','background-clip','-webkit-background-clip','-webkit-text-fill-color'];
+      origEls.forEach((o, i) => { const cs = getComputedStyle(o); let s = ''; props.forEach(p => { const v = cs.getPropertyValue(p); if (v && v!=='none'&&v!=='normal'&&v!=='0px'&&v!=='auto') s += `${p}:${v};`; }); if (allEls[i]) allEls[i].setAttribute('style', s); });
+      return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">${clone.outerHTML}</div></foreignObject></svg>`;
     }
-
-    function downloadBlob(content, filename, mime) {
-      const blob = new Blob([content], { type: mime });
-      const a = document.createElement('a');
-      a.download = filename; a.href = URL.createObjectURL(blob); a.click();
-    }
+    function downloadBlob(c, f, m) { const b = new Blob([c], { type: m }), a = document.createElement('a'); a.download = f; a.href = URL.createObjectURL(b); a.click(); }
   </script>
 
 </body>
