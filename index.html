@@ -2824,16 +2824,19 @@
       const el = document.getElementById('diagram-ki-arch');
       if (!el) return;
 
-      // Light-Mode fuer weissen Hintergrund
+      // Dark-Mode sicherstellen (Farben sind fuer dunklen Hintergrund optimiert)
       const wasDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (wasDark) document.documentElement.setAttribute('data-theme', 'light');
+      if (!wasDark) document.documentElement.setAttribute('data-theme', 'dark');
+      // Gradient-Hintergrund ausblenden damit html2canvas sauberen Hintergrund nutzt
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = 'none');
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      const BG = '#0e1220';
 
       async function capture(selector) {
         const node = el.querySelector(selector);
         if (!node) return null;
-        const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: BG });
         return { data: canvas.toDataURL('image/png'), w: node.offsetWidth, h: node.offsetHeight };
       }
 
@@ -2846,17 +2849,19 @@
 
       // Wiederherstellen
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = '');
-      if (wasDark) document.documentElement.setAttribute('data-theme', 'dark');
+      if (!wasDark) document.documentElement.setAttribute('data-theme', 'light');
 
       const pptx = new PptxGenJS();
       pptx.layout = 'LAYOUT_16x9';
       pptx.author = 'KALYRO IT GmbH';
       const SW = 10, SH = 5.625;
+      const SLIDE_BG = '0E1220';
+      const LABEL_COLOR = '8b95a8';
 
       // Slide 1: Titel
       if (sections.title) {
         const slide = pptx.addSlide();
-        slide.background = { color: 'FFFFFF' };
+        slide.background = { color: SLIDE_BG };
         const r = sections.title.w / sections.title.h;
         const w = 8, h = w / r;
         slide.addImage({ data: sections.title.data, x: (SW - w) / 2, y: (SH - h) / 2, w, h });
@@ -2865,8 +2870,8 @@
       // Slide 2: Architektur-Flow + Datenquellen
       if (sections.flow || sections.data) {
         const slide = pptx.addSlide();
-        slide.background = { color: 'FFFFFF' };
-        slide.addText('TECHNISCHE ARCHITEKTUR', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: '4a5568', align: 'center', charSpacing: 3, bold: true });
+        slide.background = { color: SLIDE_BG };
+        slide.addText('TECHNISCHE ARCHITEKTUR', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: LABEL_COLOR, align: 'center', charSpacing: 3, bold: true });
         let yPos = 0.55;
         if (sections.flow) {
           const r = sections.flow.w / sections.flow.h;
@@ -2887,8 +2892,8 @@
       // Slide 3: Kernbotschaften
       if (sections.explain) {
         const slide = pptx.addSlide();
-        slide.background = { color: 'FFFFFF' };
-        slide.addText('WAS DAS BEDEUTET', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: '4a5568', align: 'center', charSpacing: 3, bold: true });
+        slide.background = { color: SLIDE_BG };
+        slide.addText('WAS DAS BEDEUTET', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: LABEL_COLOR, align: 'center', charSpacing: 3, bold: true });
         const r = sections.explain.w / sections.explain.h;
         let w = 9, h = w / r;
         if (h > 4.2) { h = 4.2; w = h * r; }
