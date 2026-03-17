@@ -948,36 +948,86 @@
     .diagram-ki-apps .role-architekt .role-icon { background: rgba(22,163,74,0.15); }
     .diagram-ki-apps .ki-role-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
     .diagram-ki-apps .ki-role-card p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
-    /* Vergleich */
+    /* Vergleich — vertikale Timeline */
     .diagram-ki-apps .ki-compare {
-      margin-bottom: 40px; border-radius: 18px; overflow: hidden;
-      border: 1px solid var(--border-light); background: var(--bg-surface);
+      margin-bottom: 40px; position: relative; max-width: 860px; margin-left: auto; margin-right: auto;
     }
-    .diagram-ki-apps .ki-compare-header {
-      display: grid; grid-template-columns: 44px 1fr 1fr;
-      font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    .diagram-ki-apps .ki-cmp-header {
+      display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; margin-bottom: 20px;
     }
-    .diagram-ki-apps .ki-compare-header span { padding: 14px 16px; }
-    .diagram-ki-apps .ki-compare-header .col-before { background: rgba(220,38,38,0.08); color: var(--accent-red); }
-    .diagram-ki-apps .ki-compare-header .col-after  { background: rgba(22,163,74,0.08); color: var(--accent-green); }
-    .diagram-ki-apps .ki-compare-row {
-      display: grid; grid-template-columns: 44px 1fr 1fr;
-      border-top: 1px solid var(--border-light); font-size: 14px;
+    .diagram-ki-apps .ki-cmp-header .cmp-h-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+      padding: 8px 16px; border-radius: 10px; text-align: center;
     }
-    .diagram-ki-apps .ki-compare-row .step-num {
+    .diagram-ki-apps .ki-cmp-header .cmp-h-before { background: rgba(220,38,38,0.08); color: var(--accent-red); }
+    .diagram-ki-apps .ki-cmp-header .cmp-h-after  { background: rgba(22,163,74,0.08); color: var(--accent-green); }
+    .diagram-ki-apps .ki-cmp-timeline { position: relative; }
+    .diagram-ki-apps .ki-cmp-timeline::before {
+      content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 2px; background: linear-gradient(180deg, var(--accent-red), var(--accent-green));
+      transform: translateX(-50%); opacity: 0.25; border-radius: 2px;
+    }
+    .diagram-ki-apps .ki-cmp-row {
+      display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center;
+      margin-bottom: 16px; position: relative;
+    }
+    .diagram-ki-apps .ki-cmp-row:last-child { margin-bottom: 0; }
+    .diagram-ki-apps .ki-cmp-num {
+      display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;
+    }
+    .diagram-ki-apps .ki-cmp-num span {
+      width: 36px; height: 36px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 13px; color: var(--text-muted);
+      font-size: 14px; font-weight: 800; color: #fff;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      box-shadow: 0 2px 12px rgba(30,95,170,0.3);
     }
-    .diagram-ki-apps .ki-compare-row .col-cell { padding: 12px 16px; line-height: 1.5; }
-    .diagram-ki-apps .ki-compare-row .col-cell.before { color: var(--text-secondary); }
-    .diagram-ki-apps .ki-compare-row .col-cell.after  { color: var(--text-primary); font-weight: 500; }
-    .diagram-ki-apps .ki-compare-footer {
-      display: grid; grid-template-columns: 44px 1fr 1fr;
-      border-top: 2px solid var(--border-light); font-weight: 700; font-size: 14px;
+    .diagram-ki-apps .ki-cmp-card {
+      border-radius: 14px; padding: 14px 16px; position: relative;
+      border: 1px solid var(--border-light); backdrop-filter: blur(8px);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .diagram-ki-apps .ki-compare-footer .col-cell { padding: 14px 16px; }
-    .diagram-ki-apps .ki-compare-footer .col-cell.before { color: var(--accent-red); }
-    .diagram-ki-apps .ki-compare-footer .col-cell.after  { color: var(--accent-green); }
+    .diagram-ki-apps .ki-cmp-card:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .diagram-ki-apps .ki-cmp-card.cmp-before {
+      background: var(--bg-surface); text-align: right;
+    }
+    .diagram-ki-apps .ki-cmp-card.cmp-after {
+      background: var(--bg-surface); border-color: rgba(22,163,74,0.2);
+    }
+    .diagram-ki-apps .ki-cmp-card .cmp-icon {
+      font-size: 18px; opacity: 0.45; margin-bottom: 4px; display: block;
+    }
+    .diagram-ki-apps .ki-cmp-card.cmp-before .cmp-icon { text-align: right; }
+    .diagram-ki-apps .ki-cmp-card .cmp-text {
+      font-size: 14px; line-height: 1.5; color: var(--text-secondary);
+    }
+    .diagram-ki-apps .ki-cmp-card.cmp-after .cmp-text {
+      color: var(--text-primary); font-weight: 500;
+    }
+    .diagram-ki-apps .ki-cmp-summary {
+      display: grid; grid-template-columns: 1fr 60px 1fr; margin-top: 24px;
+    }
+    .diagram-ki-apps .ki-cmp-summary-card {
+      border-radius: 14px; padding: 14px 16px; text-align: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .diagram-ki-apps .ki-cmp-summary-card.s-before {
+      background: rgba(220,38,38,0.06); color: var(--accent-red);
+      border: 1px dashed rgba(220,38,38,0.25);
+    }
+    .diagram-ki-apps .ki-cmp-summary-card.s-after {
+      background: rgba(22,163,74,0.08); color: var(--accent-green);
+      border: 1px solid rgba(22,163,74,0.25);
+    }
+    @media (max-width: 640px) {
+      .diagram-ki-apps .ki-cmp-header { grid-template-columns: 1fr 40px 1fr; }
+      .diagram-ki-apps .ki-cmp-row { grid-template-columns: 1fr 40px 1fr; }
+      .diagram-ki-apps .ki-cmp-summary { grid-template-columns: 1fr 40px 1fr; }
+      .diagram-ki-apps .ki-cmp-card { padding: 10px 12px; }
+      .diagram-ki-apps .ki-cmp-card .cmp-text { font-size: 12px; }
+    }
     /* Stack-Saeulen */
     .diagram-ki-apps .ki-stack {
       display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;
@@ -1052,9 +1102,6 @@
 
     @media (max-width: 768px) {
       .diagram-ki-apps .ki-build-grid { grid-template-columns: repeat(2, 1fr); }
-      .diagram-ki-apps .ki-compare-header,
-      .diagram-ki-apps .ki-compare-row,
-      .diagram-ki-apps .ki-compare-footer { grid-template-columns: 34px 1fr 1fr; }
       .diagram-ki-apps .ki-content { padding: 24px 16px; }
     }
 
@@ -1746,40 +1793,42 @@
           <!-- Bisher vs. Heute -->
           <div class="ki-section-label">Bisher vs. Heute</div>
           <div class="ki-compare">
-            <div class="ki-compare-header">
-              <span class="col-num"></span>
-              <span class="col-before">Bisher</span>
-              <span class="col-after">Heute &mdash; mit uns</span>
+            <div class="ki-cmp-header">
+              <div class="cmp-h-label cmp-h-before">Bisher</div>
+              <div></div>
+              <div class="cmp-h-label cmp-h-after">Heute &mdash; mit uns</div>
             </div>
-            <div class="ki-compare-row">
-              <div class="step-num">1</div>
-              <div class="col-cell before">Anforderungen aufschreiben &amp; intern abstimmen</div>
-              <div class="col-cell after">Prozessspezialist beschreibt den Bedarf</div>
+            <div class="ki-cmp-timeline">
+              <div class="ki-cmp-row">
+                <div class="ki-cmp-card cmp-before"><span class="cmp-icon">&#128221;</span><div class="cmp-text">Anforderungen aufschreiben &amp; intern abstimmen</div></div>
+                <div class="ki-cmp-num"><span>1</span></div>
+                <div class="ki-cmp-card cmp-after"><span class="cmp-icon">&#128100;</span><div class="cmp-text">Prozessspezialist beschreibt den Bedarf</div></div>
+              </div>
+              <div class="ki-cmp-row">
+                <div class="ki-cmp-card cmp-before"><span class="cmp-icon">&#128188;</span><div class="cmp-text">Entwickler oder Agentur beauftragen</div></div>
+                <div class="ki-cmp-num"><span>2</span></div>
+                <div class="ki-cmp-card cmp-after"><span class="cmp-icon">&#129302;</span><div class="cmp-text">KI plant, baut und testet die Anwendung</div></div>
+              </div>
+              <div class="ki-cmp-row">
+                <div class="ki-cmp-card cmp-before"><span class="cmp-icon">&#9203;</span><div class="cmp-text">Wochen warten, Missverst&auml;ndnisse kl&auml;ren</div></div>
+                <div class="ki-cmp-num"><span>3</span></div>
+                <div class="ki-cmp-card cmp-after"><span class="cmp-icon">&#128270;</span><div class="cmp-text">IT-Architekt pr&uuml;ft, steuert und deployt</div></div>
+              </div>
+              <div class="ki-cmp-row">
+                <div class="ki-cmp-card cmp-before"><span class="cmp-icon">&#128027;</span><div class="cmp-text">Korrekturen, Bugs, erneute Abstimmung</div></div>
+                <div class="ki-cmp-num"><span>4</span></div>
+                <div class="ki-cmp-card cmp-after"><span class="cmp-icon">&#128737;&#65039;</span><div class="cmp-text">Microsoft-Stack sichert &amp; betreibt alles</div></div>
+              </div>
+              <div class="ki-cmp-row">
+                <div class="ki-cmp-card cmp-before"><span class="cmp-icon">&#128176;</span><div class="cmp-text">Hohe Kosten, lange Abh&auml;ngigkeit</div></div>
+                <div class="ki-cmp-num"><span>5</span></div>
+                <div class="ki-cmp-card cmp-after"><span class="cmp-icon">&#9989;</span><div class="cmp-text">Volle Kontrolle, minimale Kosten</div></div>
+              </div>
             </div>
-            <div class="ki-compare-row">
-              <div class="step-num">2</div>
-              <div class="col-cell before">Entwickler oder Agentur beauftragen</div>
-              <div class="col-cell after">KI plant, baut und testet die Anwendung</div>
-            </div>
-            <div class="ki-compare-row">
-              <div class="step-num">3</div>
-              <div class="col-cell before">Wochen warten, Missverst&auml;ndnisse kl&auml;ren</div>
-              <div class="col-cell after">IT-Architekt pr&uuml;ft, steuert und deployt</div>
-            </div>
-            <div class="ki-compare-row">
-              <div class="step-num">4</div>
-              <div class="col-cell before">Korrekturen, Bugs, erneute Abstimmung</div>
-              <div class="col-cell after">Microsoft-Stack sichert &amp; betreibt alles</div>
-            </div>
-            <div class="ki-compare-row">
-              <div class="step-num">5</div>
-              <div class="col-cell before">Hohe Kosten, lange Abh&auml;ngigkeit</div>
-              <div class="col-cell after">Volle Kontrolle, minimale Kosten</div>
-            </div>
-            <div class="ki-compare-footer">
-              <div class="col-cell"></div>
-              <div class="col-cell before">Monate &middot; teuer &middot; keine Kontrolle</div>
-              <div class="col-cell after">Tage &middot; g&uuml;nstig &middot; volle Kontrolle</div>
+            <div class="ki-cmp-summary">
+              <div class="ki-cmp-summary-card s-before">Monate &middot; teuer &middot; keine Kontrolle</div>
+              <div></div>
+              <div class="ki-cmp-summary-card s-after">Tage &middot; g&uuml;nstig &middot; volle Kontrolle</div>
             </div>
           </div>
 
