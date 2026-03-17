@@ -2824,6 +2824,20 @@
       const el = document.getElementById('diagram-ki-arch');
       if (!el) return;
 
+      // Bilder in Base64 konvertieren (verhindert Tainted Canvas bei file://)
+      const imgs = el.querySelectorAll('img');
+      const origSrcs = [];
+      for (const img of imgs) {
+        origSrcs.push(img.src);
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth || img.width || 64;
+          c.height = img.naturalHeight || img.height || 64;
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          img.src = c.toDataURL('image/png');
+        } catch (e) { /* img evtl. noch nicht geladen, ignorieren */ }
+      }
+
       // Gradient-Hintergrund ausblenden
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = 'none');
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -2838,6 +2852,7 @@
       const imgH = el.offsetHeight;
 
       // Wiederherstellen
+      imgs.forEach((img, i) => img.src = origSrcs[i]);
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = '');
 
       const pptx = new PptxGenJS();
