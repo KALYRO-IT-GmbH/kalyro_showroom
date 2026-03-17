@@ -2824,26 +2824,18 @@
       const el = document.getElementById('diagram-ki-arch');
       if (!el) return;
 
-      // Gradient-Hintergrund ausblenden damit html2canvas sauberen Hintergrund nutzt
+      // Gradient-Hintergrund ausblenden
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = 'none');
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const BG = isDark ? '#0e1220' : '#ffffff';
 
-      async function capture(selector) {
-        const node = el.querySelector(selector);
-        if (!node) return null;
-        const canvas = await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: BG });
-        return { data: canvas.toDataURL('image/png'), w: node.offsetWidth, h: node.offsetHeight };
-      }
-
-      const sections = {
-        title: await capture('.arch-title'),
-        flow:  await capture('.arch-flow'),
-        data:  await capture('.arch-data-section'),
-        explain: await capture('.arch-explanation'),
-      };
+      // Gesamtes Diagramm als ein Bild capturen
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: BG, logging: false });
+      const imgData = canvas.toDataURL('image/png');
+      const imgW = el.offsetWidth;
+      const imgH = el.offsetHeight;
 
       // Wiederherstellen
       el.querySelectorAll('.arch-bg-embedded').forEach(b => b.style.display = '');
@@ -2853,49 +2845,14 @@
       pptx.author = 'KALYRO IT GmbH';
       const SW = 10, SH = 5.625;
       const SLIDE_BG = isDark ? '0E1220' : 'FFFFFF';
-      const LABEL_COLOR = isDark ? '8b95a8' : '4a5568';
 
-      // Slide 1: Titel
-      if (sections.title) {
-        const slide = pptx.addSlide();
-        slide.background = { color: SLIDE_BG };
-        const r = sections.title.w / sections.title.h;
-        const w = 8, h = w / r;
-        slide.addImage({ data: sections.title.data, x: (SW - w) / 2, y: (SH - h) / 2, w, h });
-      }
-
-      // Slide 2: Architektur-Flow + Datenquellen
-      if (sections.flow || sections.data) {
-        const slide = pptx.addSlide();
-        slide.background = { color: SLIDE_BG };
-        slide.addText('TECHNISCHE ARCHITEKTUR', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: LABEL_COLOR, align: 'center', charSpacing: 3, bold: true });
-        let yPos = 0.55;
-        if (sections.flow) {
-          const r = sections.flow.w / sections.flow.h;
-          let w = 9.2, h = w / r;
-          if (h > 2.4) { h = 2.4; w = h * r; }
-          slide.addImage({ data: sections.flow.data, x: (SW - w) / 2, y: yPos, w, h });
-          yPos += h + 0.15;
-        }
-        if (sections.data) {
-          const r = sections.data.w / sections.data.h;
-          let w = 8, h = w / r;
-          const maxH = SH - yPos - 0.2;
-          if (h > maxH) { h = maxH; w = h * r; }
-          slide.addImage({ data: sections.data.data, x: (SW - w) / 2, y: yPos, w, h });
-        }
-      }
-
-      // Slide 3: Kernbotschaften
-      if (sections.explain) {
-        const slide = pptx.addSlide();
-        slide.background = { color: SLIDE_BG };
-        slide.addText('WAS DAS BEDEUTET', { x: 0.4, y: 0.15, w: SW - 0.8, h: 0.35, fontSize: 10, fontFace: 'Inter', color: LABEL_COLOR, align: 'center', charSpacing: 3, bold: true });
-        const r = sections.explain.w / sections.explain.h;
-        let w = 9, h = w / r;
-        if (h > 4.2) { h = 4.2; w = h * r; }
-        slide.addImage({ data: sections.explain.data, x: (SW - w) / 2, y: 0.6 + (4.2 - h) / 2, w, h });
-      }
+      const slide = pptx.addSlide();
+      slide.background = { color: SLIDE_BG };
+      const ratio = imgW / imgH;
+      const margin = 0.3;
+      let w = SW - margin * 2, h = w / ratio;
+      if (h > SH - margin * 2) { h = SH - margin * 2; w = h * ratio; }
+      slide.addImage({ data: imgData, x: (SW - w) / 2, y: (SH - h) / 2, w, h });
 
       pptx.writeFile({ fileName: 'KI-Architektur.pptx' });
     }
