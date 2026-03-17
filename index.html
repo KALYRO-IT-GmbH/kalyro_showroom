@@ -1216,10 +1216,6 @@
       font-size: 12px; font-weight: 700; letter-spacing: 3px;
       text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px;
     }
-    .diagram-ki-arch .arch-arrows-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 1;
-    }
     .diagram-ki-arch .arch-data-row {
       display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
     }
@@ -2209,9 +2205,6 @@
             </div>
           </div>
 
-          <!-- SVG-Overlay fuer Datenquellen-Pfeile -->
-          <svg class="arch-arrows-overlay" id="arch-arrows-svg-embedded"></svg>
-
           <!-- Datenquellen -->
           <div class="arch-data-section">
             <div class="arch-data-label">Datenquellen &amp; Schnittstellen</div>
@@ -2549,7 +2542,7 @@
       history.pushState({ concept: id }, '', '#konzept/' + id);
       if (id === 'software-entwicklung') requestAnimationFrame(drawArrows);
       if (id === 'ki-anwendungen') requestAnimationFrame(() => lucide.createIcons());
-      if (id === 'ki-architektur') requestAnimationFrame(() => { lucide.createIcons(); setTimeout(drawArchDataArrows, 50); });
+      if (id === 'ki-architektur') requestAnimationFrame(() => lucide.createIcons());
       // PPTX-Button nur fuer Konzepte mit Export-Daten anzeigen
       const pptxConcepts = ['ki-anwendungen'];
       const btnPptx = document.getElementById('btn-pptx');
@@ -2845,29 +2838,6 @@
       return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">${clone.outerHTML}</div></foreignObject></svg>`;
     }
     function downloadBlob(c, f, m) { const b = new Blob([c], { type: m }), a = document.createElement('a'); a.download = f; a.href = URL.createObjectURL(b); a.click(); }
-
-    function drawArchDataArrows() {
-      const container = document.querySelector('#diagram-ki-arch .arch-content');
-      const svg = document.getElementById('arch-arrows-svg-embedded');
-      const group = document.querySelector('#diagram-ki-arch .arch-group');
-      const cards = document.querySelectorAll('#diagram-ki-arch .arch-data-card');
-      if (!container || !svg || !group || !cards.length) return;
-      const cRect = container.getBoundingClientRect();
-      const gRect = group.getBoundingClientRect();
-      const targetX = gRect.left + gRect.width / 2 - cRect.left;
-      const targetY = gRect.bottom - cRect.top + 4;
-      let paths = '<defs><marker id="eda-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">';
-      paths += '<path d="M0,0 L10,3.5 L0,7Z" fill="#e87400" opacity="0.7"/></marker></defs>';
-      cards.forEach(card => {
-        const r = card.getBoundingClientRect();
-        const startX = r.left + r.width / 2 - cRect.left;
-        const startY = r.top - cRect.top - 2;
-        const cpY = startY - (startY - targetY) * 0.45;
-        paths += `<path d="M${startX},${startY} C${startX},${cpY} ${targetX},${cpY + 20} ${targetX},${targetY}" fill="none" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#eda-arrow)" opacity="0.45"/>`;
-      });
-      svg.innerHTML = paths;
-    }
-    window.addEventListener('resize', () => { if (currentDiagram === 'ki-architektur') drawArchDataArrows(); });
 
     lucide.createIcons();
   </script>

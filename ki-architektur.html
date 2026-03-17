@@ -224,15 +224,6 @@
       margin-bottom: 16px;
     }
 
-    /* SVG-Overlay fuer dynamische Pfeile */
-    .arch-arrows-overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
     .arch-data-row {
       display: flex;
       gap: 16px;
@@ -471,9 +462,6 @@
 
     </div>
 
-    <!-- SVG-Overlay fuer Datenquellen-Pfeile -->
-    <svg class="arch-arrows-overlay" id="arch-arrows-svg"></svg>
-
     <!-- ── Datenquellen ──────────────────────── -->
     <div class="arch-data-section">
       <div class="arch-data-label">Datenquellen &amp; Schnittstellen</div>
@@ -523,48 +511,7 @@
 </div>
 
 <script src="assets/icons/lucide.min.js"></script>
-<script>
-  lucide.createIcons();
-
-  function drawDataArrows() {
-    const diagram = document.querySelector('.arch-diagram');
-    const svg = document.getElementById('arch-arrows-svg');
-    const group = document.querySelector('.arch-group');
-    const cards = document.querySelectorAll('.arch-data-card');
-    if (!diagram || !svg || !group || !cards.length) return;
-
-    const dRect = diagram.getBoundingClientRect();
-    const gRect = group.getBoundingClientRect();
-
-    // Zielpunkt: Mitte-unten des Azure-Blocks
-    const targetX = gRect.left + gRect.width / 2 - dRect.left;
-    const targetY = gRect.bottom - dRect.top + 4;
-
-    let paths = '';
-    // Marker-Definition
-    paths += '<defs>';
-    paths += '<marker id="da-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">';
-    paths += '<path d="M0,0 L10,3.5 L0,7Z" fill="#e87400" opacity="0.7"/>';
-    paths += '</marker></defs>';
-
-    cards.forEach(card => {
-      const cRect = card.getBoundingClientRect();
-      const startX = cRect.left + cRect.width / 2 - dRect.left;
-      const startY = cRect.top - dRect.top - 2;
-
-      // Bezier-Kurve: von Card nach oben, dann zum Azure-Block
-      const cpY = startY - (startY - targetY) * 0.45;
-      const d = `M${startX},${startY} C${startX},${cpY} ${targetX},${cpY + 20} ${targetX},${targetY}`;
-
-      paths += `<path d="${d}" fill="none" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#da-arrow)" opacity="0.45"/>`;
-    });
-
-    svg.innerHTML = paths;
-  }
-
-  drawDataArrows();
-  window.addEventListener('resize', drawDataArrows);
-</script>
+<script>lucide.createIcons();</script>
 
 </body>
 </html>
