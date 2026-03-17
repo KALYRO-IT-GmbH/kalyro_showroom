@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI-Architektur — So bauen wir KI-Anwendungen — KALYRO IT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-blue: #1e5faa;
+      --accent-green: #16a34a;
+      --accent-orange: #e87400;
+      --accent-red: #dc2626;
+      --accent-purple: #7c3aed;
+      --bg-page: #07080f;
+      --bg-surface: rgba(255,255,255,0.04);
+      --bg-surface-solid: #10121c;
+      --text-primary: #f0f2f5;
+      --text-secondary: #8b95a8;
+      --text-muted: #4a5568;
+      --border-light: rgba(255,255,255,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ── Layout ─────────────────────────────────── */
+    .arch-page {
+      max-width: 1200px; margin: 0 auto; padding: 48px 32px 64px;
+    }
+    .arch-bg {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
+    }
+    .arch-bg .blob {
+      position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.25;
+    }
+    .arch-bg .blob.b1 { width: 600px; height: 600px; top: -15%; left: -10%; background: radial-gradient(circle, #1e5faa, transparent 70%); }
+    .arch-bg .blob.b2 { width: 500px; height: 500px; bottom: -10%; right: -5%; background: radial-gradient(circle, #7c3aed, transparent 70%); }
+    .arch-bg .blob.b3 { width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle, #e87400, transparent 70%); opacity: 0.12; }
+
+    /* ── Header ─────────────────────────────────── */
+    .arch-header {
+      text-align: center; margin-bottom: 56px;
+    }
+    .arch-header h1 {
+      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .arch-header .sub {
+      font-size: 18px; color: var(--text-secondary); margin-top: 12px;
+      font-weight: 400; line-height: 1.5;
+    }
+    .section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 20px; text-align: center;
+    }
+
+    /* ── Architektur-Diagramm Container ────────── */
+    .arch-diagram {
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    /* ── Hauptflow (obere Reihe) ─────────────── */
+    .arch-flow {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      justify-content: center;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .arch-node {
+      flex: 0 0 200px;
+      border-radius: 18px;
+      padding: 24px 18px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      z-index: 2;
+    }
+    .arch-node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+
+    .arch-node-icon {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .arch-node-icon img {
+      width: 44px; height: 44px;
+      object-fit: contain;
+    }
+    .arch-node-icon i {
+      width: 36px; height: 36px;
+      color: #fff;
+    }
+    .arch-node h3 {
+      font-size: 16px; font-weight: 700; margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .arch-node p {
+      font-size: 12px; line-height: 1.55; color: var(--text-secondary);
+    }
+
+    /* Node-Farben */
+    .arch-node-input { border-color: rgba(30,95,170,0.3); }
+    .arch-node-input .arch-node-icon { background: rgba(30,95,170,0.15); }
+    .arch-node-input h3 { color: #5a9fd4; }
+
+    .arch-node-ai { border-color: rgba(124,58,237,0.3); }
+    .arch-node-ai .arch-node-icon { background: rgba(124,58,237,0.15); }
+    .arch-node-ai h3 { color: #a78bfa; }
+
+    .arch-node-code { border-color: rgba(22,163,74,0.3); }
+    .arch-node-code .arch-node-icon { background: rgba(22,163,74,0.15); }
+    .arch-node-code h3 { color: #4ade80; }
+
+    /* ── Pfeil-Connector zwischen Nodes ──────── */
+    .arch-connector {
+      flex: 0 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .arch-connector svg {
+      width: 48px; height: 24px;
+    }
+
+    /* ── Azure-Gruppe (grosser Container) ─────── */
+    .arch-group {
+      flex: 0 0 340px;
+      border-radius: 22px;
+      padding: 24px 20px;
+      background: rgba(232,116,0,0.04);
+      border: 2px solid rgba(232,116,0,0.25);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 2;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .arch-group:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+    .arch-group-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px;
+    }
+    .arch-group-header .arch-node-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      margin: 0;
+      background: rgba(232,116,0,0.15);
+    }
+    .arch-group-header .arch-node-icon img {
+      width: 32px; height: 32px;
+    }
+    .arch-group-header h3 {
+      font-size: 18px; font-weight: 700;
+      color: #fbbf24;
+    }
+    .arch-group-header .group-sub {
+      font-size: 12px; color: var(--text-muted); font-weight: 400;
+    }
+
+    .arch-group-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .arch-group-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .arch-group-item .gi-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(232,116,0,0.10);
+      flex-shrink: 0;
+    }
+    .arch-group-item .gi-icon i {
+      width: 18px; height: 18px;
+      color: #fbbf24;
+    }
+    .arch-group-item .gi-icon img {
+      width: 20px; height: 20px;
+      object-fit: contain;
+    }
+    .arch-group-item span {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* ── Datenquellen (untere Reihe) ────────── */
+    .arch-data-section {
+      text-align: center;
+      position: relative;
+    }
+    .arch-data-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* SVG-Pfeile von Datenquellen nach oben */
+    .arch-data-arrows {
+      display: flex; justify-content: center; margin-bottom: 8px;
+    }
+    .arch-data-arrows svg {
+      width: 500px; height: 48px;
+    }
+
+    .arch-data-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .arch-data-card {
+      flex: 0 0 140px;
+      border-radius: 14px;
+      padding: 18px 14px;
+      background: var(--bg-surface);
+      border: 1px solid rgba(30,95,170,0.2);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .arch-data-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .arch-data-card .dc-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      background: rgba(30,95,170,0.12);
+    }
+    .arch-data-card .dc-icon i {
+      width: 22px; height: 22px;
+      color: #5a9fd4;
+    }
+    .arch-data-card .dc-icon img {
+      width: 28px; height: 28px;
+      object-fit: contain;
+    }
+    .arch-data-card h5 {
+      font-size: 13px; font-weight: 700; margin-bottom: 4px;
+    }
+    .arch-data-card p {
+      font-size: 11px; color: var(--text-muted); line-height: 1.4;
+    }
+
+    /* ── Erklaerungstext ─────────────────────── */
+    .arch-explanation {
+      display: flex; gap: 20px; justify-content: center;
+      flex-wrap: wrap; margin-top: 48px;
+    }
+    .arch-explain-card {
+      flex: 1; max-width: 340px; min-width: 240px;
+      padding: 22px; border-radius: 16px;
+      border-left: 4px solid var(--accent-blue);
+      background: var(--bg-surface);
+    }
+    .arch-explain-card:nth-child(2) { border-left-color: var(--accent-purple); }
+    .arch-explain-card:nth-child(3) { border-left-color: var(--accent-orange); }
+    .arch-explain-card h5 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .arch-explain-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ── Responsive ─────────────────────────── */
+    @media (max-width: 1024px) {
+      .arch-flow {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .arch-connector { flex: 0 0 auto; }
+      .arch-connector svg { transform: rotate(90deg); }
+      .arch-group { flex: 0 0 100%; max-width: 400px; }
+    }
+    @media (max-width: 768px) {
+      .arch-header h1 { font-size: 28px; }
+      .arch-page { padding: 32px 16px 48px; }
+      .arch-node { flex: 0 0 160px; }
+      .arch-group { flex: 0 0 100%; }
+      .arch-group-grid { grid-template-columns: 1fr; }
+      .arch-data-card { flex: 0 0 120px; }
+    }
+    @media (max-width: 480px) {
+      .arch-flow { flex-direction: column; align-items: center; }
+      .arch-node { flex: 0 0 auto; width: 100%; max-width: 260px; }
+      .arch-connector svg { transform: rotate(90deg); }
+      .arch-data-row { flex-direction: column; align-items: center; }
+      .arch-data-card { flex: 0 0 auto; width: 100%; max-width: 200px; }
+    }
+
+    /* ── Print / PDF ────────────────────────── */
+    @media print {
+      @page { size: A4 landscape; margin: 14mm; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+      body { background: #fff !important; color: #111 !important; font-size: 11px; }
+      .arch-bg { display: none !important; }
+      .arch-page { padding: 0; max-width: 100%; }
+      .arch-header { margin-bottom: 24px; }
+      .arch-header h1 { font-size: 22px; color: #111 !important; }
+      .arch-header .sub { font-size: 12px; color: #555 !important; }
+      .section-label { font-size: 9px; color: #888 !important; margin-bottom: 8px; }
+      .arch-node, .arch-group, .arch-data-card, .arch-explain-card {
+        background: #f8f9fa !important; border-color: #ddd !important;
+      }
+      .arch-node:hover, .arch-group:hover, .arch-data-card:hover { transform: none !important; box-shadow: none !important; }
+      .arch-node h3 { color: #111 !important; }
+      .arch-node p, .arch-data-card p { color: #444 !important; }
+      .arch-group-header h3 { color: #e87400 !important; }
+      .arch-explain-card h5 { color: #111 !important; }
+      .arch-explain-card p { color: #444 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="arch-bg">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
+<div class="arch-page">
+
+  <!-- ══ HEADER ═══════════════════════════════════════ -->
+  <div class="arch-header">
+    <h1>So bauen wir KI-Anwendungen</h1>
+    <p class="sub">Vom fachlichen Bedarf zur fertigen Anwendung in Azure &mdash;<br>automatisiert, sicher und mit allen Datenquellen verbunden.</p>
+  </div>
+
+  <!-- ══ ARCHITEKTUR-DIAGRAMM ═════════════════════════ -->
+  <div class="section-label">Technische Architektur</div>
+  <div class="arch-diagram">
+
+    <!-- Hauptflow: 4 Nodes + Azure-Gruppe -->
+    <div class="arch-flow">
+
+      <!-- 1. Prozessingenieur -->
+      <div class="arch-node arch-node-input">
+        <div class="arch-node-icon">
+          <img src="assets/logos/consultant.png" alt="Prozessingenieur">
+        </div>
+        <h3>Prozess&shy;ingenieur</h3>
+        <p>Beschreibt Abl&auml;ufe und Anforderungen in nat&uuml;rlicher Sprache</p>
+      </div>
+
+      <!-- Pfeil 1→2 -->
+      <div class="arch-connector">
+        <svg viewBox="0 0 48 24" fill="none">
+          <defs>
+            <linearGradient id="g12" x1="0" y1="12" x2="48" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#1e5faa"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+            <marker id="ah12" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6Z" fill="#7c3aed"/>
+            </marker>
+          </defs>
+          <line x1="4" y1="12" x2="38" y2="12" stroke="url(#g12)" stroke-width="2.5" marker-end="url(#ah12)"/>
+        </svg>
+      </div>
+
+      <!-- 2. KI (Claude) -->
+      <div class="arch-node arch-node-ai">
+        <div class="arch-node-icon">
+          <img src="assets/logos/Claude_Logo.png" alt="Claude AI">
+        </div>
+        <h3>KI-Transformation</h3>
+        <p>Claude analysiert, plant die Architektur und generiert Code</p>
+      </div>
+
+      <!-- Pfeil 2→3 -->
+      <div class="arch-connector">
+        <svg viewBox="0 0 48 24" fill="none">
+          <defs>
+            <linearGradient id="g23" x1="0" y1="12" x2="48" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#16a34a"/>
+            </linearGradient>
+            <marker id="ah23" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6Z" fill="#16a34a"/>
+            </marker>
+          </defs>
+          <line x1="4" y1="12" x2="38" y2="12" stroke="url(#g23)" stroke-width="2.5" marker-end="url(#ah23)"/>
+        </svg>
+      </div>
+
+      <!-- 3. Code & Qualitaet -->
+      <div class="arch-node arch-node-code">
+        <div class="arch-node-icon">
+          <i data-lucide="code-2"></i>
+        </div>
+        <h3>Code &amp; Qualit&auml;t</h3>
+        <p>Automatische Tests, Code-Pr&uuml;fung und Freigabe via GitHub</p>
+      </div>
+
+      <!-- Pfeil 3→Azure -->
+      <div class="arch-connector">
+        <svg viewBox="0 0 48 24" fill="none">
+          <defs>
+            <linearGradient id="g3a" x1="0" y1="12" x2="48" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#16a34a"/>
+              <stop offset="100%" stop-color="#e87400"/>
+            </linearGradient>
+            <marker id="ah3a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6Z" fill="#e87400"/>
+            </marker>
+          </defs>
+          <line x1="4" y1="12" x2="38" y2="12" stroke="url(#g3a)" stroke-width="2.5" marker-end="url(#ah3a)"/>
+        </svg>
+      </div>
+
+      <!-- 4. Azure-Umgebung (Gruppe) -->
+      <div class="arch-group">
+        <div class="arch-group-header">
+          <div class="arch-node-icon">
+            <img src="assets/logos/Azure_Logo.png" alt="Microsoft Azure">
+          </div>
+          <div>
+            <h3>Azure-Umgebung</h3>
+            <div class="group-sub">Produktion &amp; Betrieb</div>
+          </div>
+        </div>
+        <div class="arch-group-grid">
+          <div class="arch-group-item">
+            <div class="gi-icon"><i data-lucide="cloud"></i></div>
+            <span>Azure Web App</span>
+          </div>
+          <div class="arch-group-item">
+            <div class="gi-icon"><i data-lucide="database"></i></div>
+            <span>Azure SQL / Cosmos DB</span>
+          </div>
+          <div class="arch-group-item">
+            <div class="gi-icon"><i data-lucide="lock-keyhole"></i></div>
+            <span>Entra ID (Auth)</span>
+          </div>
+          <div class="arch-group-item">
+            <div class="gi-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub Actions"></div>
+            <span>GitHub Actions (CI/CD)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Datenquellen ──────────────────────── -->
+    <div class="arch-data-section">
+      <div class="arch-data-arrows">
+        <svg viewBox="0 0 500 48" fill="none">
+          <defs>
+            <marker id="ahup" markerWidth="8" markerHeight="6" refX="4" refY="0" orient="auto">
+              <path d="M0,6 L4,0 L8,6Z" fill="#1e5faa"/>
+            </marker>
+          </defs>
+          <!-- 4 gestrichelte Pfeile nach oben -->
+          <line x1="80" y1="44" x2="80" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ahup)" opacity="0.5"/>
+          <line x1="200" y1="44" x2="200" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ahup)" opacity="0.5"/>
+          <line x1="310" y1="44" x2="310" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ahup)" opacity="0.5"/>
+          <line x1="420" y1="44" x2="420" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ahup)" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="arch-data-label">Datenquellen &amp; Schnittstellen</div>
+      <div class="arch-data-row">
+        <div class="arch-data-card">
+          <div class="dc-icon"><i data-lucide="users"></i></div>
+          <h5>Kundendaten</h5>
+          <p>CRM, Vertr&auml;ge, Kontaktdaten</p>
+        </div>
+        <div class="arch-data-card">
+          <div class="dc-icon"><img src="assets/logos/API_Icon.png" alt="APIs"></div>
+          <h5>Internet &amp; APIs</h5>
+          <p>REST, Webhooks, externe Dienste</p>
+        </div>
+        <div class="arch-data-card">
+          <div class="dc-icon"><img src="assets/logos/SAP_Logo.png" alt="SAP"></div>
+          <h5>ERP / SAP</h5>
+          <p>Stammdaten, Auftr&auml;ge, Buchungen</p>
+        </div>
+        <div class="arch-data-card">
+          <div class="dc-icon"><img src="assets/logos/Database_Icon.png" alt="Datenbanken"></div>
+          <h5>Interne Datenbanken</h5>
+          <p>SQL, SharePoint, Dateisysteme</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ KERNBOTSCHAFTEN ═════════════════════════════ -->
+  <div class="section-label">Was das bedeutet</div>
+  <div class="arch-explanation">
+    <div class="arch-explain-card">
+      <h5>Fachsprache statt Programmiersprache</h5>
+      <p>Ihr Prozessingenieur beschreibt, was die Anwendung tun soll &ndash; die KI &uuml;bersetzt das in produktionsreifen Code.</p>
+    </div>
+    <div class="arch-explain-card">
+      <h5>Automatisch gebaut &amp; gepr&uuml;ft</h5>
+      <p>Claude generiert den Code, Tests laufen automatisch &ndash; nichts geht in Produktion ohne Qualit&auml;tssicherung.</p>
+    </div>
+    <div class="arch-explain-card">
+      <h5>Alle Daten, eine Plattform</h5>
+      <p>Kundendaten, externe APIs, SAP und interne Systeme &ndash; alles flie&szlig;t in Ihre Azure-Anwendung zusammen.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/icons/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+</body>
+</html>

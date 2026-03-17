@@ -1111,6 +1111,159 @@
     }
 
     /* ══════════════════════════════════════════════
+       KI-ARCHITEKTUR DIAGRAMM
+       ══════════════════════════════════════════════ */
+    .diagram-ki-arch {
+      position: relative; width: 1200px; max-width: 96vw; margin: 0 auto;
+      padding-bottom: 48px;
+    }
+    .diagram-ki-arch .arch-bg-embedded {
+      position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
+    }
+    [data-theme="dark"] .diagram-ki-arch .arch-bg-embedded {
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
+    }
+    .diagram-ki-arch .arch-title {
+      position: relative; text-align: center; padding: 40px 32px 0;
+    }
+    .diagram-ki-arch .arch-title h1 {
+      font-size: 36px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15;
+    }
+    .diagram-ki-arch .arch-title .sub {
+      font-size: 16px; color: var(--text-secondary); margin-top: 10px; font-weight: 400;
+    }
+    .diagram-ki-arch .arch-content {
+      position: relative; padding: 32px 32px 0;
+    }
+    .diagram-ki-arch .arch-section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 20px; text-align: center;
+    }
+    .diagram-ki-arch .arch-flow {
+      display: flex; align-items: stretch; gap: 0;
+      justify-content: center; margin-bottom: 40px;
+    }
+    .diagram-ki-arch .arch-node {
+      flex: 0 0 190px; border-radius: 18px; padding: 22px 16px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px); text-align: center;
+      transition: transform 0.25s, box-shadow 0.25s; position: relative; z-index: 2;
+    }
+    .diagram-ki-arch .arch-node:hover {
+      transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+    .diagram-ki-arch .arch-node-icon {
+      width: 68px; height: 68px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .diagram-ki-arch .arch-node-icon img { width: 42px; height: 42px; object-fit: contain; }
+    .diagram-ki-arch .arch-node-icon i { width: 34px; height: 34px; color: #fff; }
+    .diagram-ki-arch .arch-node h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .diagram-ki-arch .arch-node p { font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+    .diagram-ki-arch .arch-node-input { border-color: rgba(30,95,170,0.3); }
+    .diagram-ki-arch .arch-node-input .arch-node-icon { background: rgba(30,95,170,0.15); }
+    .diagram-ki-arch .arch-node-input h3 { color: #5a9fd4; }
+    .diagram-ki-arch .arch-node-ai { border-color: rgba(124,58,237,0.3); }
+    .diagram-ki-arch .arch-node-ai .arch-node-icon { background: rgba(124,58,237,0.15); }
+    .diagram-ki-arch .arch-node-ai h3 { color: #a78bfa; }
+    .diagram-ki-arch .arch-node-code { border-color: rgba(22,163,74,0.3); }
+    .diagram-ki-arch .arch-node-code .arch-node-icon { background: rgba(22,163,74,0.15); }
+    .diagram-ki-arch .arch-node-code h3 { color: #4ade80; }
+    .diagram-ki-arch .arch-connector {
+      flex: 0 0 40px; display: flex; align-items: center; justify-content: center; z-index: 1;
+    }
+    .diagram-ki-arch .arch-connector svg { width: 40px; height: 24px; }
+    .diagram-ki-arch .arch-group {
+      flex: 0 0 320px; border-radius: 22px; padding: 22px 18px;
+      background: rgba(232,116,0,0.04); border: 2px solid rgba(232,116,0,0.25);
+      backdrop-filter: blur(12px); z-index: 2;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .diagram-ki-arch .arch-group:hover {
+      transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+    .diagram-ki-arch .arch-group-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .diagram-ki-arch .arch-group-header .arch-node-icon {
+      width: 44px; height: 44px; border-radius: 14px; margin: 0;
+      background: rgba(232,116,0,0.15);
+    }
+    .diagram-ki-arch .arch-group-header .arch-node-icon img { width: 30px; height: 30px; }
+    .diagram-ki-arch .arch-group-header h3 { font-size: 17px; font-weight: 700; color: #fbbf24; }
+    .diagram-ki-arch .arch-group-header .group-sub { font-size: 11px; color: var(--text-muted); }
+    .diagram-ki-arch .arch-group-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .diagram-ki-arch .arch-group-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px; border-radius: 10px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    }
+    .diagram-ki-arch .gi-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(232,116,0,0.10); flex-shrink: 0;
+    }
+    .diagram-ki-arch .gi-icon i { width: 16px; height: 16px; color: #fbbf24; }
+    .diagram-ki-arch .gi-icon img { width: 18px; height: 18px; object-fit: contain; }
+    .diagram-ki-arch .arch-group-item span { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+    .diagram-ki-arch .arch-data-section { text-align: center; }
+    .diagram-ki-arch .arch-data-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px;
+    }
+    .diagram-ki-arch .arch-data-arrows { display: flex; justify-content: center; margin-bottom: 6px; }
+    .diagram-ki-arch .arch-data-arrows svg { width: 500px; height: 44px; }
+    .diagram-ki-arch .arch-data-row {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    }
+    .diagram-ki-arch .arch-data-card {
+      flex: 0 0 130px; border-radius: 14px; padding: 16px 12px;
+      background: var(--bg-surface); border: 1px solid rgba(30,95,170,0.2);
+      backdrop-filter: blur(12px); text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .diagram-ki-arch .arch-data-card:hover {
+      transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .diagram-ki-arch .dc-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px; background: rgba(30,95,170,0.12);
+    }
+    .diagram-ki-arch .dc-icon i { width: 20px; height: 20px; color: #5a9fd4; }
+    .diagram-ki-arch .dc-icon img { width: 24px; height: 24px; object-fit: contain; }
+    .diagram-ki-arch .arch-data-card h5 { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+    .diagram-ki-arch .arch-data-card p { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+    .diagram-ki-arch .arch-explanation {
+      display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 40px;
+    }
+    .diagram-ki-arch .arch-explain-card {
+      flex: 1; max-width: 320px; min-width: 220px;
+      padding: 20px; border-radius: 16px;
+      border-left: 4px solid var(--accent-blue); background: var(--bg-surface);
+    }
+    .diagram-ki-arch .arch-explain-card:nth-child(2) { border-left-color: var(--accent-purple); }
+    .diagram-ki-arch .arch-explain-card:nth-child(3) { border-left-color: var(--accent-orange); }
+    .diagram-ki-arch .arch-explain-card h5 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .diagram-ki-arch .arch-explain-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    @media (max-width: 1024px) {
+      .diagram-ki-arch .arch-flow { flex-wrap: wrap; gap: 14px; }
+      .diagram-ki-arch .arch-connector svg { transform: rotate(90deg); }
+      .diagram-ki-arch .arch-group { flex: 0 0 100%; max-width: 380px; }
+    }
+    @media (max-width: 768px) {
+      .diagram-ki-arch .arch-content { padding: 20px 16px 0; }
+      .diagram-ki-arch .arch-node { flex: 0 0 150px; }
+      .diagram-ki-arch .arch-group-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══════════════════════════════════════════════
        RESPONSIVE
        ══════════════════════════════════════════════ */
     @media (max-width: 1024px) {
@@ -1435,6 +1588,47 @@
               <span class="gc-tag gc-tag-orange">Entwurf</span>
               <h3>KI-Anwendungen &mdash; Microsoft-Stack</h3>
               <p>Komplette Anwendungen bauen mit KI, zwei Rollen und dem bew&auml;hrten Microsoft-Stack &mdash; sicher und skalierbar.</p>
+            </div>
+            <div class="gallery-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- KI-Architektur -->
+        <div class="gallery-card-wrapper reveal">
+          <div class="gallery-card tilt-card" onclick="openViewer('ki-architektur')" role="button" tabindex="0">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
+              <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Nodes -->
+                <rect x="10" y="40" width="60" height="55" rx="8" fill="rgba(30,95,170,0.12)" stroke="#1e5faa" stroke-width="1.5"/>
+                <text x="40" y="72" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#5a9fd4">Prozess</text>
+                <rect x="90" y="40" width="60" height="55" rx="8" fill="rgba(124,58,237,0.12)" stroke="#7c3aed" stroke-width="1.5"/>
+                <text x="120" y="72" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#a78bfa">KI</text>
+                <rect x="170" y="40" width="60" height="55" rx="8" fill="rgba(22,163,74,0.12)" stroke="#16a34a" stroke-width="1.5"/>
+                <text x="200" y="72" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#4ade80">Code</text>
+                <rect x="250" y="30" width="100" height="75" rx="10" fill="rgba(232,116,0,0.08)" stroke="#e87400" stroke-width="1.5"/>
+                <text x="300" y="55" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#fbbf24">Azure</text>
+                <rect x="260" y="62" width="36" height="18" rx="4" fill="rgba(232,116,0,0.15)"/>
+                <rect x="304" y="62" width="36" height="18" rx="4" fill="rgba(232,116,0,0.15)"/>
+                <rect x="260" y="84" width="36" height="18" rx="4" fill="rgba(232,116,0,0.15)"/>
+                <rect x="304" y="84" width="36" height="18" rx="4" fill="rgba(232,116,0,0.15)"/>
+                <!-- Pfeile -->
+                <line x1="72" y1="67" x2="88" y2="67" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arr-p)"/>
+                <line x1="152" y1="67" x2="168" y2="67" stroke="#16a34a" stroke-width="1.5"/>
+                <line x1="232" y1="67" x2="248" y2="67" stroke="#e87400" stroke-width="1.5"/>
+                <!-- Datenquellen -->
+                <rect x="255" y="135" width="40" height="30" rx="6" fill="rgba(30,95,170,0.1)" stroke="rgba(30,95,170,0.3)" stroke-width="1"/>
+                <rect x="300" y="135" width="40" height="30" rx="6" fill="rgba(30,95,170,0.1)" stroke="rgba(30,95,170,0.3)" stroke-width="1"/>
+                <line x1="275" y1="133" x2="275" y2="108" stroke="#1e5faa" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+                <line x1="320" y1="133" x2="320" y2="108" stroke="#1e5faa" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-purple">Architektur</span>
+              <h3>KI-Architektur &mdash; Wie wir bauen</h3>
+              <p>Vom fachlichen Bedarf zur fertigen Anwendung in Azure &mdash; mit allen Datenquellen verbunden.</p>
             </div>
             <div class="gallery-card-arrow">
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1953,6 +2147,97 @@
         </div>
       </div>
 
+      <!-- KI-Architektur -->
+      <div class="diagram-ki-arch" id="diagram-ki-arch" style="display:none;">
+        <div class="arch-bg-embedded"></div>
+        <div class="arch-title">
+          <h1>So bauen wir KI-Anwendungen</h1>
+          <div class="sub">Vom fachlichen Bedarf zur fertigen Anwendung in Azure &mdash; automatisiert, sicher und mit allen Datenquellen verbunden.</div>
+        </div>
+        <div class="arch-content">
+
+          <div class="arch-section-label">Technische Architektur</div>
+
+          <!-- Hauptflow -->
+          <div class="arch-flow">
+            <div class="arch-node arch-node-input">
+              <div class="arch-node-icon"><img src="assets/logos/consultant.png" alt="Prozessingenieur"></div>
+              <h3>Prozess&shy;ingenieur</h3>
+              <p>Beschreibt Abl&auml;ufe und Anforderungen in nat&uuml;rlicher Sprache</p>
+            </div>
+            <div class="arch-connector">
+              <svg viewBox="0 0 40 24" fill="none">
+                <defs><linearGradient id="eg12" x1="0" y1="12" x2="40" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e5faa"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient><marker id="eah12" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#7c3aed"/></marker></defs>
+                <line x1="2" y1="12" x2="30" y2="12" stroke="url(#eg12)" stroke-width="2.5" marker-end="url(#eah12)"/>
+              </svg>
+            </div>
+            <div class="arch-node arch-node-ai">
+              <div class="arch-node-icon"><img src="assets/logos/Claude_Logo.png" alt="Claude AI"></div>
+              <h3>KI-Transformation</h3>
+              <p>Claude analysiert, plant die Architektur und generiert Code</p>
+            </div>
+            <div class="arch-connector">
+              <svg viewBox="0 0 40 24" fill="none">
+                <defs><linearGradient id="eg23" x1="0" y1="12" x2="40" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#16a34a"/></linearGradient><marker id="eah23" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#16a34a"/></marker></defs>
+                <line x1="2" y1="12" x2="30" y2="12" stroke="url(#eg23)" stroke-width="2.5" marker-end="url(#eah23)"/>
+              </svg>
+            </div>
+            <div class="arch-node arch-node-code">
+              <div class="arch-node-icon"><i data-lucide="code-2"></i></div>
+              <h3>Code &amp; Qualit&auml;t</h3>
+              <p>Automatische Tests, Code-Pr&uuml;fung und Freigabe via GitHub</p>
+            </div>
+            <div class="arch-connector">
+              <svg viewBox="0 0 40 24" fill="none">
+                <defs><linearGradient id="eg3a" x1="0" y1="12" x2="40" y2="12" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#16a34a"/><stop offset="100%" stop-color="#e87400"/></linearGradient><marker id="eah3a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6Z" fill="#e87400"/></marker></defs>
+                <line x1="2" y1="12" x2="30" y2="12" stroke="url(#eg3a)" stroke-width="2.5" marker-end="url(#eah3a)"/>
+              </svg>
+            </div>
+            <div class="arch-group">
+              <div class="arch-group-header">
+                <div class="arch-node-icon"><img src="assets/logos/Azure_Logo.png" alt="Microsoft Azure"></div>
+                <div><h3>Azure-Umgebung</h3><div class="group-sub">Produktion &amp; Betrieb</div></div>
+              </div>
+              <div class="arch-group-grid">
+                <div class="arch-group-item"><div class="gi-icon"><i data-lucide="cloud"></i></div><span>Azure Web App</span></div>
+                <div class="arch-group-item"><div class="gi-icon"><i data-lucide="database"></i></div><span>Azure SQL / Cosmos DB</span></div>
+                <div class="arch-group-item"><div class="gi-icon"><i data-lucide="lock-keyhole"></i></div><span>Entra ID (Auth)</span></div>
+                <div class="arch-group-item"><div class="gi-icon"><img src="assets/logos/GitHub_Logo.png" alt="GitHub Actions"></div><span>GitHub Actions (CI/CD)</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Datenquellen -->
+          <div class="arch-data-section">
+            <div class="arch-data-arrows">
+              <svg viewBox="0 0 500 44" fill="none">
+                <defs><marker id="eahup" markerWidth="8" markerHeight="6" refX="4" refY="0" orient="auto"><path d="M0,6 L4,0 L8,6Z" fill="#1e5faa"/></marker></defs>
+                <line x1="80" y1="40" x2="80" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#eahup)" opacity="0.5"/>
+                <line x1="200" y1="40" x2="200" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#eahup)" opacity="0.5"/>
+                <line x1="310" y1="40" x2="310" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#eahup)" opacity="0.5"/>
+                <line x1="420" y1="40" x2="420" y2="8" stroke="#1e5faa" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#eahup)" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="arch-data-label">Datenquellen &amp; Schnittstellen</div>
+            <div class="arch-data-row">
+              <div class="arch-data-card"><div class="dc-icon"><i data-lucide="users"></i></div><h5>Kundendaten</h5><p>CRM, Vertr&auml;ge, Kontaktdaten</p></div>
+              <div class="arch-data-card"><div class="dc-icon"><img src="assets/logos/API_Icon.png" alt="APIs"></div><h5>Internet &amp; APIs</h5><p>REST, Webhooks, externe Dienste</p></div>
+              <div class="arch-data-card"><div class="dc-icon"><img src="assets/logos/SAP_Logo.png" alt="SAP"></div><h5>ERP / SAP</h5><p>Stammdaten, Auftr&auml;ge, Buchungen</p></div>
+              <div class="arch-data-card"><div class="dc-icon"><img src="assets/logos/Database_Icon.png" alt="Datenbanken"></div><h5>Interne Datenbanken</h5><p>SQL, SharePoint, Dateisysteme</p></div>
+            </div>
+          </div>
+
+          <!-- Kernbotschaften -->
+          <div class="arch-section-label" style="margin-top:40px">Was das bedeutet</div>
+          <div class="arch-explanation">
+            <div class="arch-explain-card"><h5>Fachsprache statt Programmiersprache</h5><p>Ihr Prozessingenieur beschreibt, was die Anwendung tun soll &ndash; die KI &uuml;bersetzt das in produktionsreifen Code.</p></div>
+            <div class="arch-explain-card"><h5>Automatisch gebaut &amp; gepr&uuml;ft</h5><p>Claude generiert den Code, Tests laufen automatisch &ndash; nichts geht in Produktion ohne Qualit&auml;tssicherung.</p></div>
+            <div class="arch-explain-card"><h5>Alle Daten, eine Plattform</h5><p>Kundendaten, externe APIs, SAP und interne Systeme &ndash; alles flie&szlig;t in Ihre Azure-Anwendung zusammen.</p></div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
     <div class="viewer-nav" id="viewer-nav"></div>
   </div>
@@ -2031,6 +2316,7 @@
       { id: 'software-entwicklung', title: 'Moderne Software-Entwicklung & Bereitstellung', elementId: 'infographic', published: true },
       { id: 'cicd-infinity', title: 'CI/CD Infinity Loop', elementId: 'diagram-cicd', published: false },
       { id: 'ki-anwendungen', title: 'KI-Anwendungen — Microsoft-Stack', elementId: 'diagram-ki-apps', published: true },
+      { id: 'ki-architektur', title: 'KI-Architektur — Wie wir KI-Anwendungen bauen', elementId: 'diagram-ki-arch', published: true },
     ];
     let currentDiagram = null;
     let isAdmin = false;
@@ -2266,6 +2552,7 @@
       document.body.style.overflow = 'hidden';
       history.pushState({ concept: id }, '', '#konzept/' + id);
       if (id === 'software-entwicklung') requestAnimationFrame(drawArrows);
+      if (id === 'ki-architektur' || id === 'ki-anwendungen') requestAnimationFrame(() => lucide.createIcons());
       // PPTX-Button nur fuer Konzepte mit Export-Daten anzeigen
       const pptxConcepts = ['ki-anwendungen'];
       const btnPptx = document.getElementById('btn-pptx');
@@ -2535,6 +2822,7 @@
     function getActiveElement() {
       if (currentDiagram === 'cicd-infinity') return document.getElementById('diagram-cicd');
       if (currentDiagram === 'ki-anwendungen') return document.getElementById('diagram-ki-apps');
+      if (currentDiagram === 'ki-architektur') return document.getElementById('diagram-ki-arch');
       return document.getElementById('infographic');
     }
     async function exportAsImage(fmt, scale = 2) {
