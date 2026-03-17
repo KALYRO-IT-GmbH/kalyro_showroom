@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI-Anwendungen auf dem Microsoft-Stack — KALYRO IT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-blue: #1e5faa;
+      --accent-green: #16a34a;
+      --accent-orange: #e87400;
+      --accent-red: #dc2626;
+      --accent-purple: #7c3aed;
+      --bg-page: #07080f;
+      --bg-surface: rgba(255,255,255,0.04);
+      --bg-surface-solid: #10121c;
+      --text-primary: #f0f2f5;
+      --text-secondary: #8b95a8;
+      --text-muted: #4a5568;
+      --border-light: rgba(255,255,255,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ── Layout ─────────────────────────────────── */
+    .ki-page {
+      max-width: 1140px; margin: 0 auto; padding: 48px 32px 64px;
+    }
+    .ki-bg {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
+    }
+    .ki-bg .blob {
+      position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.25;
+    }
+    .ki-bg .blob.b1 { width: 600px; height: 600px; top: -15%; left: -10%; background: radial-gradient(circle, #1e5faa, transparent 70%); }
+    .ki-bg .blob.b2 { width: 500px; height: 500px; bottom: -10%; right: -5%; background: radial-gradient(circle, #16a34a, transparent 70%); }
+
+    /* ── Titel ──────────────────────────────────── */
+    .ki-header {
+      text-align: center; margin-bottom: 48px;
+    }
+    .ki-header h1 {
+      font-size: 40px; font-weight: 800; letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .ki-header .sub {
+      font-size: 18px; color: var(--text-secondary); margin-top: 12px;
+      font-weight: 400; line-height: 1.5;
+    }
+
+    /* ── Abschnitts-Label ──────────────────────── */
+    .section-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 16px; text-align: center;
+    }
+
+    /* ── Rollen-Cards ──────────────────────────── */
+    .ki-roles {
+      display: flex; gap: 24px; justify-content: center;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .ki-role-card {
+      flex: 1; max-width: 380px; min-width: 260px;
+      border-radius: 18px; padding: 28px 24px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .ki-role-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+    .ki-role-card .role-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 14px;
+    }
+    .role-prozess .role-icon { background: rgba(30,95,170,0.15); }
+    .role-architekt .role-icon { background: rgba(22,163,74,0.15); }
+    .ki-role-card h3 {
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+    }
+    .ki-role-card p {
+      font-size: 14px; line-height: 1.65; color: var(--text-secondary);
+    }
+
+    /* ── Vergleich ─────────────────────────────── */
+    .ki-compare {
+      margin-bottom: 48px; border-radius: 18px; overflow: hidden;
+      border: 1px solid var(--border-light); background: var(--bg-surface);
+    }
+    .ki-compare-header {
+      display: grid; grid-template-columns: 44px 1fr 1fr;
+      font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px;
+    }
+    .ki-compare-header span { padding: 14px 16px; }
+    .ki-compare-header .col-num { }
+    .ki-compare-header .col-before { background: rgba(220,38,38,0.08); color: var(--accent-red); }
+    .ki-compare-header .col-after  { background: rgba(22,163,74,0.08); color: var(--accent-green); }
+    .ki-compare-row {
+      display: grid; grid-template-columns: 44px 1fr 1fr;
+      border-top: 1px solid var(--border-light); font-size: 14px;
+    }
+    .ki-compare-row .step-num {
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: var(--text-muted);
+    }
+    .ki-compare-row .col-cell { padding: 12px 16px; line-height: 1.5; }
+    .ki-compare-row .col-cell.before { color: var(--text-secondary); }
+    .ki-compare-row .col-cell.after  { color: var(--text-primary); font-weight: 500; }
+    .ki-compare-footer {
+      display: grid; grid-template-columns: 44px 1fr 1fr;
+      border-top: 2px solid var(--border-light); font-weight: 700; font-size: 14px;
+    }
+    .ki-compare-footer .col-cell { padding: 14px 16px; }
+    .ki-compare-footer .col-cell.before { color: var(--accent-red); }
+    .ki-compare-footer .col-cell.after  { color: var(--accent-green); }
+
+    /* ── Microsoft-Stack Saeulen ───────────────── */
+    .ki-stack {
+      display: flex; gap: 20px; justify-content: center;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .ki-stack-card {
+      flex: 1; max-width: 340px; min-width: 240px;
+      border-radius: 18px; padding: 24px 20px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      backdrop-filter: blur(12px);
+    }
+    .ki-stack-card .stack-icon { font-size: 28px; margin-bottom: 10px; }
+    .ki-stack-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .ki-stack-card .stack-sub {
+      font-size: 12px; color: var(--text-muted); font-style: italic; margin-bottom: 14px;
+    }
+    .ki-stack-card ul { list-style: none; padding: 0; }
+    .ki-stack-card ul li {
+      font-size: 13px; color: var(--text-secondary); padding: 5px 0 5px 18px; position: relative;
+    }
+    .ki-stack-card ul li::before {
+      content: ''; position: absolute; left: 0; top: 50%;
+      width: 7px; height: 7px; border-radius: 50%; transform: translateY(-50%);
+    }
+    .stack-identity ul li::before { background: var(--accent-blue); }
+    .stack-hosting  ul li::before { background: var(--accent-orange); }
+    .stack-security ul li::before { background: var(--accent-green); }
+
+    /* ── Prozess-Flow ──────────────────────────── */
+    .ki-flow {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      flex-wrap: wrap; margin-bottom: 48px; padding: 22px 20px;
+      border-radius: 18px; background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .ki-flow-step {
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+      padding: 8px 16px; border-radius: 10px;
+      background: rgba(30,95,170,0.12); white-space: nowrap;
+    }
+    .ki-flow-arrow { color: var(--text-muted); font-size: 18px; }
+
+    /* ── Was wir bauen ─────────────────────────── */
+    .ki-build-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+      margin-bottom: 48px;
+    }
+    .ki-build-item {
+      text-align: center; padding: 24px 14px; border-radius: 16px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      transition: transform 0.2s;
+    }
+    .ki-build-item:hover { transform: translateY(-3px); }
+    .ki-build-item .build-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+    .ki-build-item h5 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .ki-build-item .build-time {
+      font-size: 13px; color: var(--accent-green); font-weight: 600;
+    }
+
+    /* ── Zahlen ─────────────────────────────────── */
+    .ki-stats {
+      display: flex; gap: 32px; justify-content: center;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .ki-stat { text-align: center; flex: 1; max-width: 220px; min-width: 140px; }
+    .ki-stat .stat-num {
+      font-size: 56px; font-weight: 900; letter-spacing: -2px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .ki-stat .stat-label {
+      font-size: 14px; color: var(--text-secondary); margin-top: 4px;
+    }
+
+    /* ── Kernbotschaften ───────────────────────── */
+    .ki-messages {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+    }
+    .ki-message {
+      flex: 1; max-width: 340px; min-width: 240px;
+      padding: 22px; border-radius: 16px;
+      border-left: 4px solid var(--accent-blue);
+      background: var(--bg-surface);
+    }
+    .ki-message:nth-child(2) { border-left-color: var(--accent-green); }
+    .ki-message:nth-child(3) { border-left-color: var(--accent-orange); }
+    .ki-message h5 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .ki-message p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ── Responsive ─────────────────────────────── */
+    @media (max-width: 768px) {
+      .ki-header h1 { font-size: 28px; }
+      .ki-build-grid { grid-template-columns: repeat(2, 1fr); }
+      .ki-compare-header, .ki-compare-row, .ki-compare-footer {
+        grid-template-columns: 34px 1fr 1fr;
+      }
+      .ki-page { padding: 32px 16px 48px; }
+    }
+    @media (max-width: 480px) {
+      .ki-build-grid { grid-template-columns: 1fr 1fr; }
+      .ki-flow-step { font-size: 11px; padding: 6px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ki-bg">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+</div>
+
+<div class="ki-page">
+
+  <!-- ══ TITEL ══════════════════════════════════════ -->
+  <div class="ki-header">
+    <h1>Komplette Anwendungen bauen &mdash;<br>sicher, skalierbar, ohne eine Zeile Code</h1>
+    <p class="sub">Zwei Rollen, eine KI und der bew&auml;hrte Microsoft-Stack.<br>Von der Idee zur fertigen Anwendung &ndash; in Tagen statt Monaten.</p>
+  </div>
+
+  <!-- ══ ZWEI ROLLEN ════════════════════════════════ -->
+  <div class="section-label">Unsere zwei Rollen</div>
+  <div class="ki-roles">
+    <div class="ki-role-card role-prozess">
+      <div class="role-icon">&#128218;</div>
+      <h3>Prozessspezialist</h3>
+      <p>Unsere Prozessspezialisten erfassen Ihre Abl&auml;ufe schnell, reifen sie aus und formulieren pr&auml;zise Anforderungen, die die KI direkt umsetzen kann.</p>
+    </div>
+    <div class="ki-role-card role-architekt">
+      <div class="role-icon">&#128736;</div>
+      <h3>IT-Architekt</h3>
+      <p>Steuert die KI, pr&uuml;ft das Ergebnis und sorgt daf&uuml;r, dass alles sicher, stabil und skalierbar im Microsoft-Stack l&auml;uft.</p>
+    </div>
+  </div>
+
+  <!-- ══ BISHER VS. HEUTE ══════════════════════════ -->
+  <div class="section-label">Bisher vs. Heute</div>
+  <div class="ki-compare">
+    <div class="ki-compare-header">
+      <span class="col-num"></span>
+      <span class="col-before">Bisher</span>
+      <span class="col-after">Heute &mdash; mit uns</span>
+    </div>
+    <div class="ki-compare-row">
+      <div class="step-num">1</div>
+      <div class="col-cell before">Anforderungen aufschreiben &amp; intern abstimmen</div>
+      <div class="col-cell after">Prozessspezialist beschreibt den Bedarf</div>
+    </div>
+    <div class="ki-compare-row">
+      <div class="step-num">2</div>
+      <div class="col-cell before">Entwickler oder Agentur beauftragen</div>
+      <div class="col-cell after">KI plant, baut und testet die Anwendung</div>
+    </div>
+    <div class="ki-compare-row">
+      <div class="step-num">3</div>
+      <div class="col-cell before">Wochen warten, Missverst&auml;ndnisse kl&auml;ren</div>
+      <div class="col-cell after">IT-Architekt pr&uuml;ft, steuert und deployt</div>
+    </div>
+    <div class="ki-compare-row">
+      <div class="step-num">4</div>
+      <div class="col-cell before">Korrekturen, Bugs, erneute Abstimmung</div>
+      <div class="col-cell after">Microsoft-Stack sichert &amp; betreibt alles</div>
+    </div>
+    <div class="ki-compare-row">
+      <div class="step-num">5</div>
+      <div class="col-cell before">Hohe Kosten, lange Abh&auml;ngigkeit</div>
+      <div class="col-cell after">Volle Kontrolle, minimale Kosten</div>
+    </div>
+    <div class="ki-compare-footer">
+      <div class="col-cell"></div>
+      <div class="col-cell before">Monate &middot; teuer &middot; keine Kontrolle</div>
+      <div class="col-cell after">Tage &middot; g&uuml;nstig &middot; volle Kontrolle</div>
+    </div>
+  </div>
+
+  <!-- ══ MICROSOFT-STACK FUNDAMENT ══════════════════ -->
+  <div class="section-label">Fundament &mdash; Microsoft-Stack</div>
+  <div class="ki-stack">
+    <div class="ki-stack-card stack-identity">
+      <div class="stack-icon">&#128272;</div>
+      <h4>Identit&auml;t &amp; Zugriff</h4>
+      <div class="stack-sub">Wer darf rein &ndash; und wie</div>
+      <ul>
+        <li>Entra ID (Azure AD)</li>
+        <li>Conditional Access</li>
+        <li>Multi-Faktor-Authentifizierung</li>
+        <li>Single Sign-On</li>
+      </ul>
+    </div>
+    <div class="ki-stack-card stack-hosting">
+      <div class="stack-icon">&#9729;&#65039;</div>
+      <h4>Betrieb &amp; Hosting</h4>
+      <div class="stack-sub">L&auml;uft &ndash; auch unter Last</div>
+      <ul>
+        <li>Azure Web Apps</li>
+        <li>Azure SQL / Cosmos DB</li>
+        <li>Auto-Skalierung</li>
+        <li>Azure DevOps Pipelines</li>
+      </ul>
+    </div>
+    <div class="ki-stack-card stack-security">
+      <div class="stack-icon">&#128737;&#65039;</div>
+      <h4>&Uuml;berwachung &amp; Schutz</h4>
+      <div class="stack-sub">Sicher &amp; jederzeit einsehbar</div>
+      <ul>
+        <li>Microsoft Defender</li>
+        <li>Azure Monitor</li>
+        <li>Role-Based Access (RBAC)</li>
+        <li>Compliance &amp; DSGVO</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ PROZESS-FLOW ══════════════════════════════ -->
+  <div class="section-label">Wie ein Auftrag abl&auml;uft</div>
+  <div class="ki-flow">
+    <span class="ki-flow-step">Bedarf beschreiben</span>
+    <span class="ki-flow-arrow">&#8594;</span>
+    <span class="ki-flow-step">KI baut die App</span>
+    <span class="ki-flow-arrow">&#8594;</span>
+    <span class="ki-flow-step">Pr&uuml;fen &amp; anpassen</span>
+    <span class="ki-flow-arrow">&#8594;</span>
+    <span class="ki-flow-step">Azure deployt</span>
+    <span class="ki-flow-arrow">&#8594;</span>
+    <span class="ki-flow-step">Entra ID sichert</span>
+    <span class="ki-flow-arrow">&#8594;</span>
+    <span class="ki-flow-step">Live &amp; nutzbar</span>
+  </div>
+
+  <!-- ══ WAS WIR BAUEN ═════════════════════════════ -->
+  <div class="section-label">Was wir f&uuml;r Sie bauen k&ouml;nnen</div>
+  <div class="ki-build-grid">
+    <div class="ki-build-item">
+      <span class="build-icon">&#127760;</span>
+      <h5>Website</h5>
+      <span class="build-time">in Stunden</span>
+    </div>
+    <div class="ki-build-item">
+      <span class="build-icon">&#127970;</span>
+      <h5>Kundenportal</h5>
+      <span class="build-time">in Tagen</span>
+    </div>
+    <div class="ki-build-item">
+      <span class="build-icon">&#128202;</span>
+      <h5>ERP-System</h5>
+      <span class="build-time">in Wochen</span>
+    </div>
+    <div class="ki-build-item">
+      <span class="build-icon">&#128260;</span>
+      <h5>Automatisierungen</h5>
+      <span class="build-time">sofort m&ouml;glich</span>
+    </div>
+  </div>
+
+  <!-- ══ ZAHLEN ════════════════════════════════════ -->
+  <div class="ki-stats">
+    <div class="ki-stat">
+      <div class="stat-num">10&times;</div>
+      <div class="stat-label">schneller als klassische Projekte</div>
+    </div>
+    <div class="ki-stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Zeilen Code von uns geschrieben</div>
+    </div>
+    <div class="ki-stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">auf bew&auml;hrtem Microsoft-Stack</div>
+    </div>
+  </div>
+
+  <!-- ══ KERNBOTSCHAFTEN ═══════════════════════════ -->
+  <div class="section-label">Kernbotschaften</div>
+  <div class="ki-messages">
+    <div class="ki-message">
+      <h5>Zwei Rollen, ein Ergebnis</h5>
+      <p>Fachwissen trifft Technologie &ndash; die KI verbindet beides zur fertigen Anwendung.</p>
+    </div>
+    <div class="ki-message">
+      <h5>10&times; schneller als bisher</h5>
+      <p>Was fr&uuml;her Monate dauerte, ist in Tagen fertig &ndash; auf dem gleichen Stack wie DAX-Konzerne.</p>
+    </div>
+    <div class="ki-message">
+      <h5>Microsoft-Sicherheit inklusive</h5>
+      <p>DSGVO-konform, auditierbar, mit der Infrastruktur, der Millionen Unternehmen vertrauen.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
