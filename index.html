@@ -643,7 +643,7 @@
       overflow-y: auto;
     }
     .viewer.open {
-      display: block;
+      display: flex; flex-direction: column;
       animation: viewerIn 0.4s cubic-bezier(.22,1,.36,1);
     }
     @keyframes viewerIn {
@@ -652,7 +652,7 @@
     }
 
     .viewer-toolbar {
-      position: sticky; top: 0; z-index: 10;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 28px; height: 56px;
       background: var(--bg-glass);
@@ -684,9 +684,53 @@
     .btn-export.blue { color: var(--kalyro-blue); border-color: rgba(30,95,170,0.3); }
     .btn-export.green { color: var(--kalyro-green); border-color: rgba(22,163,74,0.3); }
 
+    .viewer-body { flex: 1; min-height: 0; overflow-y: auto; }
     .viewer-content {
       display: flex; justify-content: center; align-items: flex-start;
-      padding: 32px 24px 40px; min-height: calc(100vh - 56px);
+      padding: 32px 24px 40px; min-height: calc(100vh - 80px);
+    }
+    /* fv-mode: Sidebar + skalierte Folie, kein Scrollen */
+    .viewer.fv-mode { overflow: hidden; }
+    .viewer.fv-mode .viewer-body {
+      display: flex; flex: 1; min-height: 0; overflow: hidden;
+    }
+    .viewer.fv-mode .viewer-content {
+      align-items: center; padding: 8px 16px;
+      overflow: hidden; flex: 1; min-width: 0; min-height: 0;
+    }
+    .viewer.fv-mode .viewer-nav { display: none; }
+    /* Folien-Sidebar (wie PowerPoint) */
+    .fv-sidebar {
+      display: none; width: 200px; flex-shrink: 0;
+      background: var(--bg-surface-solid); border-right: 1px solid var(--border-light);
+      overflow-y: auto; padding: 12px 8px;
+    }
+    .viewer.fv-mode .fv-sidebar { display: block; }
+    .fv-sidebar-item {
+      position: relative; width: 100%; aspect-ratio: 16/9;
+      border-radius: 6px; border: 2px solid transparent;
+      margin-bottom: 8px; cursor: pointer; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: linear-gradient(140deg, #0c101a 0%, #111827 50%, #0e1525 100%);
+    }
+    [data-theme="light"] .fv-sidebar-item {
+      background: linear-gradient(140deg, #f0f2f5 0%, #e8ecf0 50%, #f0f2f5 100%);
+    }
+    .fv-sidebar-item:hover { border-color: var(--border-glow); }
+    .fv-sidebar-item.active {
+      border-color: var(--accent-blue); box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+    .fv-sidebar-item .fv-thumb {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; padding: 6px;
+    }
+    .fv-sidebar-item .fv-thumb-label {
+      font-size: 9px; font-weight: 600; color: var(--text-secondary);
+      text-align: center; line-height: 1.3;
+    }
+    .fv-sidebar-num {
+      position: absolute; bottom: 2px; right: 4px;
+      font-size: 8px; font-weight: 700; color: var(--text-muted);
     }
     .viewer-nav {
       display: flex; justify-content: center; gap: 16px; padding: 24px;
@@ -701,6 +745,112 @@
     }
     .viewer-nav-btn:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
     .viewer-nav-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ══════════════════════════════════════════════
+       FOLIEN-PICKER MODAL
+       ══════════════════════════════════════════════ */
+    .slide-picker {
+      display: none;
+      position: fixed; inset: 0; z-index: 700;
+      align-items: center; justify-content: center;
+    }
+    .slide-picker.open { display: flex; animation: viewerIn 0.3s ease; }
+    .slide-picker-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+    }
+    .slide-picker-card {
+      position: relative; z-index: 1;
+      width: 520px; max-width: 92vw; max-height: 80vh;
+      background: var(--bg-surface-solid);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    }
+    .slide-picker-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border-light);
+    }
+    .slide-picker-header h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0; }
+    .slide-picker-close {
+      background: none; border: none; font-size: 24px;
+      color: var(--text-muted); cursor: pointer;
+    }
+    .slide-picker-body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+    .slide-picker-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 10px;
+      border: 1px solid var(--border-light);
+      margin-bottom: 8px; cursor: grab;
+      background: var(--bg-surface);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .slide-picker-item.dragging { opacity: 0.5; border-color: var(--accent-blue); }
+    .slide-picker-item.drag-over { border-color: var(--accent-blue); background: var(--bg-surface-hover); }
+    .drag-handle { color: var(--text-muted); font-size: 16px; cursor: grab; user-select: none; }
+    .slide-picker-item label {
+      flex: 1; display: flex; align-items: center; gap: 10px;
+      cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-primary);
+    }
+    .slide-picker-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-blue); }
+    .reorder-btns { display: flex; flex-direction: column; gap: 2px; }
+    .reorder-btns button {
+      background: var(--bg-surface-hover); border: 1px solid var(--border-light);
+      border-radius: 4px; width: 24px; height: 20px;
+      cursor: pointer; font-size: 10px; color: var(--text-secondary);
+    }
+    .slide-picker-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; border-top: 1px solid var(--border-light);
+    }
+    .slide-picker-count { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+    /* ══════════════════════════════════════════════
+       PRAESENTATIONSMODUS (Vollbild)
+       ══════════════════════════════════════════════ */
+    .presentation {
+      display: none;
+      position: fixed; inset: 0; z-index: 800;
+      background: var(--bg-page);
+      overflow: hidden;
+    }
+    .presentation.active {
+      display: flex;
+      align-items: center; justify-content: center;
+    }
+    .presentation-slide {
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .presentation-slide > * { transform-origin: center center; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .presentation-hud {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; z-index: 810;
+    }
+    .presentation-hud.visible { opacity: 1; pointer-events: auto; }
+    .presentation-counter {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif;
+    }
+    .presentation-controls { display: flex; gap: 8px; }
+    .presentation-controls button {
+      padding: 8px 18px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    .presentation-controls button:hover { background: rgba(255,255,255,0.2); }
+    .presentation-controls button:disabled { opacity: 0.3; cursor: default; }
 
     /* ══════════════════════════════════════════════
        INFOGRAPHIC: Software-Entwicklung
@@ -1114,39 +1264,39 @@
        KI-ARCHITEKTUR DIAGRAMM
        ══════════════════════════════════════════════ */
     .diagram-ki-arch {
-      position: relative; width: 1200px; max-width: 96vw; margin: 0 auto;
-      padding-bottom: 48px;
+      position: relative; width: 1280px; height: 720px; margin: 0 auto;
+      overflow: hidden; border-radius: 16px;
     }
     .diagram-ki-arch .arch-bg-embedded {
-      position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+      position: absolute; inset: 0;
       background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
     }
     [data-theme="dark"] .diagram-ki-arch .arch-bg-embedded {
       background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
     }
     .diagram-ki-arch .arch-title {
-      position: relative; text-align: center; padding: 40px 32px 0;
+      position: relative; text-align: center; padding: 28px 32px 0;
     }
     .diagram-ki-arch .arch-title h1 {
-      font-size: 36px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15;
+      font-size: 30px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15;
     }
     .diagram-ki-arch .arch-title .sub {
-      font-size: 16px; color: var(--text-secondary); margin-top: 10px; font-weight: 400;
+      font-size: 14px; color: var(--text-secondary); margin-top: 8px; font-weight: 400;
     }
     .diagram-ki-arch .arch-content {
-      position: relative; padding: 32px 32px 0;
+      position: relative; padding: 20px 32px 0;
     }
     .diagram-ki-arch .arch-section-label {
-      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      font-size: 11px; font-weight: 700; letter-spacing: 3px;
       text-transform: uppercase; color: var(--text-muted);
-      margin-bottom: 20px; text-align: center;
+      margin-bottom: 14px; text-align: center;
     }
     .diagram-ki-arch .arch-flow {
       display: flex; align-items: stretch; gap: 0;
-      justify-content: center; margin-bottom: 40px;
+      justify-content: center; margin-bottom: 24px;
     }
     .diagram-ki-arch .arch-node {
-      flex: 0 0 190px; border-radius: 18px; padding: 22px 16px;
+      flex: 0 0 170px; border-radius: 16px; padding: 16px 14px;
       background: var(--bg-surface); border: 1px solid var(--border-light);
       backdrop-filter: blur(12px); text-align: center;
       transition: transform 0.25s, box-shadow 0.25s; position: relative; z-index: 2;
@@ -1155,14 +1305,14 @@
       transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.25);
     }
     .diagram-ki-arch .arch-node-icon {
-      width: 68px; height: 68px; border-radius: 18px;
+      width: 52px; height: 52px; border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 12px;
+      margin: 0 auto 10px;
     }
-    .diagram-ki-arch .arch-node-icon img { width: 42px; height: 42px; object-fit: contain; }
-    .diagram-ki-arch .arch-node-icon i { width: 34px; height: 34px; color: #fff; }
-    .diagram-ki-arch .arch-node h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
-    .diagram-ki-arch .arch-node p { font-size: 11px; line-height: 1.5; color: var(--text-secondary); }
+    .diagram-ki-arch .arch-node-icon img { width: 32px; height: 32px; object-fit: contain; }
+    .diagram-ki-arch .arch-node-icon i { width: 28px; height: 28px; color: #fff; }
+    .diagram-ki-arch .arch-node h3 { font-size: 13px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+    .diagram-ki-arch .arch-node p { font-size: 10px; line-height: 1.4; color: var(--text-secondary); }
     .diagram-ki-arch .arch-node-input { border-color: rgba(30,95,170,0.3); }
     .diagram-ki-arch .arch-node-input .arch-node-icon { background: rgba(30,95,170,0.15); }
     .diagram-ki-arch .arch-node-input h3 { color: #5a9fd4; }
@@ -1177,7 +1327,7 @@
     }
     .diagram-ki-arch .arch-connector svg { width: 40px; height: 24px; }
     .diagram-ki-arch .arch-group {
-      flex: 0 0 320px; border-radius: 22px; padding: 22px 18px;
+      flex: 0 0 280px; border-radius: 18px; padding: 16px 14px;
       background: rgba(232,116,0,0.04); border: 2px solid rgba(232,116,0,0.25);
       backdrop-filter: blur(12px); z-index: 2;
       transition: transform 0.25s, box-shadow 0.25s;
@@ -1186,15 +1336,15 @@
       transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.25);
     }
     .diagram-ki-arch .arch-group-header {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
     }
     .diagram-ki-arch .arch-group-header .arch-node-icon {
-      width: 44px; height: 44px; border-radius: 14px; margin: 0;
+      width: 36px; height: 36px; border-radius: 10px; margin: 0;
       background: rgba(232,116,0,0.15);
     }
-    .diagram-ki-arch .arch-group-header .arch-node-icon img { width: 30px; height: 30px; }
-    .diagram-ki-arch .arch-group-header h3 { font-size: 17px; font-weight: 700; color: #fbbf24; }
-    .diagram-ki-arch .arch-group-header .group-sub { font-size: 11px; color: var(--text-muted); }
+    .diagram-ki-arch .arch-group-header .arch-node-icon img { width: 24px; height: 24px; }
+    .diagram-ki-arch .arch-group-header h3 { font-size: 14px; font-weight: 700; color: #fbbf24; }
+    .diagram-ki-arch .arch-group-header .group-sub { font-size: 10px; color: var(--text-muted); }
     .diagram-ki-arch .arch-group-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
@@ -1220,7 +1370,7 @@
       display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
     }
     .diagram-ki-arch .arch-data-card {
-      flex: 0 0 130px; border-radius: 14px; padding: 16px 12px;
+      flex: 0 0 120px; border-radius: 12px; padding: 12px 10px;
       background: var(--bg-surface); border: 1px solid rgba(30,95,170,0.2);
       backdrop-filter: blur(12px); text-align: center;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -1238,17 +1388,17 @@
     .diagram-ki-arch .arch-data-card h5 { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
     .diagram-ki-arch .arch-data-card p { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
     .diagram-ki-arch .arch-explanation {
-      display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 40px;
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 20px;
     }
     .diagram-ki-arch .arch-explain-card {
-      flex: 1; max-width: 320px; min-width: 220px;
-      padding: 20px; border-radius: 16px;
+      flex: 1; max-width: 300px; min-width: 200px;
+      padding: 14px 16px; border-radius: 14px;
       border-left: 4px solid var(--accent-blue); background: var(--bg-surface);
     }
     .diagram-ki-arch .arch-explain-card:nth-child(2) { border-left-color: var(--accent-purple); }
     .diagram-ki-arch .arch-explain-card:nth-child(3) { border-left-color: var(--accent-orange); }
-    .diagram-ki-arch .arch-explain-card h5 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-    .diagram-ki-arch .arch-explain-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+    .diagram-ki-arch .arch-explain-card h5 { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .diagram-ki-arch .arch-explain-card p { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
 
     @media (max-width: 1024px) {
       .diagram-ki-arch .arch-flow { flex-wrap: wrap; gap: 14px; }
@@ -1259,6 +1409,348 @@
       .diagram-ki-arch .arch-content { padding: 20px 16px 0; }
       .diagram-ki-arch .arch-node { flex: 0 0 150px; }
       .diagram-ki-arch .arch-group-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══════════════════════════════════════════════
+       FIRMENVORSTELLUNG — 16:9 Folien
+       ══════════════════════════════════════════════ */
+    .fv-slide {
+      position: relative; width: 1280px; height: 720px;
+      margin: 0 auto; overflow: hidden; border-radius: 16px;
+    }
+    .fv-slide .fv-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(140deg, #f8fafc 0%, #eef2f7 35%, #f1f5f9 65%, #f8fafc 100%);
+    }
+    [data-theme="dark"] .fv-slide .fv-bg {
+      background: linear-gradient(140deg, #0c101a 0%, #111827 35%, #0e1525 65%, #0c101a 100%);
+    }
+    .fv-slide .fv-inner {
+      position: relative; z-index: 2; width: 100%; height: 100%;
+      display: flex; flex-direction: column; padding: 48px 64px;
+    }
+    .fv-slide .fv-slide-header {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px;
+    }
+    .fv-slide .fv-slide-title {
+      font-size: 36px; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--text-primary); margin-bottom: 8px;
+    }
+    .fv-slide .fv-slide-sub {
+      font-size: 15px; color: var(--text-muted); margin-bottom: 32px;
+      font-weight: 400;
+    }
+    .fv-slide .fv-slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    /* Titelfolie */
+    .fv-slide.fv-title-slide .fv-inner {
+      justify-content: center; align-items: center; text-align: center; padding: 64px;
+    }
+    .fv-slide.fv-title-slide .fv-logo { width: 260px; height: auto; margin-bottom: 32px; }
+    .fv-slide.fv-title-slide .fv-slide-title { font-size: 44px; margin-bottom: 12px; }
+    .fv-slide.fv-title-slide .fv-slide-sub {
+      font-size: 18px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px;
+    }
+    .fv-slide.fv-title-slide .fv-date { font-size: 16px; color: var(--text-muted); }
+    /* Fakten-Badges */
+    .fv-facts { display: flex; gap: 12px; flex-wrap: wrap; }
+    .fv-fact {
+      font-size: 13px; padding: 7px 16px; border-radius: 8px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      color: var(--text-secondary); font-weight: 500;
+    }
+    /* Zweispaltig */
+    .fv-two-col { display: flex; gap: 40px; align-items: flex-start; flex: 1; }
+    .fv-two-col .fv-col { flex: 1; }
+    .fv-two-col .fv-col p { font-size: 15px; line-height: 1.8; color: var(--text-secondary); }
+    /* Team */
+    .fv-team { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .fv-team-card {
+      flex: 0 0 190px; border-radius: 16px; padding: 28px 16px; text-align: center;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .fv-team-icon {
+      width: 56px; height: 56px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; margin: 0 auto 14px;
+    }
+    .fv-team-icon i { width: 28px; height: 28px; }
+    .fv-team-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+    .fv-team-role {
+      font-size: 11px; color: var(--text-muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    /* Service-Karten */
+    .fv-services {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 20px; flex: 1;
+    }
+    .fv-service-card {
+      border-radius: 16px; padding: 24px; background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+    }
+    .fv-svc-icon {
+      width: 40px; height: 40px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; margin-bottom: 12px;
+    }
+    .fv-svc-icon i { width: 22px; height: 22px; }
+    .fv-service-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .fv-service-card ul {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .fv-service-card ul li {
+      font-size: 13px; line-height: 1.7; color: var(--text-secondary);
+      padding-left: 14px; position: relative;
+    }
+    .fv-service-card ul li::before {
+      content: ''; position: absolute; left: 0; top: 9px;
+      width: 5px; height: 5px; border-radius: 50%; background: var(--accent-blue);
+    }
+    .fv-service-card.svc-green ul li::before { background: var(--accent-green); }
+    .fv-service-card.svc-orange ul li::before { background: var(--accent-orange); }
+    .fv-service-card.svc-red ul li::before { background: var(--accent-red); }
+    /* SLA Tabelle */
+    .fv-sla-table {
+      width: 100%; border-collapse: collapse; font-size: 15px;
+      border-radius: 12px; overflow: hidden;
+    }
+    .fv-sla-table th, .fv-sla-table td {
+      padding: 14px 20px; text-align: left; border-bottom: 1px solid var(--border-light);
+    }
+    .fv-sla-table th {
+      background: rgba(30,95,170,0.1); font-weight: 700; color: var(--text-primary);
+      font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .fv-sla-table td { color: var(--text-secondary); }
+    .fv-sla-table .sla-premium { color: var(--accent-blue); font-weight: 600; }
+    .fv-sla-table .sla-prio { font-weight: 700; color: var(--text-primary); }
+    /* Premium-Badges */
+    .fv-premium-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 24px; }
+    .fv-premium-badge {
+      padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      background: rgba(30,95,170,0.08); border: 1px solid rgba(30,95,170,0.2);
+      color: var(--accent-blue);
+    }
+    /* Tool-Badges */
+    .fv-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .fv-tool-badge {
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      border-radius: 14px; background: var(--bg-surface); border: 1px solid var(--border-light);
+      font-size: 14px; font-weight: 600; color: var(--text-primary);
+    }
+    .fv-tool-icon {
+      width: 36px; height: 36px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .fv-tool-icon i { width: 20px; height: 20px; }
+    .fv-tool-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+    /* Prozess-Flow */
+    .fv-flow {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .fv-flow-step {
+      padding: 14px 22px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      color: var(--text-primary); text-align: center;
+    }
+    .fv-flow-arrow { font-size: 20px; color: var(--text-muted); }
+    /* Region-Karten */
+    .fv-region { display: flex; gap: 24px; }
+    .fv-region-card {
+      flex: 1; padding: 28px; border-radius: 16px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .fv-region-card h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .fv-region-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+    /* Standards-Grid */
+    .fv-standards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .fv-standard-card {
+      padding: 22px; border-radius: 14px; background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+    }
+    .fv-standard-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .fv-standard-card ul { list-style: none; padding: 0; margin: 0; }
+    .fv-standard-card ul li {
+      font-size: 13px; line-height: 1.7; color: var(--text-secondary);
+      padding-left: 14px; position: relative;
+    }
+    .fv-standard-card ul li::before {
+      content: ''; position: absolute; left: 0; top: 9px;
+      width: 5px; height: 5px; border-radius: 50%; background: var(--accent-blue);
+    }
+    /* Stats */
+    .fv-stats { display: flex; gap: 32px; justify-content: center; }
+    .fv-stat { text-align: center; }
+    .fv-stat .stat-num { font-size: 42px; font-weight: 800; color: var(--accent-blue); line-height: 1; }
+    .fv-stat .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+    /* Folie: Folienfuss */
+    .fv-slide-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; margin-top: auto;
+    }
+    .fv-slide-footer .fv-footer-logo { height: 28px; opacity: 0.7; }
+    .fv-slide-footer .fv-footer-text { font-size: 11px; color: var(--text-muted); }
+    /* Helle Folien (fuer Beamer/Praesentation) — blau getönt */
+    .fv-slide.fv-light {
+      --bg-surface: rgba(255,255,255,0.08);
+      --bg-surface-solid: rgba(255,255,255,0.1);
+      --bg-surface-hover: rgba(255,255,255,0.12);
+      --text-primary: #e8edf4;
+      --text-secondary: #a4b3c8;
+      --text-muted: #6b7d96;
+      --border-light: rgba(255,255,255,0.1);
+      --border-glow: rgba(100,160,220,0.3);
+      --accent-blue: #4d9aeb;
+    }
+    .fv-slide.fv-light .fv-bg {
+      background: linear-gradient(140deg, #0d1b2e 0%, #132744 35%, #0f2035 65%, #0d1b2e 100%) !important;
+    }
+
+    /* ── Meisterteam Slide Styles ────────────────────────────── */
+    /* Tagline / Zitat */
+    .fv-quote {
+      font-size: 17px; font-weight: 600; letter-spacing: 6px; text-transform: uppercase;
+      color: var(--accent-blue); margin-top: 16px;
+    }
+    /* Titel-Folie Akzentlinie */
+    .fv-title-accent {
+      width: 80px; height: 4px; border-radius: 2px; margin: 20px auto 0;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+    }
+    /* Feature-Karten (Wer wir sind) */
+    .mt-features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; }
+    .mt-feature {
+      display: flex; align-items: center; gap: 20px;
+      padding: 28px; border-radius: 16px;
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .mt-feature-icon {
+      flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mt-feature-icon i { width: 26px; height: 26px; }
+    .mt-feature h4 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+    .mt-feature p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+    /* Verbund-Liste */
+    .fv-verbund-list { list-style: none; padding: 0; margin: 0; }
+    .fv-verbund-list li {
+      font-size: 13px; line-height: 1.4; color: var(--text-secondary);
+      padding: 8px 14px 8px 38px; position: relative;
+      border-radius: 8px; margin-bottom: 3px;
+      background: var(--bg-surface); border: 1px solid transparent;
+    }
+    .fv-verbund-list li.fv-sub { padding-left: 52px; font-size: 12px; }
+    .fv-verbund-list li::before {
+      content: ''; position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted);
+    }
+    .fv-verbund-list li.fv-sub::before { left: 32px; width: 6px; height: 6px; }
+    .fv-verbund-list li.fv-highlight {
+      font-weight: 700; color: var(--accent-blue);
+      border-color: rgba(30,95,170,0.3); background: rgba(30,95,170,0.06);
+    }
+    .fv-verbund-list li.fv-highlight::before {
+      background: var(--accent-blue); width: 10px; height: 10px;
+      box-shadow: 0 0 8px rgba(30,95,170,0.4);
+    }
+    /* Nummerierte Schritte */
+    .fv-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; flex: 1; }
+    .fv-step {
+      border-radius: 16px; padding: 28px 24px; background: var(--bg-surface);
+      border: 1px solid var(--border-light); position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .fv-step::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 16px 16px 0 0;
+    }
+    .fv-step:nth-child(1)::after { background: var(--accent-blue); }
+    .fv-step:nth-child(2)::after { background: var(--accent-green); }
+    .fv-step:nth-child(3)::after { background: var(--accent-orange); }
+    .fv-step:nth-child(4)::after { background: var(--accent-purple); }
+    .fv-step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 8px; font-size: 14px; font-weight: 800;
+      color: #fff; margin-bottom: 12px;
+    }
+    .fv-step:nth-child(1) .fv-step-num { background: var(--accent-blue); }
+    .fv-step:nth-child(2) .fv-step-num { background: var(--accent-green); }
+    .fv-step:nth-child(3) .fv-step-num { background: var(--accent-orange); }
+    .fv-step:nth-child(4) .fv-step-num { background: var(--accent-purple); }
+    .fv-step h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .fv-step p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+    /* Pfeil zwischen Steps */
+    .fv-steps-arrows { display: flex; align-items: stretch; gap: 0; flex: 1; }
+    /* Bundle-Karten statt Tabelle */
+    .mt-bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .mt-bundle-card {
+      display: flex; align-items: flex-start; gap: 16px; padding: 22px;
+      border-radius: 14px; background: var(--bg-surface); border: 1px solid var(--border-light);
+    }
+    .mt-bundle-icon {
+      flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mt-bundle-icon i { width: 22px; height: 22px; }
+    .mt-bundle-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+    .mt-bundle-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+    /* Compliance Zwei-Spalten */
+    .fv-compliance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; }
+    .fv-compliance-block {
+      padding: 28px; border-radius: 16px; background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+    }
+    .fv-compliance-block .compliance-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+    }
+    .fv-compliance-block .compliance-icon {
+      width: 42px; height: 42px; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .fv-compliance-block .compliance-icon i { width: 22px; height: 22px; }
+    .fv-compliance-block h4 {
+      font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 0;
+    }
+    .fv-compliance-block ul { list-style: none; padding: 0; margin: 0; }
+    .fv-compliance-block ul li {
+      font-size: 13px; line-height: 1.9; color: var(--text-secondary);
+      padding-left: 18px; position: relative;
+    }
+    .fv-compliance-block ul li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green);
+    }
+    .fv-compliance-block.compliance-nis ul li::before { background: var(--accent-orange); }
+    /* Vorteile-Karten statt Tabelle */
+    .mt-vorteile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .mt-vorteil {
+      padding: 24px; border-radius: 14px; background: var(--bg-surface);
+      border: 1px solid var(--border-light); text-align: center;
+    }
+    .mt-vorteil-icon {
+      width: 48px; height: 48px; border-radius: 14px; display: flex;
+      align-items: center; justify-content: center; margin: 0 auto 12px;
+    }
+    .mt-vorteil-icon i { width: 24px; height: 24px; }
+    .mt-vorteil h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+    .mt-vorteil p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+    /* Abschluss-Folie */
+    .fv-slide.fv-end-slide .fv-inner {
+      justify-content: center; align-items: center; text-align: center; padding: 64px;
+    }
+    .fv-contact-grid { display: flex; gap: 48px; justify-content: center; margin: 36px 0 24px; }
+    .fv-contact-item { text-align: center; }
+    .fv-contact-icon {
+      width: 52px; height: 52px; border-radius: 14px; display: flex;
+      align-items: center; justify-content: center; margin: 0 auto 12px;
+      background: rgba(30,95,170,0.1); color: var(--accent-blue);
+    }
+    .fv-contact-icon i { width: 24px; height: 24px; }
+    .fv-contact-item .fv-contact-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .fv-contact-item .fv-contact-value {
+      font-size: 16px; font-weight: 600; color: var(--text-primary);
     }
 
     /* ══════════════════════════════════════════════
@@ -1528,7 +2020,7 @@
             <div class="gallery-card-body">
               <span class="gc-tag gc-tag-blue">Infografik</span>
               <h3>Moderne Software-Entwicklung &amp; Bereitstellung</h3>
-              <p>End-to-End-Workflow von Anforderung bis Deployment &mdash; Cloud-Hosting, Qualitaetssicherung und Unternehmens-IT.</p>
+              <p>End-to-End-Workflow von Anforderung bis Deployment &mdash; Cloud-Hosting, Qualit&auml;tssicherung und Unternehmens-IT.</p>
             </div>
             <div class="gallery-card-arrow">
               <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1634,6 +2126,76 @@
           </div>
         </div>
 
+        <!-- Firmenvorstellung -->
+        <div class="gallery-card-wrapper reveal">
+          <div class="gallery-card tilt-card" onclick="openViewer('fv-titel')" role="button" tabindex="0">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
+              <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Gebaeude-Icon -->
+                <rect x="130" y="30" width="100" height="80" rx="8" fill="rgba(30,95,170,0.15)" stroke="#1e5faa" stroke-width="2"/>
+                <rect x="145" y="45" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <rect x="171" y="45" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <rect x="197" y="45" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <rect x="145" y="72" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <rect x="171" y="72" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <rect x="197" y="72" width="18" height="18" rx="3" fill="rgba(30,95,170,0.3)"/>
+                <!-- Personen -->
+                <circle cx="80" cy="130" r="14" fill="rgba(30,95,170,0.2)" stroke="#1e5faa" stroke-width="1.5"/>
+                <circle cx="140" cy="140" r="14" fill="rgba(22,163,74,0.2)" stroke="#16a34a" stroke-width="1.5"/>
+                <circle cx="180" cy="140" r="14" fill="rgba(232,116,0,0.2)" stroke="#e87400" stroke-width="1.5"/>
+                <circle cx="220" cy="140" r="14" fill="rgba(220,38,38,0.2)" stroke="#dc2626" stroke-width="1.5"/>
+                <circle cx="280" cy="130" r="14" fill="rgba(124,58,237,0.2)" stroke="#7c3aed" stroke-width="1.5"/>
+                <!-- Verbindungslinien -->
+                <line x1="94" y1="130" x2="126" y2="140" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="154" y1="140" x2="166" y2="140" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="194" y1="140" x2="206" y2="140" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="234" y1="140" x2="266" y2="130" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+              </svg>
+            </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-blue">Pr&auml;sentation</span>
+              <h3>KALYRO IT &mdash; Firmenvorstellung</h3>
+              <p>Wer wir sind, was wir leisten und wie wir arbeiten &mdash; Managed Services, Microsoft 365, Azure und Support.</p>
+            </div>
+            <div class="gallery-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meisterteam-Praesentation -->
+        <div class="gallery-card-wrapper reveal">
+          <div class="gallery-card tilt-card" onclick="openViewer('mt-titel')" role="button" tabindex="0">
+            <div class="glow"></div>
+            <div class="gallery-card-preview">
+              <svg viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Schild-Icon -->
+                <path d="M180 25 L230 45 L230 95 C230 130 205 155 180 165 C155 155 130 130 130 95 L130 45 Z" fill="rgba(30,95,170,0.12)" stroke="#1e5faa" stroke-width="2"/>
+                <path d="M165 90 L175 100 L195 75" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Netzwerk-Knoten -->
+                <circle cx="80" cy="60" r="12" fill="rgba(232,116,0,0.15)" stroke="#e87400" stroke-width="1.5"/>
+                <circle cx="280" cy="60" r="12" fill="rgba(232,116,0,0.15)" stroke="#e87400" stroke-width="1.5"/>
+                <circle cx="80" cy="140" r="12" fill="rgba(124,58,237,0.15)" stroke="#7c3aed" stroke-width="1.5"/>
+                <circle cx="280" cy="140" r="12" fill="rgba(124,58,237,0.15)" stroke="#7c3aed" stroke-width="1.5"/>
+                <!-- Verbindungen -->
+                <line x1="92" y1="60" x2="130" y2="50" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="268" y1="60" x2="230" y2="50" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="92" y1="140" x2="130" y2="120" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+                <line x1="268" y1="140" x2="230" y2="120" stroke="#4a5568" stroke-width="1" stroke-dasharray="3,2" opacity="0.4"/>
+              </svg>
+            </div>
+            <div class="gallery-card-body">
+              <span class="gc-tag gc-tag-blue">Pr&auml;sentation</span>
+              <h3>Meisterteam &mdash; Unternehmensvorstellung</h3>
+              <p>Kurzvorstellung f&uuml;r das Meisterteam: Wer wir sind, HERMES-Verbund, M365, Smart Bundle, Compliance und mehr.</p>
+            </div>
+            <div class="gallery-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>
+
         <!-- Cloud-Architektur (Admin only) -->
         <div class="gallery-card-wrapper coming-soon reveal admin-only" style="display:none;">
           <div class="gallery-card">
@@ -1659,7 +2221,7 @@
             <div class="gallery-card-body">
               <span class="gc-tag gc-tag-blue">Entwurf</span>
               <h3>Security &amp; Compliance</h3>
-              <p>DSGVO, Zero-Trust und Sicherheitskonzepte &mdash; visuell erklaert.</p>
+              <p>DSGVO, Zero-Trust und Sicherheitskonzepte &mdash; visuell erkl&auml;rt.</p>
             </div>
           </div>
         </div>
@@ -1679,25 +2241,25 @@
           <div class="card-glow"></div>
           <div class="about-icon" style="background: rgba(30,95,170,0.12); color: var(--accent-blue);">&#128187;</div>
           <h3>Software-Entwicklung</h3>
-          <p>Individuelle Web- und App-Entwicklung mit modernen Technologien. KI-gestuetzte Workflows fuer hoehere Qualitaet.</p>
+          <p>Individuelle Web- und App-Entwicklung mit modernen Technologien. KI-gest&uuml;tzte Workflows f&uuml;r h&ouml;here Qualit&auml;t.</p>
         </div>
         <div class="about-card reveal">
           <div class="card-glow"></div>
           <div class="about-icon" style="background: rgba(22,163,74,0.12); color: var(--accent-green);">&#9889;</div>
           <h3>CI/CD &amp; Automatisierung</h3>
-          <p>Continuous Integration und Deployment fuer zuverlaessige Releases. Automatische Tests und Quality Gates.</p>
+          <p>Continuous Integration und Deployment f&uuml;r zuverl&auml;ssige Releases. Automatische Tests und Quality Gates.</p>
         </div>
         <div class="about-card reveal">
           <div class="card-glow"></div>
           <div class="about-icon" style="background: rgba(232,116,0,0.12); color: var(--accent-orange);">&#9729;</div>
           <h3>Cloud &amp; Infrastruktur</h3>
-          <p>Azure Cloud-Hosting mit hoher Verfuegbarkeit. Skalierbare Architekturen und professionelles Monitoring.</p>
+          <p>Azure Cloud-Hosting mit hoher Verf&uuml;gbarkeit. Skalierbare Architekturen und professionelles Monitoring.</p>
         </div>
         <div class="about-card reveal">
           <div class="card-glow"></div>
           <div class="about-icon" style="background: rgba(220,38,38,0.12); color: var(--accent-red);">&#128274;</div>
           <h3>Sicherheit &amp; Datenschutz</h3>
-          <p>DSGVO-konforme Loesungen, Verschluesselung und Zugriffskontrollen. Ihre Daten sind bei uns sicher.</p>
+          <p>DSGVO-konforme L&ouml;sungen, Verschl&uuml;sselung und Zugriffskontrollen. Ihre Daten sind bei uns sicher.</p>
         </div>
         <div class="about-card reveal">
           <div class="card-glow"></div>
@@ -1709,7 +2271,7 @@
           <div class="card-glow"></div>
           <div class="about-icon" style="background: rgba(250,204,21,0.12); color: #eab308;">&#129302;</div>
           <h3>KI &amp; Innovation</h3>
-          <p>Einsatz von KI-Assistenzen wie Claude Code fuer intelligente Softwareentwicklung und Prozessoptimierung.</p>
+          <p>Einsatz von KI-Assistenzen wie Claude Code f&uuml;r intelligente Softwareentwicklung und Prozessoptimierung.</p>
         </div>
       </div>
       <div class="tech-row reveal">
@@ -1757,12 +2319,12 @@
     <div class="admin-login-card">
       <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT">
       <h2>Admin-Zugang</h2>
-      <p>Melden Sie sich mit Ihrem Kalyro Microsoft-Konto an, um auf unveroffentlichte Konzepte und den Admin-Bereich zuzugreifen.</p>
+      <p>Melden Sie sich mit Ihrem Kalyro Microsoft-Konto an, um auf unver&ouml;ffentlichte Konzepte und den Admin-Bereich zuzugreifen.</p>
       <button class="btn btn-primary" onclick="loginWithMicrosoft()" style="width:100%;justify-content:center;">
         <svg viewBox="0 0 21 21" width="20" height="20" fill="none"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
         Mit Microsoft anmelden
       </button>
-      <p class="login-info">Nur fuer Mitglieder des Kalyro-Tenants.</p>
+      <p class="login-info">Nur f&uuml;r Mitglieder des Kalyro-Tenants.</p>
     </div>
   </div>
 
@@ -1774,17 +2336,21 @@
       <div class="viewer-toolbar-left">
         <button class="viewer-back" onclick="closeViewer()">
           <svg viewBox="0 0 24 24" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Zurueck
+          Zur&uuml;ck
         </button>
         <span class="viewer-title-text" id="viewer-title"></span>
       </div>
       <div class="viewer-toolbar-right">
+        <button class="btn-export blue" onclick="startGroupPresentation()" id="btn-present-all" style="display:none;" title="Alle Folien dieser Gruppe pr&auml;sentieren">&#9654; Pr&auml;sentieren</button>
+        <button class="btn-export" onclick="openSlidePicker()" id="btn-slide-picker" title="Folienauswahl f&uuml;r Pr&auml;sentation">&#9776; Folienauswahl</button>
         <button class="btn-export" onclick="handlePptxExport()" id="btn-pptx" style="color:#e87400;border-color:rgba(232,116,0,0.3);display:none;">&#8681; PPTX</button>
         <button class="btn-export blue" onclick="exportAsImage('svg')">&#8681; SVG</button>
         <button class="btn-export green" onclick="exportAsImage('png', 2)">&#8681; PNG 2x</button>
         <button class="btn-export" onclick="exportAsImage('png', 4)">&#8681; PNG 4x</button>
       </div>
     </div>
+    <div class="viewer-body">
+    <div class="fv-sidebar" id="fv-sidebar"></div>
     <div class="viewer-content" id="viewer-content">
 
       <!-- Software-Entwicklung -->
@@ -1895,7 +2461,7 @@
           <svg class="arrows-svg" id="arrows-svg"></svg>
         </div>
         <div class="infographic-footer">
-          <span class="footer-item">Innovative Loesungen</span>
+          <span class="footer-item">Innovative L&ouml;sungen</span>
           <span class="footer-sep"></span>
           <span class="footer-item">Effiziente Prozesse</span>
           <span class="footer-sep"></span>
@@ -2149,7 +2715,7 @@
       <div class="diagram-ki-arch" id="diagram-ki-arch" style="display:none;">
         <div class="arch-bg-embedded"></div>
         <div class="arch-title">
-          <h1>So bauen wir KI-Anwendungen</h1>
+          <h1>So bauen wir Anwendungen</h1>
           <div class="sub">Vom fachlichen Bedarf zur fertigen Anwendung in Azure &mdash; automatisiert, sicher und mit allen Datenquellen verbunden.</div>
         </div>
         <div class="arch-content">
@@ -2215,7 +2781,7 @@
           </div>
 
           <!-- Kernbotschaften -->
-          <div class="arch-section-label" style="margin-top:40px">Was das bedeutet</div>
+          <div class="arch-section-label" style="margin-top:20px">Was das bedeutet</div>
           <div class="arch-explanation">
             <div class="arch-explain-card"><h5>Fachsprache statt Programmiersprache</h5><p>Ihr Prozessingenieur beschreibt, was die Anwendung tun soll &ndash; die KI &uuml;bersetzt das in produktionsreifen Code.</p></div>
             <div class="arch-explain-card"><h5>Automatisch gebaut &amp; gepr&uuml;ft</h5><p>Claude generiert den Code, Tests laufen automatisch &ndash; nichts geht in Produktion ohne Qualit&auml;tssicherung.</p></div>
@@ -2225,8 +2791,731 @@
         </div>
       </div>
 
+      <!-- ══ FIRMENVORSTELLUNG — 7 Folien (16:9) ══ -->
+
+      <!-- Folie 1: Titel -->
+      <div class="fv-slide fv-title-slide" id="fv-titel" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT" class="fv-logo">
+          <div class="fv-slide-title">KALYRO IT</div>
+          <div class="fv-slide-sub">IT-Systemhaus &middot; Microsoft Partner &middot; Managed Services</div>
+          <div class="fv-date">M&auml;rz 2026</div>
+        </div>
+      </div>
+
+      <!-- Folie 2: Wer sind wir -->
+      <div class="fv-slide" id="fv-profil" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">Wer wir sind</div>
+          <div class="fv-slide-body">
+            <div class="fv-two-col">
+              <div class="fv-col">
+                <p>KALYRO IT ist ein IT-Systemhaus f&uuml;r kleine und mittelst&auml;ndische Unternehmen in Deutschland mit Fokus auf Microsoft&nbsp;365.</p>
+                <p style="margin-top:16px;">Als Microsoft Partner liefern wir Managed Services mit Monitoring, Patch-Management, Security-Baseline und Backup sowie Microsoft-365- und Azure-Leistungen von Planung bis Betrieb.</p>
+                <div class="fv-facts" style="margin-top:24px;">
+                  <span class="fv-fact">Sitz: Wildeshausen</span>
+                  <span class="fv-fact">Operativ seit 02/2026</span>
+                  <span class="fv-fact">10&ndash;300 Arbeitspl&auml;tze</span>
+                  <span class="fv-fact">Branchenagnostisch</span>
+                </div>
+              </div>
+              <div class="fv-col">
+                <div class="fv-region" style="flex-direction:column;">
+                  <div class="fv-region-card">
+                    <h4>Vor-Ort-Service</h4>
+                    <p>Bis 50&nbsp;km um Wildeshausen. Bei gr&ouml;&szlig;eren Kunden regelm&auml;&szlig;ige Vor-Ort-Tage m&ouml;glich.</p>
+                  </div>
+                  <div class="fv-region-card">
+                    <h4>Remote deutschlandweit</h4>
+                    <p>Support, Managed Services und Projekte &uuml;ber sichere Remote-Verbindungen.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folie 3: Unser Team -->
+      <div class="fv-slide" id="fv-team" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">Unser Team</div>
+          <div class="fv-slide-sub">5 Personen &mdash; kompakt, erreichbar, verantwortlich</div>
+          <div class="fv-slide-body" style="justify-content:center;">
+            <div class="fv-team">
+              <div class="fv-team-card">
+                <div class="fv-team-icon" style="background:rgba(30,95,170,0.15); color:#1e5faa;"><i data-lucide="crown"></i></div>
+                <h4>Hendrik P&ouml;ppelmann</h4>
+                <div class="fv-team-role">Gesch&auml;ftsf&uuml;hrer</div>
+              </div>
+              <div class="fv-team-card">
+                <div class="fv-team-icon" style="background:rgba(22,163,74,0.15); color:#16a34a;"><i data-lucide="briefcase"></i></div>
+                <h4>Janna Albrecht</h4>
+                <div class="fv-team-role">Backoffice</div>
+              </div>
+              <div class="fv-team-card">
+                <div class="fv-team-icon" style="background:rgba(232,116,0,0.15); color:#e87400;"><i data-lucide="headphones"></i></div>
+                <h4>Jens Lindemann</h4>
+                <div class="fv-team-role">Helpdesk</div>
+              </div>
+              <div class="fv-team-card">
+                <div class="fv-team-icon" style="background:rgba(220,38,38,0.15); color:#dc2626;"><i data-lucide="monitor"></i></div>
+                <h4>Viktor Roth</h4>
+                <div class="fv-team-role">IT-Expert</div>
+              </div>
+              <div class="fv-team-card">
+                <div class="fv-team-icon" style="background:rgba(124,58,237,0.15); color:#7c3aed;"><i data-lucide="server"></i></div>
+                <h4>Edmund J&auml;ger</h4>
+                <div class="fv-team-role">Senior IT-Expert</div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folie 4: Leistungsportfolio -->
+      <div class="fv-slide" id="fv-leistungen" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">Leistungsportfolio</div>
+          <div class="fv-slide-body">
+            <div class="fv-services">
+              <div class="fv-service-card">
+                <div class="fv-svc-icon" style="background:rgba(30,95,170,0.15); color:#1e5faa;"><i data-lucide="shield-check"></i></div>
+                <h4>Managed Services</h4>
+                <ul>
+                  <li>Microsoft 365 Business Premium</li>
+                  <li>NinjaOne Monitoring &amp; Patching</li>
+                  <li>Microsoft Defender Security</li>
+                  <li>Intune Ger&auml;teverwaltung</li>
+                  <li>SaaS Backup (M365 + Entra)</li>
+                  <li>365 Tage Retention</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-green">
+                <div class="fv-svc-icon" style="background:rgba(22,163,74,0.15); color:#16a34a;"><i data-lucide="cloud"></i></div>
+                <h4>Microsoft 365</h4>
+                <ul>
+                  <li>Intune / Endpoint Management</li>
+                  <li>Governance &amp; Compliance</li>
+                  <li>Security-Baseline (MFA, CA)</li>
+                  <li>Lizenzberatung &amp; Verkauf</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-orange">
+                <div class="fv-svc-icon" style="background:rgba(232,116,0,0.15); color:#e87400;"><i data-lucide="server"></i></div>
+                <h4>Microsoft Azure</h4>
+                <ul>
+                  <li>Foundation / Landing Zone</li>
+                  <li>Connectivity &amp; Firewall</li>
+                  <li>Workloads &amp; Migrationen</li>
+                  <li>Monitoring / Alerting</li>
+                  <li>Netzwerk, Backup &amp; DR</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-red">
+                <div class="fv-svc-icon" style="background:rgba(220,38,38,0.15); color:#dc2626;"><i data-lucide="headphones"></i></div>
+                <h4>IT-Support &amp; Helpdesk</h4>
+                <ul>
+                  <li>Mo&ndash;Fr 08:00&ndash;17:00</li>
+                  <li>Portal, E-Mail, Hotline</li>
+                  <li>Priorit&auml;t nach Business-Impact</li>
+                  <li>SLA ab Onboarding</li>
+                  <li>Rufbereitschaft optional</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folie 5: Support & SLA -->
+      <div class="fv-slide" id="fv-sla" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">Support &amp; SLA</div>
+          <div class="fv-slide-sub">Reaktionszeiten nach Priorit&auml;t &mdash; Mo&ndash;Fr 08:00&ndash;17:00</div>
+          <div class="fv-slide-body">
+            <table class="fv-sla-table">
+              <thead>
+                <tr><th>Priorit&auml;t</th><th>Beschreibung</th><th>Standard</th><th>Premium</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="sla-prio">P1</td><td>Kritisch &mdash; Betrieb steht</td><td>&le; 60 Min</td><td class="sla-premium">&le; 30 Min</td></tr>
+                <tr><td class="sla-prio">P2</td><td>Hoch &mdash; starker Impact</td><td>&le; 4 Std</td><td class="sla-premium">&le; 2 Std</td></tr>
+                <tr><td class="sla-prio">P3</td><td>Normal &mdash; Einzeluser</td><td>&le; 1 Werktag</td><td class="sla-premium">&le; 8 Gesch&auml;ftsstd.</td></tr>
+                <tr><td class="sla-prio">P4</td><td>Request &mdash; planbar</td><td>Nach Aufwand</td><td class="sla-premium">&le; 1 Werktag</td></tr>
+              </tbody>
+            </table>
+            <div class="fv-premium-row">
+              <span class="fv-premium-badge">Quartalsreview 30&ndash;45 Min</span>
+              <span class="fv-premium-badge">Priorisierte Queue</span>
+              <span class="fv-premium-badge">Identity-/Security-Trend</span>
+              <span class="fv-premium-badge">Top-5 Risiken + Ma&szlig;nahmen</span>
+              <span class="fv-premium-badge">Roadmap Q+1</span>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folie 6: Tool-Stack & Standards -->
+      <div class="fv-slide" id="fv-tools" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">Tool-Stack &amp; Betriebsstandards</div>
+          <div class="fv-slide-body">
+            <div class="fv-two-col">
+              <div class="fv-col">
+                <div class="fv-tools" style="grid-template-columns: 1fr;">
+                  <div class="fv-tool-badge">
+                    <span class="fv-tool-icon" style="background:rgba(30,95,170,0.15); color:#1e5faa;"><i data-lucide="ticket"></i></span>
+                    <div>C-entron Ticketing<br><span class="fv-tool-sub">Ticketing Ultimate</span></div>
+                  </div>
+                  <div class="fv-tool-badge">
+                    <span class="fv-tool-icon" style="background:rgba(22,163,74,0.15); color:#16a34a;"><i data-lucide="monitor"></i></span>
+                    <div>NinjaOne<br><span class="fv-tool-sub">RMM, Monitoring, Patch, Remote</span></div>
+                  </div>
+                  <div class="fv-tool-badge">
+                    <span class="fv-tool-icon" style="background:rgba(232,116,0,0.15); color:#e87400;"><i data-lucide="database"></i></span>
+                    <div>NinjaOne SaaS Backup<br><span class="fv-tool-sub">M365 + Entra ID</span></div>
+                  </div>
+                  <div class="fv-tool-badge">
+                    <span class="fv-tool-icon" style="background:rgba(124,58,237,0.15); color:#7c3aed;"><i data-lucide="settings"></i></span>
+                    <div>CIPP<br><span class="fv-tool-sub">M365 Tenant Verwaltung</span></div>
+                  </div>
+                  <div class="fv-tool-badge">
+                    <span class="fv-tool-icon" style="background:rgba(220,38,38,0.15); color:#dc2626;"><i data-lucide="shield"></i></span>
+                    <div>Microsoft Defender<br><span class="fv-tool-sub">Endpoint Security</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="fv-col">
+                <div class="fv-standards">
+                  <div class="fv-standard-card">
+                    <h4>Identity &amp; Zugriff</h4>
+                    <ul>
+                      <li>MFA verpflichtend</li>
+                      <li>Separate Admin-Konten</li>
+                      <li>2 Break-Glass-Konten</li>
+                      <li>Least Privilege</li>
+                    </ul>
+                  </div>
+                  <div class="fv-standard-card">
+                    <h4>Patch-Regeln</h4>
+                    <ul>
+                      <li>Sofort</li>
+                      <li>2 Tage verz&ouml;gert (Default)</li>
+                      <li>Manuell / ohne</li>
+                    </ul>
+                  </div>
+                  <div class="fv-standard-card">
+                    <h4>Change-Prozess</h4>
+                    <ul>
+                      <li>Standard ohne Freigabe</li>
+                      <li>Nicht-Standard: Ticket</li>
+                      <li>P1: sofort handeln</li>
+                    </ul>
+                  </div>
+                  <div class="fv-standard-card">
+                    <h4>Security</h4>
+                    <ul>
+                      <li>Rotation alle 90 Tage</li>
+                      <li>Logging &amp; Audit</li>
+                      <li>Sofortiges Offboarding</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folie 7: Zusammenarbeit -->
+      <div class="fv-slide" id="fv-zusammenarbeit" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Firmenvorstellung</div>
+          <div class="fv-slide-title">So starten wir die Zusammenarbeit</div>
+          <div class="fv-slide-body">
+            <div class="fv-flow" style="margin-bottom:40px;">
+              <span class="fv-flow-step">Erstgespr&auml;ch</span>
+              <span class="fv-flow-arrow">&#8594;</span>
+              <span class="fv-flow-step">IT-Analyse</span>
+              <span class="fv-flow-arrow">&#8594;</span>
+              <span class="fv-flow-step">Angebot</span>
+              <span class="fv-flow-arrow">&#8594;</span>
+              <span class="fv-flow-step">Onboarding</span>
+              <span class="fv-flow-arrow">&#8594;</span>
+              <span class="fv-flow-step">SLA aktiv</span>
+              <span class="fv-flow-arrow">&#8594;</span>
+              <span class="fv-flow-step">Betrieb</span>
+            </div>
+            <div class="fv-region" style="margin-bottom:40px;">
+              <div class="fv-region-card">
+                <h4>KALYRO IT &uuml;bernimmt</h4>
+                <p>M365 / Entra / Intune / Security Policies, Monitoring &amp; Patching, 2nd/3rd-Level Support, Backup-&Uuml;berwachung, Dokumentation.</p>
+              </div>
+              <div class="fv-region-card">
+                <h4>Kunde / interne IT</h4>
+                <p>Onsite Hands, Hardware / Physik / Lager, lokale Spezialsoftware, interne Freigaben und Entscheidungen.</p>
+              </div>
+            </div>
+            <div class="fv-stats">
+              <div class="fv-stat">
+                <div class="stat-num">5</div>
+                <div class="stat-label">Teammitglieder</div>
+              </div>
+              <div class="fv-stat">
+                <div class="stat-num">365</div>
+                <div class="stat-label">Tage Retention</div>
+              </div>
+              <div class="fv-stat">
+                <div class="stat-num">24/7</div>
+                <div class="stat-label">Rufbereitschaft m&ouml;glich</div>
+              </div>
+              <div class="fv-stat">
+                <div class="stat-num">50 km</div>
+                <div class="stat-label">Vor-Ort-Radius</div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           MEISTERTEAM-PRAESENTATION — 9 Folien
+           ══════════════════════════════════════════════ -->
+
+      <!-- MT Folie 1: Titel -->
+      <div class="fv-slide fv-title-slide fv-light" id="mt-titel" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT" class="fv-logo">
+          <div class="fv-slide-title" style="font-size:48px; letter-spacing:-1px;">Moderne IT f&uuml;r den Mittelstand.</div>
+          <div class="fv-slide-sub" style="text-transform:none; letter-spacing:0; font-size:18px; max-width:640px; color:var(--text-secondary);">
+            Ihr Partner f&uuml;r sichere, skalierbare IT-L&ouml;sungen &mdash;<br>von der Beratung bis zum laufenden Betrieb.
+          </div>
+          <div class="fv-title-accent"></div>
+          <div class="fv-quote" style="margin-top:28px;">Klar &middot; Sicher &middot; Betreut</div>
+          <div class="fv-date" style="margin-top:20px;">Ein Unternehmen der HERMES Systeme</div>
+        </div>
+      </div>
+
+      <!-- MT Folie 2: HERMES Systeme (vorher Folie 3) -->
+      <div class="fv-slide fv-light" id="mt-hermes" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">Unsere Unternehmensgruppe</div>
+          <div class="fv-slide-sub">Seit &uuml;ber 40&nbsp;Jahren entwickelt HERMES Systeme als inhabergef&uuml;hrtes Familienunternehmen innovative L&ouml;sungen in der MSR- und Automatisierungstechnik.</div>
+          <div class="fv-slide-body">
+            <div class="fv-two-col" style="gap:48px; align-items:center;">
+              <div class="fv-col" style="flex:1; display:flex; flex-direction:column; align-items:center;">
+                <img src="assets/logos/Hermes_Systeme_Logo.svg" alt="HERMES Systeme" style="width:320px; height:auto; margin-bottom:36px;">
+                <div class="fv-stats" style="justify-content:center; gap:48px; margin-bottom:24px;">
+                  <div class="fv-stat">
+                    <div class="stat-num" style="font-size:40px;">40+</div>
+                    <div class="stat-label">Jahre</div>
+                  </div>
+                  <div class="fv-stat">
+                    <div class="stat-num" style="font-size:40px;">~300</div>
+                    <div class="stat-label">Mitarbeitende</div>
+                  </div>
+                  <div class="fv-stat">
+                    <div class="stat-num" style="font-size:40px;">6</div>
+                    <div class="stat-label">Standorte</div>
+                  </div>
+                </div>
+                <div class="fv-facts" style="justify-content:center;">
+                  <span class="fv-fact">Familienunternehmen</span>
+                  <span class="fv-fact">MSR &amp; Automatisierung</span>
+                  <span class="fv-fact">9 Unternehmen</span>
+                </div>
+              </div>
+              <div class="fv-col" style="flex:0.9; display:flex; flex-direction:column; justify-content:center;">
+                <h4 style="font-size:14px; font-weight:700; margin-bottom:16px; color:var(--text-primary); letter-spacing:1px; text-transform:uppercase;">Der HERMES-Verbund</h4>
+                <ul class="fv-verbund-list">
+                  <li class="fv-highlight">HERMES Systeme GmbH &middot; Wildeshausen</li>
+                  <li class="fv-sub">HERMES Systeme Oschersleben GmbH</li>
+                  <li class="fv-sub">HERMES + SCHL&Uuml;TER Elektroinstallationen GmbH &middot; Wildeshausen</li>
+                  <li class="fv-sub">HERMES Systeme Hamburg GmbH</li>
+                  <li class="fv-sub">HERMES Systeme MSR &amp; AT GmbH &middot; K&ouml;ln</li>
+                  <li class="fv-sub">HERMES Systeme MSR &amp; AT GmbH &middot; Dortmund</li>
+                  <li class="fv-sub">A-M-Systeme GmbH &middot; Wildeshausen</li>
+                  <li class="fv-sub">BLUE GREEN Systems GmbH &middot; Wildeshausen</li>
+                  <li class="fv-sub">KALYRO IT GmbH &middot; Wildeshausen</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 3: Wer wir sind (vorher Folie 2) -->
+      <div class="fv-slide fv-light" id="mt-wer" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">Wer wir sind</div>
+          <div class="fv-slide-sub">Frisch gegr&uuml;ndet unter dem Dach der HERMES Systeme verbinden wir regionale N&auml;he mit zertifiziertem IT-Know-how. Kein unn&ouml;tiger Overhead &mdash; einfach IT, die funktioniert.</div>
+          <div class="fv-slide-body">
+            <div class="mt-features">
+              <div class="mt-feature">
+                <div class="mt-feature-icon" style="background:rgba(30,95,170,0.12); color:#1e5faa;"><i data-lucide="award"></i></div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <h4>Zertifizierte Microsoft-Admins</h4>
+                  <p>Gepr&uuml;ftes Fachwissen, keine Experimente an Ihrer IT</p>
+                </div>
+              </div>
+              <div class="mt-feature">
+                <div class="mt-feature-icon" style="background:rgba(22,163,74,0.12); color:#16a34a;"><i data-lucide="map-pin"></i></div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <h4>Regional in Wildeshausen</h4>
+                  <p>Kurze Wege, schnelle Reaktion, pers&ouml;nliche Betreuung</p>
+                </div>
+              </div>
+              <div class="mt-feature">
+                <div class="mt-feature-icon" style="background:rgba(232,116,0,0.12); color:#e87400;"><i data-lucide="layers"></i></div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <h4>Ganzheitlich</h4>
+                  <p>Beratung, Migration und Betrieb aus einer Hand</p>
+                </div>
+              </div>
+              <div class="mt-feature">
+                <div class="mt-feature-icon" style="background:rgba(124,58,237,0.12); color:#7c3aed;"><i data-lucide="activity"></i></div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                  <h4>Proaktiv statt reaktiv</h4>
+                  <p>Monitoring, Wartung und Updates &mdash; bevor Probleme entstehen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 4: Microsoft 365 Beratung & Migration -->
+      <div class="fv-slide fv-light" id="mt-m365" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">Microsoft 365 Beratung &amp; Migration</div>
+          <div class="fv-slide-sub">Zertifizierte Administratoren begleiten Sie vollumf&auml;nglich &mdash; von der ersten Analyse bis zum stabilen Betrieb.</div>
+          <div class="fv-slide-body">
+            <div class="fv-steps">
+              <div class="fv-step">
+                <span class="fv-step-num">1</span>
+                <h4>Analyse</h4>
+                <p>Vor-Ort-Aufnahme Ihrer IT-Landschaft, Netzwerke, Softwarenutzung und aktuelle Lizenzierung</p>
+              </div>
+              <div class="fv-step">
+                <span class="fv-step-num">2</span>
+                <h4>Planung</h4>
+                <p>Ma&szlig;geschneidertes Migrationskonzept, Zeitplan und Risikobewertung f&uuml;r einen reibungslosen &Uuml;bergang</p>
+              </div>
+              <div class="fv-step">
+                <span class="fv-step-num">3</span>
+                <h4>Migration</h4>
+                <p>Datenmigration, Benutzerverwaltung, Ger&auml;te-Enrollment und sichere Systemintegration</p>
+              </div>
+              <div class="fv-step">
+                <span class="fv-step-num">4</span>
+                <h4>Betrieb &amp; Support</h4>
+                <p>Laufende Administration, Monitoring, Helpdesk und kontinuierliche Optimierung Ihrer Umgebung</p>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 5: Smart Protection Bundle -->
+      <div class="fv-slide fv-light" id="mt-bundle" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">Smart Protection Bundle</div>
+          <div class="fv-slide-sub">Unser Produktpaket vereint Microsoft 365, professionelles Remote-Management, Cloud-Backup und Support in einem klar kalkulierbaren Paket.</div>
+          <div class="fv-slide-body">
+            <div class="mt-bundle-grid">
+              <div class="mt-bundle-card">
+                <div class="mt-bundle-icon" style="background:rgba(30,95,170,0.12); color:#1e5faa;"><i data-lucide="cloud"></i></div>
+                <div>
+                  <h4>Microsoft 365 Business Premium</h4>
+                  <p>Teams, Exchange, SharePoint, OneDrive, Word, Excel, PowerPoint &mdash; inkl. Defender, Intune und Azure&nbsp;AD&nbsp;P1</p>
+                </div>
+              </div>
+              <div class="mt-bundle-card">
+                <div class="mt-bundle-icon" style="background:rgba(22,163,74,0.12); color:#16a34a;"><i data-lucide="monitor"></i></div>
+                <div>
+                  <h4>Remote Monitoring &amp; Management</h4>
+                  <p>Proaktives Monitoring, Fernwartung und automatisiertes Patch-Management aller Endger&auml;te</p>
+                </div>
+              </div>
+              <div class="mt-bundle-card">
+                <div class="mt-bundle-icon" style="background:rgba(232,116,0,0.12); color:#e87400;"><i data-lucide="database"></i></div>
+                <div>
+                  <h4>M365 Cloud-Backup</h4>
+                  <p>Automatische Sicherung aller Microsoft-365-Daten &mdash; revisionssicher und jederzeit wiederherstellbar</p>
+                </div>
+              </div>
+              <div class="mt-bundle-card">
+                <div class="mt-bundle-icon" style="background:rgba(124,58,237,0.12); color:#7c3aed;"><i data-lucide="life-buoy"></i></div>
+                <div>
+                  <h4>Remote Support</h4>
+                  <p>Schnelle Hilfe per Fernzugriff &mdash; direkt und ohne Wartezeit bei IT-Problemen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 6: DSGVO & NIS-2 -->
+      <div class="fv-slide fv-light" id="mt-compliance" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">DSGVO &amp; NIS-2</div>
+          <div class="fv-slide-sub">Compliance &amp; Datenschutz &mdash; wir erf&uuml;llen die Anforderungen.</div>
+          <div class="fv-slide-body">
+            <div class="fv-compliance-grid">
+              <div class="fv-compliance-block">
+                <div class="compliance-header">
+                  <div class="compliance-icon" style="background:rgba(22,163,74,0.12); color:#16a34a;"><i data-lucide="shield-check"></i></div>
+                  <h4>DSGVO<br><span style="font-weight:400; font-size:12px; color:var(--text-muted);">Datenschutz-Grundverordnung</span></h4>
+                </div>
+                <ul>
+                  <li>Daten verbleiben in EU-Rechenzentren von Microsoft</li>
+                  <li>Microsoft Purview f&uuml;r Datenschutz-Klassifizierung</li>
+                  <li>Rollenbasierte Zugriffsrechte &amp; Audit-Logs</li>
+                  <li>Unterst&uuml;tzung bei Verarbeitungsverzeichnissen &amp; technisch-organisatorischen Ma&szlig;nahmen</li>
+                  <li>Datenverschl&uuml;sselung in Transit und at Rest</li>
+                </ul>
+              </div>
+              <div class="fv-compliance-block compliance-nis">
+                <div class="compliance-header">
+                  <div class="compliance-icon" style="background:rgba(232,116,0,0.12); color:#e87400;"><i data-lucide="lock"></i></div>
+                  <h4>NIS-2<br><span style="font-weight:400; font-size:12px; color:var(--text-muted);">EU-Cybersicherheitsrichtlinie</span></h4>
+                </div>
+                <ul>
+                  <li>Microsoft Defender f&uuml;r Endpoint-Schutz</li>
+                  <li>MFA &amp; Conditional Access standardm&auml;&szlig;ig aktiv</li>
+                  <li>Intune f&uuml;r zentrale Ger&auml;teverwaltung</li>
+                  <li>Incident Response &amp; Meldepflichten</li>
+                  <li>Risikomanagement &amp; Sicherheitskonzepte</li>
+                </ul>
+              </div>
+            </div>
+            <div class="fv-premium-row" style="margin-top:auto; padding-top:12px; justify-content:center;">
+              <span class="fv-premium-badge" style="font-size:12px;">M365 Business Premium ist die Basis &mdash; wir konfigurieren und betreuen Ihre Umgebung DSGVO- und NIS-2-konform.</span>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 7: IT-Infrastruktur & Netzwerk -->
+      <div class="fv-slide fv-light" id="mt-infra" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">IT-Infrastruktur &amp; Netzwerk</div>
+          <div class="fv-slide-sub">Vom Netzwerk bis zum Einzelplatz &mdash; wir k&uuml;mmern uns verl&auml;sslich um Ihre gesamte IT-Infrastruktur.</div>
+          <div class="fv-slide-body">
+            <div class="fv-services">
+              <div class="fv-service-card">
+                <div class="fv-svc-icon" style="background:rgba(30,95,170,0.15); color:#1e5faa;"><i data-lucide="wifi"></i></div>
+                <h4>Netzwerkbetreuung</h4>
+                <ul>
+                  <li>&Uuml;berwachung und Wartung Ihrer Infrastruktur</li>
+                  <li>Performance-Optimierung und Fehlerbehebung</li>
+                  <li>Firewall- und Switch-Konfiguration</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-green">
+                <div class="fv-svc-icon" style="background:rgba(22,163,74,0.15); color:#16a34a;"><i data-lucide="headphones"></i></div>
+                <h4>Helpdesk &amp; Support</h4>
+                <ul>
+                  <li>Schnelle Probleml&ouml;sung per Remote oder vor Ort</li>
+                  <li>Mo&ndash;Fr 08:00&ndash;17:00 erreichbar</li>
+                  <li>Priorisierung nach Business-Impact</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-orange">
+                <div class="fv-svc-icon" style="background:rgba(232,116,0,0.15); color:#e87400;"><i data-lucide="package"></i></div>
+                <h4>Hardware &amp; Software</h4>
+                <ul>
+                  <li>Beschaffung von Hardware und Arbeitspl&auml;tzen</li>
+                  <li>Softwarelizenzen und Rollout</li>
+                  <li>Lifecycle-Management</li>
+                </ul>
+              </div>
+              <div class="fv-service-card svc-red">
+                <div class="fv-svc-icon" style="background:rgba(220,38,38,0.15); color:#dc2626;"><i data-lucide="file-text"></i></div>
+                <h4>Dokumentation</h4>
+                <ul>
+                  <li>Strukturierte IT-Dokumentation</li>
+                  <li>Netzwerkpl&auml;ne und Asset-&Uuml;bersichten</li>
+                  <li>Saubere &Uuml;bergaben und Transparenz</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 8: Ihre Vorteile auf einen Blick -->
+      <div class="fv-slide fv-light" id="mt-vorteile" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <div class="fv-slide-header">KALYRO IT &mdash; Meisterteam</div>
+          <div class="fv-slide-title">Ihre Vorteile auf einen Blick</div>
+          <div class="fv-slide-body" style="justify-content:center;">
+            <div class="mt-vorteile-grid">
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(30,95,170,0.12); color:#1e5faa;"><i data-lucide="award"></i></div>
+                <h4>Zertifiziert</h4>
+                <p>Microsoft-gepr&uuml;ftes Fachwissen statt Experimentieren</p>
+              </div>
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(22,163,74,0.12); color:#16a34a;"><i data-lucide="map-pin"></i></div>
+                <h4>Regional</h4>
+                <p>Wildeshausen &amp; Umgebung &mdash; kurze Wege, schnelle Reaktion</p>
+              </div>
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(232,116,0,0.12); color:#e87400;"><i data-lucide="user-check"></i></div>
+                <h4>Ein Ansprechpartner</h4>
+                <p>Beratung, Umsetzung und Betrieb aus einer Hand</p>
+              </div>
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(124,58,237,0.12); color:#7c3aed;"><i data-lucide="box"></i></div>
+                <h4>Smart Bundle</h4>
+                <p>M365, RMM, Backup &amp; Support &mdash; alles in einem Paket</p>
+              </div>
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(220,38,38,0.12); color:#dc2626;"><i data-lucide="shield-check"></i></div>
+                <h4>DSGVO &amp; NIS-2</h4>
+                <p>Compliant konfiguriert &mdash; rechtssicher und dokumentiert</p>
+              </div>
+              <div class="mt-vorteil">
+                <div class="mt-vorteil-icon" style="background:rgba(30,95,170,0.12); color:#1e5faa;"><i data-lucide="activity"></i></div>
+                <h4>Proaktiv</h4>
+                <p>Monitoring &amp; Wartung, bevor Probleme entstehen</p>
+              </div>
+            </div>
+          </div>
+          <div class="fv-slide-footer">
+            <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="" class="fv-footer-logo">
+            <span class="fv-footer-text">KALYRO IT GmbH &middot; Visbeker Str. 62, 27793 Wildeshausen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MT Folie 9: Abschluss -->
+      <div class="fv-slide fv-end-slide fv-light" id="mt-abschluss" style="display:none;">
+        <div class="fv-bg"></div>
+        <div class="fv-inner">
+          <img src="assets/logos/Kalyro_IT_Logo_LANG.png" alt="KALYRO IT" class="fv-logo" style="width:280px; margin-bottom:36px;">
+          <div class="fv-slide-title" style="font-size:52px; letter-spacing:-1px;">&Uuml;berzeugt?</div>
+          <div style="font-size:28px; color:var(--text-secondary); font-weight:400; margin-top:8px;">Sprechen wir &uuml;ber Ihre IT.</div>
+          <div class="fv-title-accent" style="margin-top:32px;"></div>
+          <div class="fv-quote" style="margin-top:32px;">Klar &middot; Sicher &middot; Betreut</div>
+        </div>
+      </div>
+
     </div>
+    </div><!-- /viewer-body -->
     <div class="viewer-nav" id="viewer-nav"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       FOLIEN-PICKER
+       ══════════════════════════════════════════════ -->
+  <div class="slide-picker" id="slide-picker">
+    <div class="slide-picker-backdrop" onclick="closeSlidePicker()"></div>
+    <div class="slide-picker-card">
+      <div class="slide-picker-header">
+        <h3>Pr&auml;sentation zusammenstellen</h3>
+        <button class="slide-picker-close" onclick="closeSlidePicker()">&times;</button>
+      </div>
+      <div class="slide-picker-body">
+        <div class="slide-picker-list" id="slide-picker-list"></div>
+      </div>
+      <div class="slide-picker-footer">
+        <span class="slide-picker-count" id="slide-picker-count">0 Folien ausgew&auml;hlt</span>
+        <button class="btn btn-primary" onclick="startPresentation()" id="btn-start-presentation" disabled>Pr&auml;sentation starten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PRAESENTATIONSMODUS
+       ══════════════════════════════════════════════ -->
+  <div class="presentation" id="presentation">
+    <div class="presentation-slide" id="presentation-slide"></div>
+    <div class="presentation-hud" id="presentation-hud">
+      <div class="presentation-counter" id="presentation-counter">1 / 1</div>
+      <div class="presentation-controls">
+        <button onclick="presentationPrev()" id="pres-btn-prev">&#9664; Zur&uuml;ck</button>
+        <button onclick="presentationNext()" id="pres-btn-next">Weiter &#9654;</button>
+        <button onclick="exitPresentation()">&#10005; Beenden</button>
+      </div>
+    </div>
   </div>
 
   <script src="assets/icons/lucide.min.js"></script>
@@ -2303,7 +3592,23 @@
       { id: 'software-entwicklung', title: 'Moderne Software-Entwicklung & Bereitstellung', elementId: 'infographic', published: true },
       { id: 'cicd-infinity', title: 'CI/CD Infinity Loop', elementId: 'diagram-cicd', published: false },
       { id: 'ki-anwendungen', title: 'KI-Anwendungen — Microsoft-Stack', elementId: 'diagram-ki-apps', published: true },
-      { id: 'ki-architektur', title: 'KI-Architektur — Wie wir KI-Anwendungen bauen', elementId: 'diagram-ki-arch', published: true },
+      { id: 'ki-architektur', title: 'KI-Architektur — Wie wir Anwendungen bauen', elementId: 'diagram-ki-arch', published: true, group: 'ki-architektur' },
+      { id: 'fv-titel', title: 'Firmenvorstellung — Titel', elementId: 'fv-titel', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-profil', title: 'Firmenvorstellung — Wer wir sind', elementId: 'fv-profil', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-team', title: 'Firmenvorstellung — Unser Team', elementId: 'fv-team', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-leistungen', title: 'Firmenvorstellung — Leistungsportfolio', elementId: 'fv-leistungen', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-sla', title: 'Firmenvorstellung — Support & SLA', elementId: 'fv-sla', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-tools', title: 'Firmenvorstellung — Tools & Standards', elementId: 'fv-tools', published: true, group: 'firmenvorstellung' },
+      { id: 'fv-zusammenarbeit', title: 'Firmenvorstellung — Zusammenarbeit', elementId: 'fv-zusammenarbeit', published: true, group: 'firmenvorstellung' },
+      { id: 'mt-titel', title: 'Meisterteam — Titel', elementId: 'mt-titel', published: true, group: 'meisterteam' },
+      { id: 'mt-hermes', title: 'Meisterteam — HERMES Systeme', elementId: 'mt-hermes', published: true, group: 'meisterteam' },
+      { id: 'mt-wer', title: 'Meisterteam — Wer wir sind', elementId: 'mt-wer', published: true, group: 'meisterteam' },
+      { id: 'mt-m365', title: 'Meisterteam — Microsoft 365', elementId: 'mt-m365', published: true, group: 'meisterteam' },
+      { id: 'mt-bundle', title: 'Meisterteam — Smart Protection Bundle', elementId: 'mt-bundle', published: true, group: 'meisterteam' },
+      { id: 'mt-infra', title: 'Meisterteam — IT-Infrastruktur', elementId: 'mt-infra', published: true, group: 'meisterteam' },
+      { id: 'mt-compliance', title: 'Meisterteam — DSGVO & NIS-2', elementId: 'mt-compliance', published: true, group: 'meisterteam' },
+      { id: 'mt-vorteile', title: 'Meisterteam — Vorteile', elementId: 'mt-vorteile', published: true, group: 'meisterteam' },
+      { id: 'mt-abschluss', title: 'Meisterteam — Abschluss', elementId: 'mt-abschluss', published: true, group: 'meisterteam' },
     ];
     let currentDiagram = null;
     let isAdmin = false;
@@ -2389,7 +3694,7 @@
             <div class="status-dot ${c.published ? 'live' : 'draft'}"></div>
             <div>
               <h4>${c.title}</h4>
-              <span class="status-text">${c.published ? 'Veroeffentlicht' : 'Entwurf — nur fuer Admins sichtbar'}</span>
+              <span class="status-text">${c.published ? 'Ver\u00f6ffentlicht' : 'Entwurf \u2014 nur f\u00fcr Admins sichtbar'}</span>
             </div>
           </div>
           <div class="admin-concept-actions">
@@ -2530,42 +3835,93 @@
       concepts.forEach(c => { const el = document.getElementById(c.elementId); if (el) el.style.display = 'none'; });
       const target = document.getElementById(concept.elementId);
       if (target) target.style.display = 'block';
-      document.getElementById('viewer-title').textContent = concept.title;
+      // Pruefen ob Folien-Praesentation (hat group-Eigenschaft)
+      const isSlide = !!concept.group;
+      // Titel mit Seitenzaehler bei Folien-Praesentationen
+      if (isSlide) {
+        const groupSlides = concepts.filter(c => c.group === concept.group && (c.published || isAdmin));
+        const groupIdx = groupSlides.findIndex(c => c.id === id);
+        const groupLabel = concept.title.includes(' \u2014 ') ? concept.title.split(' \u2014 ')[0] : concept.group;
+        document.getElementById('viewer-title').textContent = groupLabel + ' (' + (groupIdx + 1) + '/' + groupSlides.length + ')';
+      } else {
+        document.getElementById('viewer-title').textContent = concept.title;
+      }
       buildViewerNav(id);
       const viewer = document.getElementById('viewer');
       viewer.classList.add('open');
-      viewer.style.display = 'block';
+      // Folien-Praesentationen: Viewer als Flex-Column ohne Scroll, Folie skalieren
+      if (isSlide) {
+        viewer.classList.add('fv-mode');
+        buildFvSidebar(id);
+      } else {
+        viewer.classList.remove('fv-mode');
+      }
       document.getElementById('main-page').style.display = 'none';
       document.body.style.overflow = 'hidden';
       history.pushState({ concept: id }, '', '#konzept/' + id);
       if (id === 'software-entwicklung') requestAnimationFrame(drawArrows);
       if (id === 'ki-anwendungen') requestAnimationFrame(() => lucide.createIcons());
       if (id === 'ki-architektur') requestAnimationFrame(() => lucide.createIcons());
-      // PPTX-Button nur fuer Konzepte mit Export-Daten anzeigen
+      if (isSlide) {
+        requestAnimationFrame(() => {
+          lucide.createIcons();
+          scaleFvSlide(target);
+        });
+      }
+      // Button-Sichtbarkeit steuern
       const pptxConcepts = ['ki-anwendungen', 'ki-architektur'];
-      const btnPptx = document.getElementById('btn-pptx');
-      btnPptx.style.display = pptxConcepts.includes(id) ? '' : 'none';
+      document.getElementById('btn-pptx').style.display = pptxConcepts.includes(id) ? '' : 'none';
+      document.getElementById('btn-present-all').style.display = isSlide ? '' : 'none';
     }
     function closeViewer() {
       const viewer = document.getElementById('viewer');
-      viewer.classList.remove('open');
-      viewer.style.display = 'none';
+      viewer.classList.remove('open', 'fv-mode');
       document.getElementById('main-page').style.display = 'block';
       document.body.style.overflow = '';
       currentDiagram = null;
       history.pushState({}, '', '#konzepte');
     }
+    function scaleFvSlide(el) {
+      if (!el) return;
+      el.style.transform = 'none';
+      const viewerContent = document.getElementById('viewer-content');
+      const vw = viewerContent.clientWidth - 16;
+      const vh = viewerContent.clientHeight - 16;
+      const sw = 1280, sh = 720;
+      const scale = Math.min(vw / sw, vh / sh);
+      el.style.transform = 'scale(' + scale + ')';
+      el.style.transformOrigin = 'center center';
+    }
+    function buildFvSidebar(activeId) {
+      const sidebar = document.getElementById('fv-sidebar');
+      const activeConcept = concepts.find(c => c.id === activeId);
+      const groupName = activeConcept ? activeConcept.group : null;
+      const groupSlides = concepts.filter(c => c.group === groupName && (c.published || isAdmin));
+      const shortTitle = (t) => t.includes(' \u2014 ') ? t.split(' \u2014 ')[1] : t;
+      sidebar.innerHTML = groupSlides.map((c, i) =>
+        `<div class="fv-sidebar-item${c.id === activeId ? ' active' : ''}" onclick="openViewer('${c.id}')">` +
+        `<div class="fv-thumb"><span class="fv-thumb-label">${shortTitle(c.title)}</span></div>` +
+        `<span class="fv-sidebar-num">${i + 1}</span>` +
+        `</div>`
+      ).join('');
+      // Aktive Folie in den sichtbaren Bereich scrollen
+      requestAnimationFrame(() => {
+        const active = sidebar.querySelector('.active');
+        if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+    }
     function buildViewerNav(currentId) {
       const nav = document.getElementById('viewer-nav');
       const visible = concepts.filter(c => c.published || isAdmin);
       const idx = visible.findIndex(c => c.id === currentId);
+      const shortLabel = (c) => c.title.includes(' \u2014 ') ? c.title.split(' \u2014 ')[1] : c.title;
       let html = '';
-      if (idx > 0) { const p = visible[idx-1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${p.id}')"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>${p.title}</button>`; }
-      if (idx < visible.length-1) { const n = visible[idx+1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${n.id}')">${n.title}<svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>`; }
+      if (idx > 0) { const p = visible[idx-1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${p.id}')"><svg viewBox="0 0 24 24" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>${shortLabel(p)}</button>`; }
+      if (idx < visible.length-1) { const n = visible[idx+1]; html += `<button class="viewer-nav-btn" onclick="openViewer('${n.id}')">${shortLabel(n)}<svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>`; }
       nav.innerHTML = html;
     }
     function navigateTo(page, section) {
-      if (document.getElementById('viewer').style.display === 'block') closeViewer();
+      if (document.getElementById('viewer').classList.contains('open')) closeViewer();
       if (section) setTimeout(() => { const el = document.getElementById(section); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 50);
       else window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2578,7 +3934,269 @@
     }
     window.addEventListener('popstate', handleRoute);
     window.addEventListener('load', handleRoute);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.getElementById('viewer').style.display === 'block') closeViewer(); });
+    document.addEventListener('keydown', (e) => {
+      // Praesentationsmodus hat Prioritaet
+      const pres = document.getElementById('presentation');
+      if (pres.classList.contains('active')) {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); presentationNext(); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); presentationPrev(); }
+        else if (e.key === 'Escape') { exitPresentation(); }
+        return;
+      }
+      // Folien-Picker schliessen
+      if (e.key === 'Escape' && document.getElementById('slide-picker').classList.contains('open')) { closeSlidePicker(); return; }
+      // Folien-Praesentationen: Pfeiltasten im Viewer
+      if (currentDiagram && document.getElementById('viewer').classList.contains('open')) {
+        const currentConcept = concepts.find(c => c.id === currentDiagram);
+        if (currentConcept && currentConcept.group) {
+          const groupSlides = concepts.filter(c => c.group === currentConcept.group && (c.published || isAdmin));
+          const gIdx = groupSlides.findIndex(c => c.id === currentDiagram);
+          if (e.key === 'ArrowRight' && gIdx < groupSlides.length - 1) { e.preventDefault(); openViewer(groupSlides[gIdx + 1].id); return; }
+          if (e.key === 'ArrowLeft' && gIdx > 0) { e.preventDefault(); openViewer(groupSlides[gIdx - 1].id); return; }
+        }
+      }
+      // Viewer schliessen
+      if (e.key === 'Escape' && document.getElementById('viewer').classList.contains('open')) closeViewer();
+    });
+
+    // ── PRAESENTATIONSMODUS ─────────────────────────────────────
+    let presentationSlides = [];
+    let presentationIndex = 0;
+    let hudTimeout = null;
+
+    function openSlidePicker() {
+      const picker = document.getElementById('slide-picker');
+      const list = document.getElementById('slide-picker-list');
+      const saved = JSON.parse(localStorage.getItem('kalyro-presentation') || 'null');
+
+      // Kontextbezogen: bei fv-Folien nur die Gruppe zeigen
+      const currentGroup = currentDiagram && concepts.find(c => c.id === currentDiagram)?.group;
+      const visible = currentGroup
+        ? concepts.filter(c => c.group === currentGroup && (c.published || isAdmin))
+        : concepts.filter(c => c.published || isAdmin);
+
+      const pickerTitle = document.querySelector('#slide-picker .slide-picker-header h3');
+      if (pickerTitle) {
+        pickerTitle.textContent = currentGroup
+          ? 'Folienauswahl \u2014 ' + currentGroup.charAt(0).toUpperCase() + currentGroup.slice(1)
+          : 'Pr\u00e4sentation zusammenstellen';
+      }
+
+      let ordered;
+      if (saved && Array.isArray(saved)) {
+        ordered = saved.filter(id => visible.some(c => c.id === id));
+        visible.forEach(c => { if (!ordered.includes(c.id)) ordered.push(c.id); });
+      } else {
+        ordered = visible.map(c => c.id);
+      }
+
+      const shortLabel = (c) => c.group && c.title.includes(' \u2014 ') ? c.title.split(' \u2014 ')[1] : c.title;
+
+      list.innerHTML = ordered.map(id => {
+        const c = concepts.find(x => x.id === id);
+        return `<div class="slide-picker-item" draggable="true" data-concept-id="${id}">
+          <span class="drag-handle">&#9776;</span>
+          <label><input type="checkbox" checked onchange="updateSlideCount()"><span>${shortLabel(c)}</span></label>
+          <div class="reorder-btns">
+            <button onclick="moveSlideUp(this)">&uarr;</button>
+            <button onclick="moveSlideDown(this)">&darr;</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      initSlideDragDrop();
+      updateSlideCount();
+      picker.classList.add('open');
+    }
+
+    function closeSlidePicker() {
+      document.getElementById('slide-picker').classList.remove('open');
+    }
+
+    function updateSlideCount() {
+      const items = document.querySelectorAll('#slide-picker-list .slide-picker-item');
+      const checked = [...items].filter(it => it.querySelector('input').checked);
+      const n = checked.length;
+      document.getElementById('slide-picker-count').textContent = n + ' Folie' + (n !== 1 ? 'n' : '') + ' ausgew\u00e4hlt';
+      document.getElementById('btn-start-presentation').disabled = n === 0;
+    }
+
+    function moveSlideUp(btn) {
+      const item = btn.closest('.slide-picker-item');
+      const prev = item.previousElementSibling;
+      if (prev) item.parentNode.insertBefore(item, prev);
+    }
+
+    function moveSlideDown(btn) {
+      const item = btn.closest('.slide-picker-item');
+      const next = item.nextElementSibling;
+      if (next) item.parentNode.insertBefore(next, item);
+    }
+
+    function initSlideDragDrop() {
+      const list = document.getElementById('slide-picker-list');
+      let dragItem = null;
+      list.addEventListener('dragstart', (e) => {
+        dragItem = e.target.closest('.slide-picker-item');
+        if (dragItem) dragItem.classList.add('dragging');
+      });
+      list.addEventListener('dragend', () => {
+        if (dragItem) dragItem.classList.remove('dragging');
+        list.querySelectorAll('.slide-picker-item').forEach(it => it.classList.remove('drag-over'));
+        dragItem = null;
+      });
+      list.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const target = e.target.closest('.slide-picker-item');
+        if (target && target !== dragItem) {
+          list.querySelectorAll('.slide-picker-item').forEach(it => it.classList.remove('drag-over'));
+          target.classList.add('drag-over');
+        }
+      });
+      list.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const target = e.target.closest('.slide-picker-item');
+        if (target && dragItem && target !== dragItem) {
+          const items = [...list.children];
+          const dragIdx = items.indexOf(dragItem);
+          const dropIdx = items.indexOf(target);
+          if (dragIdx < dropIdx) target.after(dragItem);
+          else target.before(dragItem);
+        }
+      });
+    }
+
+    function getSelectedSlides() {
+      const items = document.querySelectorAll('#slide-picker-list .slide-picker-item');
+      return [...items].filter(it => it.querySelector('input').checked).map(it => it.dataset.conceptId);
+    }
+
+    function startGroupPresentation() {
+      // Alle fv-Folien der aktuellen Gruppe direkt starten
+      const group = currentDiagram && concepts.find(c => c.id === currentDiagram)?.group;
+      if (!group) return;
+      const slides = concepts.filter(c => c.group === group && (c.published || isAdmin)).map(c => c.id);
+      if (slides.length === 0) return;
+      presentationSlides = slides;
+      localStorage.setItem('kalyro-presentation', JSON.stringify(slides));
+      presentationIndex = 0;
+      document.getElementById('presentation').classList.add('active');
+      showPresentationSlide(0);
+      document.documentElement.requestFullscreen().catch(() => {});
+      document.addEventListener('mousemove', showPresentationHud);
+      showPresentationHud();
+    }
+
+    function startPresentation() {
+      presentationSlides = getSelectedSlides();
+      if (presentationSlides.length === 0) return;
+      localStorage.setItem('kalyro-presentation', JSON.stringify(presentationSlides));
+      closeSlidePicker();
+      presentationIndex = 0;
+      document.getElementById('presentation').classList.add('active');
+      showPresentationSlide(0);
+      document.documentElement.requestFullscreen().catch(() => {});
+      document.addEventListener('mousemove', showPresentationHud);
+      showPresentationHud();
+    }
+
+    function showPresentationSlide(index) {
+      const container = document.getElementById('presentation-slide');
+      const conceptId = presentationSlides[index];
+      const concept = concepts.find(c => c.id === conceptId);
+      if (!concept) return;
+
+      const source = document.getElementById(concept.elementId);
+      const clone = source.cloneNode(true);
+      clone.style.display = 'block';
+      clone.removeAttribute('id');
+
+      container.innerHTML = '';
+      container.appendChild(clone);
+
+      scalePresentationSlide(clone);
+
+      document.getElementById('presentation-counter').textContent = (index + 1) + ' / ' + presentationSlides.length;
+      document.getElementById('pres-btn-prev').disabled = index === 0;
+      document.getElementById('pres-btn-next').disabled = index === presentationSlides.length - 1;
+
+      if (typeof lucide !== 'undefined') {
+        requestAnimationFrame(() => lucide.createIcons({ nameAttr: 'data-lucide', node: clone }));
+      }
+    }
+
+    function scalePresentationSlide(el) {
+      requestAnimationFrame(() => {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        // fv-Folien: feste 16:9 Abmessungen verwenden
+        if (el.classList.contains('fv-slide')) {
+          el.style.transform = 'none';
+          const scale = Math.min(vw / 1280, vh / 720);
+          el.style.transform = 'scale(' + scale + ')';
+          el.style.transformOrigin = 'center center';
+          return;
+        }
+        // Andere Konzepte: natuerliche Groesse messen
+        el.style.maxWidth = 'none';
+        el.style.width = 'auto';
+        el.style.transform = 'none';
+        const ew = el.scrollWidth;
+        const eh = el.scrollHeight;
+        const scale = Math.min(vw / ew, vh / eh);
+        el.style.transform = 'scale(' + scale + ')';
+        el.style.transformOrigin = 'center center';
+      });
+    }
+
+    function presentationNext() {
+      if (presentationIndex < presentationSlides.length - 1) {
+        presentationIndex++;
+        showPresentationSlide(presentationIndex);
+      }
+    }
+
+    function presentationPrev() {
+      if (presentationIndex > 0) {
+        presentationIndex--;
+        showPresentationSlide(presentationIndex);
+      }
+    }
+
+    function exitPresentation() {
+      document.getElementById('presentation').classList.remove('active');
+      document.getElementById('presentation-slide').innerHTML = '';
+      presentationSlides = [];
+      presentationIndex = 0;
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      document.removeEventListener('mousemove', showPresentationHud);
+      clearTimeout(hudTimeout);
+    }
+
+    function showPresentationHud() {
+      const hud = document.getElementById('presentation-hud');
+      hud.classList.add('visible');
+      clearTimeout(hudTimeout);
+      hudTimeout = setTimeout(() => hud.classList.remove('visible'), 3000);
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && document.getElementById('presentation').classList.contains('active')) {
+        exitPresentation();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (document.getElementById('presentation').classList.contains('active')) {
+        const clone = document.querySelector('#presentation-slide > *');
+        if (clone) scalePresentationSlide(clone);
+      }
+      // Folien-Praesentationen im Viewer skalieren
+      if (currentDiagram) {
+        const concept = concepts.find(c => c.id === currentDiagram);
+        if (concept && concept.group) scaleFvSlide(document.getElementById(concept.elementId));
+      }
+    });
 
     // ── DARK / LIGHT THEME ───────────────────────────────────────
     function toggleTheme() {
